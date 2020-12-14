@@ -45,16 +45,17 @@ Saranno dunque semplici oggetti importabili e condivisibili tra utenti
 #### Creazione di un viaggio
 Alla crazione di un viaggio, l'utente dovrà inserire una lista di link a canzoni o playlist di Spotify. 
 
-Subito dopo, gli verrà chiesto di selezionare una specifica *canzone di partenza* dalla lista: questa costituirà appunto la posizione di partenza all'interno dell'interfaccia. Le altre canzoni saranno invece indicate nell'interfaccia all'interno di una mappa o radar.
+Subito dopo, gli verrà chiesto di selezionare una specifica *canzone di partenza* dalla lista: questa costituirà appunto la posizione di partenza all'interno dell'interfaccia. 
+Tutte le canzoni della lista saranno indicate nell'interfaccia all'interno di una mappa.
 
 Sarà infine data l'opzione di filtrare le canzoni tramite vari parametri come ad esempio l'anno, la lingua o la città di provenienza.
 
 Se il viaggio è nuovo, gli assi, il database e i pesi, attribuiti al viaggio saranno quelli predefiniti (cambiabili nelle impostazioni).
 Prima di avviare l'interfaccia 3D, verrà mostrata una schermata di riassunto delle impostazioni del viaggio con:
-- La lista delle canzoni che saranno presenti nel radar
-- Il filtro
-- Gli assi scelti, con la possibilità di cambiarli da qui solo per questo viaggio
-- Il database scelto, anch'esso cambiabile come impostazione temporanea esclusivamente per questo viaggio
+- La lista delle canzoni che saranno presenti nella mappa.
+- Il filtro.
+- Gli assi scelti, con la possibilità di cambiarli da qui solo per questo viaggio.
+- Il database scelto, anch'esso cambiabile come impostazione temporanea esclusivamente per questo viaggio.
 - I pesi scelti per le features di clusterizzazione, cambiabili solo con pacchetti di pesi già processati. 
 Nella stessa schermata vi sarà la possibilità di modificare il viaggio o di salvare e eventualmente condividere il viaggio.
 
@@ -63,8 +64,8 @@ Al selezionamento di un viaggio già creato, verrà avviata direttamente la sche
 
 ### Avvio
 Un pulsante nella schermata di riassunto permetterà all'utente di catapultarsi nell'universo clusterizzato con la possibilità immediata di avere suggerimenti e di navigare verso altri generi musicali.
-Aiutanti in questo viaggio saranno il radar e la mappa, basati sulle impostazioni del viaggio: segneranno i punti in cui son presenti le canzoni preventivamente scelte, ma indicheranno anche i punti in cui son presenti i cluster e la canzone più rilevante del cluster. 
-> **Nota bene:** se le canzoni scelte per lo *spawn* e per il radar/mappa fossero state filtrate, queste non saranno presenti nell'interfaccia e nei cluster, **ma** verranno comunque usate per i loro scopi: il viaggio inizierà in ogni caso dalla canzone iniziale e la mappa segnerà comunque in che punto sarebbero quelle canzoni. 
+La mappa sarà un grosso aiutante in questo viaggio: segnerà i punti in cui son presenti le canzoni preventivamente scelte e indicherà i punti in cui son presenti i cluster e la canzone più rilevante del cluster. 
+> **Nota bene:** se le canzoni scelte per lo *spawn* e per la mappa fossero state filtrate, queste non saranno presenti nell'interfaccia e nei cluster, **ma** verranno comunque usate per i loro scopi: il viaggio inizierà in ogni caso dalla canzone iniziale e la mappa segnerà comunque in che punto sarebbero quelle canzoni. 
 Il motivo di ciò è che lo scopo di queste canzoni consiste esclusivamente nell'orientamento all'interno dell'universo, come dei punti cardinali: il loro scopo primario deve essere mantenuto anche se non saranno effettivamente presenti.
 
 ## I filtri
