@@ -8,3 +8,5 @@ L'interfaccia è parte costituente della filosofia del software, che punta a evi
 L'utente si può spostare in un mondo 3D in cui ogni punto è un cluster. Può inoltre entrare dentro a un cluster per scendere di livello di specializzazione, entrando dunque in un nuovo mondo di nuovi clusters. 
 Il movimento è attuato su 3 assi definiti dall'utente tra tutti i parametri di dedscrizione della traccia.
 
+
+P.S. Ricorda di eliminare i file .URL (quelli .url vanno bene) prima di pubblicare
