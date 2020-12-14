@@ -9,8 +9,32 @@ L'utente si può spostare in un mondo 3D in cui ogni punto è un cluster. Può i
 Il movimento è attuato su 3 assi definiti dall'utente tra tutti i parametri di dedscrizione della traccia.
 
 ## Funzionamento
-All'avvio del programma, verrà richiesto all'utente di inserire una lista di link a canzoni su Spotify oppure un unico link a una playlist. 
-Subito dopo, gli verrà chiesto di selezionare una specifica canzone di partenza dalla lista: questa costituirà la posizione di partenza all'interno dell'interfaccia. Le altre canzoni saranno invece indicate nell'interfaccia all'interno di una mappa o radar.
-Sarà in seguito data l'opzione di filtrare le canzoni tramite vari parametri come ad esempio l'anno, la lingua o la città di provenienza.
+All'avvio del programma, vi sarà una schermata di inizio in cui scegliere se cambiare **impostazioni** o se iniziare un **viaggio**.
 
-Appena completati questi primi semplici step, l'utente verrà subito teletrasportato all'interno dell'universo 3D con la possibilità immediata di avere suggerimenti e di navigare verso altri generi musicali.
+### Impostazioni
+Al selezionamento di "**Impostazioni**", sarà mostrata una schermata da cui:
+-  Si potranno cambiare gli assi predefiniti per il viaggio scegliendo tra una lista di pacchetti di assi, oppure si potrà creare un nuovo pacchetto da eventualmente impostare come predefinito.
+- Si potranno cambiare le impostazioni di clusterizzazione del database, ossia il **pacchetto dei pesi** (set dei pesi per ogni feature della clusterizzazione) e eventualmente lo **script di clusterizzazione**. 
+- Vi sarà inoltre la possibilità di cambiare il database su cui si basa l'interfaccia: se non lo si ha già fatto, serve creare un nuovo database da clusterizzare fornendo una playlist o una lista di link a canzoni di Spotify. Alla creazione bisognerà selezionare il pacchetto di pesi e avviare la clusterizzazione prima di poter usare quel database nell'interfaccia. Sarà inoltre associato al database un codice alfanumerico a cui si riferiranno i viaggi salvati basati su questo database.
+
+In particolare, per i **pacchetti dei pesi**, sarà possibile scegliere tra qualche pacchetto già processato che avrà anche una sua descrizione semantica riguardante che obbiettivo di raggruppamento ottiene, ma vi sarà anche la possibilità di crearne di nuovi, salvarli, importarli o condividerli.
+
+### Viaggi
+Al selezionamento di "**Viaggi**" verrà esposta all'utente una lista di viaggi predefiniti, la possibilità di importare un viaggio che gli è stato condiviso e la possibilità di creare un viaggio nuovo.
+
+#### Creazione di un viaggio
+Alla crazione di un viaggio, l'utente di inserire una lista di link a canzoni su Spotify, oppure un unico link a una playlist. 
+
+Subito dopo, gli verrà chiesto di selezionare una specifica canzone di partenza dalla lista: questa costituirà la posizione di partenza all'interno dell'interfaccia. Le altre canzoni saranno invece indicate nell'interfaccia all'interno di una mappa o radar.
+
+Sarà infine data l'opzione di filtrare le canzoni tramite vari parametri come ad esempio l'anno, la lingua o la città di provenienza.
+
+Se il viaggio è nuovo, gli assi, il database e i pesi, attribuiti al viaggio saranno quelli predefiniti (cambiabili nelle impostazioni).
+Prima di avviare l'interfaccia 3D, verrà mostrata una schermata di riassunto delle impostazioni del viaggio con la lista delle canzoni che saranno presenti nel radar, il filtro, gli assi scelti (con la possibilità di cambiarli da qui solo per questo viaggio), il database scelto (anch'esso cambiabile come impostazione temporanea esclusivamente per questo viaggio) e i pesi scelti per le features di clusterizzazione (cambiabili solo con pacchetti di pesi già processati). Nella stessa schermata vi sarà la possibilità di modificare il viaggio o di salvare e eventualmente condividere il viaggio.
+
+#### Avvio di un viaggio già creato
+Al selezionamento di un viaggio già creato, verrà avviata direttamente la schermata di riassunto del suddetto viaggio.
+
+### Avvio
+Un pulsante nella schermata di riassunto permetterà all'utente di catapultarsi nell'universo clusterizzato con la possibilità immediata di avere suggerimenti e di navigare verso altri generi musicali.
+Aiutanti in questo viaggio saranno il radar e la mappa, basati sulle impostazioni del viaggio. 
