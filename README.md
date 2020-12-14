@@ -45,10 +45,10 @@ Aiutanti in questo viaggio saranno il radar e la mappa, basati sulle impostazion
 
 
 ## I filtri
-- Dati da MusicBrainz 
-> *Non tutte le canzoni possiedono queste informazioni; per questo, se uno di questi filtri dovesse essere attivo, saranno filtrate fuori le canzoni che non forniscono un dato nel campo utile al filtro*:
+- Dati da MusicBrainz
 	- Filtro demografico per la città di nascita degli artisti: basato sul selezionamento di uno o più punti con un corrispettivo raggio all'interno di una cartina geografica. In futuro può essere migliorato tramite nuove modalità di selezione.
 	- Lingua della canzone.
+	> *Nonostante il database di MusicBrainz sia molto grande, non tutte le canzoni possiedono queste informazioni; per questo, se uno di questi filtri dovesse essere attivo, saranno filtrate fuori le canzoni che non forniscono un dato nel campo utile al filtro*:
 - Presenti nei metadati di Spotify:
 	- Intervallo di anni di uscita dell'album (non sempre accurato, dipende da che anno è segnalato da Spotify).
 	- Artista.
