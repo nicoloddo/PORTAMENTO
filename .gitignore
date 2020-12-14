@@ -58,3 +58,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# AGGIUNTO DA ME: ignoro i documenti poichè non fanno parte del codice e tutto ciò di interessante scritto lì sarà da mettere nel README
+documenti/
+
