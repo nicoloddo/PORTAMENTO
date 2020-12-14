@@ -42,3 +42,14 @@ Al selezionamento di un viaggio già creato, verrà avviata direttamente la sche
 ### Avvio
 Un pulsante nella schermata di riassunto permetterà all'utente di catapultarsi nell'universo clusterizzato con la possibilità immediata di avere suggerimenti e di navigare verso altri generi musicali.
 Aiutanti in questo viaggio saranno il radar e la mappa, basati sulle impostazioni del viaggio. 
+
+
+## I filtri
+- Dati da MusicBrainz - *Non tutte le canzoni possiedono queste informazioni; per questo, se uno di questi filtri dovesse essere attivo, saranno filtrate fuori le canzoni che non forniscono un dato nel campo utile al filtro*:
+	- Filtro demografico per la città di nascita degli artisti: basato sul selezionamento di uno o più punti con un corrispettivo raggio all'interno di una cartina geografica. In futuro può essere migliorato tramite nuove modalità di selezione.
+	- Lingua della canzone.
+- Presenti nei metadati di Spotify:
+	- Intervallo di anni di uscita dell'album (non sempre accurato, dipende da che anno è segnalato da Spotify).
+	- Artista.
+- Altri tipi di filtri:
+	- Lista di link a canzoni di Spotify o link a una playlist di Spotify: può essere impostato come blacklist o come whitelist. Questo permetterebbe di organizzare una playlist mantenendo la clusterizzazione del database generale originario (senza dover clusterizzare altri database).
