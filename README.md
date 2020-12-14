@@ -18,7 +18,7 @@ All'avvio del programma, vi sarà una schermata di inizio in cui scegliere se ca
 ### Impostazioni
 Al selezionamento di "**Impostazioni**", sarà mostrata una schermata da cui:
 -  Si potranno cambiare gli **assi** predefiniti per il viaggio scegliendo tra una lista di pacchetti di assi, oppure si potrà creare un nuovo pacchetto da eventualmente impostare come predefinito.
-	> Nota bene: gli assi scelti non cambiano in alcun modo i parametri scelti per la clusterizzazione. Per cambiare questi ultimi bisogna cambiare il pacchetto dei pesi.
+	> **Nota bene:** gli assi scelti non cambiano in alcun modo i parametri scelti per la clusterizzazione. Per cambiare questi ultimi bisogna cambiare il pacchetto dei pesi.
 - Si potranno cambiare le impostazioni di clusterizzazione del database, ossia il **pacchetto dei pesi** (set dei pesi per ogni feature della clusterizzazione) e eventualmente lo **script di clusterizzazione**. 
 - Vi sarà inoltre la possibilità di cambiare il **database** su cui si basa l'interfaccia.
 Per fare ciò serve fornire un nuovo database da clusterizzare attraverso l'inserimento di una lista di link a canzoni o playlist di Spotify. Alla creazione bisognerà selezionare il pacchetto di pesi da utilizzare e avviare la clusterizzazione. Finchè il nuovo database non sarà stato clusterizzato, non potrà essere utilizzato. Sarà inoltre associato al database un codice alfanumerico a cui si riferiranno i viaggi salvati che utilizzano questo database.
@@ -28,7 +28,7 @@ In particolare, per i **pacchetti dei pesi**, sarà possibile scegliere tra alcu
 ### Viaggi
 Al selezionamento di "**Viaggi**" verrà esposta all'utente una lista di viaggi predefiniti, la possibilità di importare un viaggio che gli è stato condiviso e la possibilità di creare un viaggio nuovo.
 Avere dei viaggi predefiniti permette all'utente di avviare il software e buttarsi dentro a un viaggio immediatamente senza dover inserire alcun input. 
-> Esempio: **"Esplora la musica sarda dal Rock and Roll al Trip Hop"**
+> **Esempio:** *"Esplora la musica sarda dal Rock and Roll al Trip Hop"*
 
 Ogni viaggio salvato sarà definito dai seguenti campi:
 - Descrittivi:
@@ -58,13 +58,14 @@ Al selezionamento di un viaggio già creato, verrà avviata direttamente la sche
 ### Avvio
 Un pulsante nella schermata di riassunto permetterà all'utente di catapultarsi nell'universo clusterizzato con la possibilità immediata di avere suggerimenti e di navigare verso altri generi musicali.
 Aiutanti in questo viaggio saranno il radar e la mappa, basati sulle impostazioni del viaggio: segneranno i punti in cui son presenti le canzoni preventivamente scelte, ma indicheranno anche i punti in cui son presenti i cluster e la canzone più rilevante del cluster. 
-> Nota bene: se le canzoni scelte per lo *spawn* e per il radar/mappa fossero state filtrate, queste non saranno presenti nell'interfaccia e nei cluster, **ma** verranno comunque usate per i loro scopi: il viaggio inizierà in ogni caso dalla canzone iniziale e la mappa segnerà comunque in che punto sarebbero quelle canzoni. 
+> **Nota bene:** se le canzoni scelte per lo *spawn* e per il radar/mappa fossero state filtrate, queste non saranno presenti nell'interfaccia e nei cluster, **ma** verranno comunque usate per i loro scopi: il viaggio inizierà in ogni caso dalla canzone iniziale e la mappa segnerà comunque in che punto sarebbero quelle canzoni. 
 Il motivo di ciò è che lo scopo di queste canzoni consiste esclusivamente nell'orientamento all'interno dell'universo, come dei punti cardinali: il loro scopo primario deve essere mantenuto anche se non saranno effettivamente presenti.
 
 ## I filtri
 - Dati da MusicBrainz:
 	- Filtro demografico per la città di nascita degli artisti: basato sul selezionamento di uno o più punti con un corrispettivo raggio all'interno di una cartina geografica. In futuro può essere migliorato tramite nuove modalità di selezione.
 	- Lingua della canzone.
+	
 	
 	> *Nonostante il database di MusicBrainz sia molto grande, non tutte le canzoni possiedono queste informazioni; per questo, se uno di questi filtri dovesse essere attivo, saranno filtrate fuori le canzoni che non forniscono un dato nel campo utile al filtro*.
 - Presenti nei metadati di Spotify:
