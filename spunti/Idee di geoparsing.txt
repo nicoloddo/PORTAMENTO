@@ -1,0 +1,2 @@
+Sarebbe molto interessante effettuare il geoparsing delle canzoni ottenute, passando per il profilo artista della canzone su discogs e passando in seguito il campo della descrizione dell'artista di discogs (campo "profile" della risposta dell'ap) attraverso una api di geoparsing per trovare la città di origine. Questo mi permetterebbe di collegare artisti alla loro scena con una certa accuracy.
+I profili degli artisti su discogs son infatti solitamente concisi e comprendono la città d'origine

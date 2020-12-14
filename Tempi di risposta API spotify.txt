@@ -1,0 +1,11 @@
+Tempi di risposta per ricevere le analisi complete:
+
+Circa 0.75 secondi a canzone. Alla peggio 1 s/canzone
+
+
+La richiesta di solo le features senza neanche le accuratezze invece:
+
+Non l'ho testato ma posso fare una richiesta per 100 canzoni tutte insieme.
+Dunque approssimativamente stimerei:
+
+Circa 1 secondo ogni 100 canzoni, ossia 0.01 s/canzone

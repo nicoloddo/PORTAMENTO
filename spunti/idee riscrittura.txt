@@ -1,0 +1,5 @@
+CONVERTIRE TUTTI I PARAMETRI IN PRECISI PARAMETRI SIGNIFICATIVI PER LA CANZONE
+
+Vorrei dare un significato preciso all'interno dell'analisi ai suoni e settori: non posso semplicemente creare un array gigante in cui li mischio ai parametri dei settori e ai parametri generali e clusterizzare; devo prima arrivare a parametri di analisi della canzone: ad esempio posso introdurre quante volte compare (oppure la frequenza di comparizione) un certo suono o simile nella canzone (con un certo livello di accuratezza).
+
+Per quanto riguarda i settori posso introdurre cose come struttura, ossia che tipi di settori, e il loro ordine. Oppure anche per questo un fattore di quantità su quante volte è presente un certo settore all'interno di una canzone.

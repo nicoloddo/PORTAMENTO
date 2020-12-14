@@ -1,0 +1,5 @@
+I dj vogliono la propria libreria organizzata.
+Il software parte con un database iniziale preso dal playlist dump di "The Sounds of Spotify". Caricato su un cloud con API, probabilmente sul mio pc fisso.
+
+Su ogni computer in cui viene usato il software, noi chiediamo se si vuole aggiungere al database una nuova libreria di canzoni. Ad esempio la libreria intera delle canzoni salvate. Le richieste alla API di spotify verranno effettuate dal computer privato e verranno mandate alla nostra API che aggiornerà il database con i dati ottenuti sul computer privato.
+

@@ -1,0 +1,9 @@
+acousticness,album_id,artists_id,danceability,disc_number,duration_ms,energy,id,instrumentalness,key,liveness,loudness,mode,name,playlist,popularity,speechiness,tempo,time_signature,track_number,valence
+0.0062,6TmRzFY6MyCLtXwVhkCPKB,"4vwzEW1kPK1BlgSBGrRyqZ,70s4WJVviwkQ1SnqPFEppX",0.882,1,258320,0.661,3CA3wAOZ7U3nt96W2QKtFp,0.00425,7,0.0585,-5.14,1,Black Is the Night,Pulpture,47,0.0782,94.009,4,10,0.689
+0.0288,4fePTWx5G0K3H1v2muXdHL,1mYvu9huHeR7ho3iGAgCsn,0.902,1,262373,0.645,4hRYm8Ahspq7twh1ckPmxl,0.566,11,0.0999,-8.563,0,Seven Nation Army,Pulpture,49,0.0469,120.01,4,2,0.922
+0.485,15j1qqUQ5TXeh9lZzuWVN6,2XpUprTohaksHpVjUtTvlx,0.751,1,273026,0.564,7wz27YjIUyJ0IAkzZqlQC6,4.66e-06,9,0.109,-7.879,0,... E la luna bussò,Pulpture,47,0.27,77.561,4,1,0.712
+0.792,0rrr4SP4dOoCynCyPFxA9j,5e5DeHuHjgcj0DbdrdYKMo,0.886,1,386240,0.241,5zfR5yKsmAiyiH6AbaNiOY,0.444,8,0.105,-16.655,0,King in My Empire,Pulpture,42,0.0598,126.011,4,1,0.726
+0.00376,6z8arLj8lWDoxk99ayMYlz,3AA28KZvwAUcZuOKwyblJQ,0.764,1,281467,0.5,5P0yCN34eDqbDdDFEICseA,0.824,9,0.15,-12.736,1,Dracula,Pulpture,31,0.0356,121.607,4,2,0.287
+0.375,0YqCvOMhp8enM01an9Nntj,484sZUYmnRXN84zmk3GY1n,0.705,1,385677,0.649,38LpbjQx5XAA95pb7AGRnE,0.0102,11,0.099,-7.742,0,Montego Bay Spleen,Pulpture,47,0.0651,143.625,4,2,0.74
+0.173,3Ge479ihnwoh8TAhihr85r,484sZUYmnRXN84zmk3GY1n,0.729,1,232853,0.319,3NQOBD3Og2sJyDkAssk4mW,0.381,9,0.0972,-12.791,0,Pink Panther Theme,Pulpture,26,0.564,119.995,4,1,0.58
+0.0569,06814vxpRbL5CPMk1CTvOk,2mVVjNmdjXZZDvhgQWiakk,0.582,1,270639,0.31,0Gcs85JHJPQCBSVqZrsyO5,0.878,1,0.563,-14.264,1,One to Remember,Pulpture,54,0.0444,149.174,4,7,0.865
