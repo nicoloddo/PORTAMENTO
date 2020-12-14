@@ -9,7 +9,7 @@ I database utilizzati per questo progetto sono:
 ### Cenni riguardanti l'interfaccia
 L'interfaccia è parte costituente della filosofia del software, che punta a evidenziare l'effettiva impossibilità di ridurre la musica a un numero discreto di cluster e le sfumature che derivano da qualunque tipo di catalogazione musicale: ogni cluster è un raggruppamento completamente arbitrario, basato sulla scelta soggettiva dei pesi delle features; inoltre, al livello più basso di specializzazione, ogni cluster è effettivamente una sola canzone, a immagine del fatto che in realtà, alla base, ogni canzone definisce un suo genere unico. 
 
-L'utente si può spostare in un mondo 3D in cui ogni punto è un cluster. Può inoltre entrare dentro a un cluster per scendere di livello di specializzazione, entrando dunque in un nuovo mondo di nuovi clusters. 
+L'utente si può spostare in un mondo 3D in cui ogni cluster è associato a un preciso punto. Può inoltre entrare dentro a un cluster per scendere di livello di specializzazione, entrando dunque in un nuovo mondo di nuovi clusters. 
 Il movimento è attuato su 3 assi definiti dall'utente tra tutti i parametri di descrizione della traccia.
 
 ## Funzionamento
@@ -50,7 +50,13 @@ Subito dopo, gli verrà chiesto di selezionare una specifica *canzone di partenz
 Sarà infine data l'opzione di filtrare le canzoni tramite vari parametri come ad esempio l'anno, la lingua o la città di provenienza.
 
 Se il viaggio è nuovo, gli assi, il database e i pesi, attribuiti al viaggio saranno quelli predefiniti (cambiabili nelle impostazioni).
-Prima di avviare l'interfaccia 3D, verrà mostrata una schermata di riassunto delle impostazioni del viaggio con la lista delle canzoni che saranno presenti nel radar, il filtro, gli assi scelti (con la possibilità di cambiarli da qui solo per questo viaggio), il database scelto (anch'esso cambiabile come impostazione temporanea esclusivamente per questo viaggio) e i pesi scelti per le features di clusterizzazione (cambiabili solo con pacchetti di pesi già processati). Nella stessa schermata vi sarà la possibilità di modificare il viaggio o di salvare e eventualmente condividere il viaggio.
+Prima di avviare l'interfaccia 3D, verrà mostrata una schermata di riassunto delle impostazioni del viaggio con:
+- La lista delle canzoni che saranno presenti nel radar
+- Il filtro
+- Gli assi scelti, con la possibilità di cambiarli da qui solo per questo viaggio
+- Il database scelto, anch'esso cambiabile come impostazione temporanea esclusivamente per questo viaggio
+- I pesi scelti per le features di clusterizzazione, cambiabili solo con pacchetti di pesi già processati. 
+Nella stessa schermata vi sarà la possibilità di modificare il viaggio o di salvare e eventualmente condividere il viaggio.
 
 #### Avvio di un viaggio già creato
 Al selezionamento di un viaggio già creato, verrà avviata direttamente la schermata di riassunto del suddetto viaggio.
@@ -65,8 +71,6 @@ Il motivo di ciò è che lo scopo di queste canzoni consiste esclusivamente nell
 - Dati da MusicBrainz:
 	- Filtro demografico per la città di nascita degli artisti: basato sul selezionamento di uno o più punti con un corrispettivo raggio all'interno di una cartina geografica. In futuro può essere migliorato tramite nuove modalità di selezione.
 	- Lingua della canzone.
-	
-	
 	> *Nonostante il database di MusicBrainz sia molto grande, non tutte le canzoni possiedono queste informazioni; per questo, se uno di questi filtri dovesse essere attivo, saranno filtrate fuori le canzoni che non forniscono un dato nel campo utile al filtro*.
 - Presenti nei metadati di Spotify:
 	- Intervallo di anni di uscita dell'album (non sempre accurato, dipende da che anno è segnalato da Spotify).
