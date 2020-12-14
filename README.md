@@ -1,5 +1,5 @@
 # PORTAMENTO 
-Portamento parte da una riscrittura del progetto "spotiworld" per la catalogazione di musica tramite analisi della traccia.
+Portamento parte da una riscrittura del progetto "**SpotiWorld**" per la catalogazione di musica tramite analisi della traccia.
 Il cuore del software è scritto in Python, l'interfaccia invece è scritta in C# e sfrutta l'editor Unity e il suo 3D Engine.
 
 ## Interfaccia
