@@ -41,7 +41,8 @@ def main():
     
     
     # Carico il dataset
-    data = dt.Dataset(paths, new_load, SONG_ANALYSIS_BOOL)
+    loaded = dt.Dataset(paths, new_load, SONG_ANALYSIS_BOOL)
+    data = loaded.dataset
     
     input("Caricamento avvenuto, premi invio per avviare la clusterizzazione.\n")
     

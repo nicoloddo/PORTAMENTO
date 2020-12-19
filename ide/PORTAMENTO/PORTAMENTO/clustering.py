@@ -24,14 +24,11 @@ TRACK_DEFAULT_WHITELIST = ['danceability', 'tempo', 'valence', 'energy', 'instru
 
 class Clusterer:
     
-    dataset = {}
-    
-    
     #*********************** INIT
     def __init__(self, data_in):
         
         # SPACCHETTO IL DATASET DALL'OGGETTO DATA IN ENTRATA
-        self.dataset = data_in.dataset    # dataset originale passato per referenza
+        self.dataset = data_in    # dataset originale passato per referenza
         # RICORDA DI NON EFFETTUARE OPERAZIONI DIRETTAMENTE SUL DATASET IN QUANTO MI TOCCHEREBBE RICARICARLO SE POI MI SERVE QUEL CHE HO CANCELLATO
         
         self.relevant_columns = []   # colonne non filtrate dalla blacklist o whitelist
@@ -155,7 +152,7 @@ class Clusterer:
         return clusters
     
     #******************************************************
-    def format_dataset(self):
+    def format_dataset(self):   # Funzione statica in cui decido cosa normalizzare
         
         tempo_range = {'min' : 0, 'max' : 250}
         

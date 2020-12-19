@@ -2,7 +2,7 @@
 import loading as load
 
 # IMPORT GENERICHE
-import copy
+# import copy
 
 # PER GESTIRE I DATASET
 import pandas as pd
@@ -18,8 +18,6 @@ CONTROL_EXT = ".txt"
 DATASET_EXT = ".csv"
 
 class Dataset:
-    
-    dataset = {}
     
     #*************************************** INIT
     def __init__(self, paths, new_load = True, song_analysis_bool = True):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
@@ -114,24 +112,32 @@ class Dataset:
                         dataset['sections_confidences'].append(analysis['sections_confidences'])
                         dataset['segments'].append(analysis['segments'])
                         dataset['segments_confidences'].append(analysis['segments_confidences'])
-                            
+                        
+                        
+                        # -------------- SALVATAGGIO
                         # Salvo i dataset creati
                         self.save_analysis(analysis, count_pl, count_sn, paths)
                     #-------------------------------------------------------------------- FINE DELL'IF
                     
                     # Aggiorno l'iteratore delle canzoni
                     count_sn = count_sn + 1
-                    # ...FINE FOR DELLE CANZONI
+                    # ------------------------------------...FINE FOR DELLE CANZONI
                 
-                # Salvo il numero delle canzoni della playlist
-                self.save_n_songs(count_pl, count_sn, paths)
                 total_songs = total_songs + count_sn
                 
                 # Aggiorno l'iteratore delle playlist                
                 count_pl = count_pl + 1
+                
+                
+                # ---------- SALVATAGGIO
+                # Salvo il numero delle canzoni della playlist
+                self.save_n_songs(count_pl, count_sn, paths)
+                #----------------------------------------------- FINE FOR DELLE PLAYLIST
             
             playlist_pack.close()
             
+            
+            # SALVATAGGI FINALI
             if(song_analysis_bool):
                 self.save_dataset_key(dataset, 'track_confidences', paths)  # la ho solo se ho fatto l'analisi
                 
@@ -196,10 +202,7 @@ class Dataset:
         # 'segments' è una lista di dataset: un dataset per ogni canzone, contenente tutti i rispettivi segment
         # 'uris' e una lista degli uri di tutte le canzoni nel dataset.
         
-        # Carico il dataset lineare
-        if(song_analysis_bool):
-            dataset['track_confidences'] = pd.read_csv(paths.track_confidences + ".csv")      # Caricamento del dataset track_confidences (esiste solo se ho fatto l'analisi)
-        
+        # Carico il dataset lineare        
         dataset['track'] = pd.read_csv(paths.track + ".csv")      # Caricamento del dataset track
         dataset['albums'] = pd.read_csv(paths.albums + ".csv")
         dataset['artists'] = pd.read_csv(paths.artists + ".csv")
@@ -209,14 +212,17 @@ class Dataset:
         n_playlists = int(load.read())
         load.close()
         
-        # INIZIALIZZO SEZIONI DI FRAMMENTAZIONE
-        dataset['sections'] = []  # inizializzazione
-        dataset['sections_confidences'] = []  # inizializzazione
-        dataset['segments'] = []  # inizializzazione
-        dataset['segments_confidences'] = []  # inizializzazione
-        
         
         if(song_analysis_bool):
+            
+            dataset['track_confidences'] = pd.read_csv(paths.track_confidences + ".csv")      # Caricamento del dataset track_confidences (esiste solo se ho fatto l'analisi)
+            
+            # INIZIALIZZO SEZIONI DI FRAMMENTAZIONE
+            dataset['sections'] = []  # inizializzazione
+            dataset['sections_confidences'] = []  # inizializzazione
+            dataset['segments'] = []  # inizializzazione
+            dataset['segments_confidences'] = []  # inizializzazione
+        
             # PER OGNI PLAYLIST
             for playlist_num in range(n_playlists):
                 
@@ -236,29 +242,6 @@ class Dataset:
                         
        
         return dataset
-    
-    
-    #************************************************************************************************************************************
-    #TODO: DA CANCELLARE TOTALMENTE (NON COMPARE DI GIA' DA NESSUNA PARTE)
-    def split_dataset(self, dataset):     # Divide il dataset in tre sezioni per organizzare meglio le cose
-        
-        split = { 'track':{}, 'sections':{}, 'segments':{} }
-        
-        for key in dataset:
-            if 'track' in key:
-                split['track'][key] = dataset[key]
-            elif 'sections' in key:
-                split['sections'][key] = dataset[key]
-            elif 'segments' in key:
-                split['segments'][key] = dataset[key]
-            else:
-                # Lo copio per evitare di avere referenze riguardo la stessa cosa in sezioni diversi: voglio poter modificare le cose in modo diverso per ogni sezione.
-                split['track'][key] = copy.deepcopy(dataset[key])
-                split['sections'][key] = copy.deepcopy(dataset[key])
-                split['segments'][key] = copy.deepcopy(dataset[key])
-        
-        return split
-    
     
     
     #*************************************************************************************************************************************
