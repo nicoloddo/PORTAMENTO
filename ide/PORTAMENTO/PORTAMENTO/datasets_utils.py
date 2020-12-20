@@ -63,8 +63,6 @@ class Dataset:
 
                 print(playlist['name'] + '\n')
                                 
-                # Costruisco il path in cui salvare i dati per la singola playlist
-                #paths.build_playlistpath(playlist['name'], count_pl)
 
                 for song in song_pack:
                     

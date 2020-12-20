@@ -5,15 +5,15 @@ Created on Sat Nov 28 23:19:13 2020
 @author: nicol
 """
 
-# import copy
-import os
-
 # PER GESTIRE I DATASET
 import pandas as pd
 import numpy as np
 
 # PER LA CLUSTERIZZAZIONE
 from sklearn.cluster import KMeans
+
+# PER IL SALVATAGGIO DEL MODELLO
+import pickle
 
 # PER LA VISUALIZZAZIONE
 import matplotlib.pyplot as plt
@@ -25,49 +25,53 @@ TRACK_DEFAULT_WHITELIST = ['danceability', 'tempo', 'valence', 'energy', 'instru
 class Clusterer:
     
     #*********************** INIT
-    def __init__(self, data_in):
+    def __init__(self, data_in, weights_pack):
         
         # SPACCHETTO IL DATASET DALL'OGGETTO DATA IN ENTRATA
         self.dataset = data_in    # dataset originale passato per referenza
         # RICORDA DI NON EFFETTUARE OPERAZIONI DIRETTAMENTE SUL DATASET IN QUANTO MI TOCCHEREBBE RICARICARLO SE POI MI SERVE QUEL CHE HO CANCELLATO
         
-        self.relevant_columns = []   # colonne non filtrate dalla blacklist o whitelist
+        self.audio_columns = []   # colonne non filtrate dalla blacklist o whitelist
+        self.weights = weights_pack    # salvo nel clusterer le impostazioni di weighting
         
-    def start(self, paths, n_clusters = 8):
+    def cluster_new_dataset(self, paths, n_clusters = 8):
         
         # SCELGO MODALITA' DI ESTRAPOLAZIONE DELLE COLONNE RILEVANTI
-        RELEVANT_COLUMNS_MODE = 'white'
+        AUDIO_COLUMNS_MODE = 'white'
         
         #************************************************** CLUSTERING DI 'TRACK'
         track = self.dataset['track']
         print(track.shape)
         
-        self.build_relevant_columns(paths, RELEVANT_COLUMNS_MODE)
+        self.build_audio_columns(paths, AUDIO_COLUMNS_MODE)
         
         # PREPROCESSING
         self.format_dataset()    # formatto (per ora normalizzazione)
-        filtered = track[self.relevant_columns]  # filtro le colonne
-        data_array = filtered.to_numpy()    # linearizzo perchè serve alla funzione kmeans
+        audio = track[self.audio_columns]  # filtro le colonne
+        data_array = audio.to_numpy()    # linearizzo perchè serve alla funzione kmeans
         
         
         # CLUSTERIZZAZIONE
-        kmeans = KMeans(n_clusters=n_clusters).fit(data_array)  # Clusterizzo
-        centroids = kmeans.cluster_centers_    # Estraggo cluster_centers dalla clusterizzazione
-        labels = kmeans.labels_   # Estraggo il vettore che indica in quale cluster è finita ogni canzone.
+        model = KMeans(n_clusters=n_clusters).fit(data_array)  # Clusterizzo
+        centroids = model.cluster_centers_    # Estraggo cluster_centers dalla clusterizzazione
+        labels = model.labels_   # Estraggo il vettore che indica in quale cluster è finita ogni canzone.
         
         # SALVATAGGIO
+        pickle.dump(model, paths.models + weights_name + ".sav")
         clusters = self.save_clusters(paths, n_clusters, labels, 'track')  # salvo i risultati del clustering track
         
         
         # PLOTTING
-        plt.scatter(track[self.relevant_columns[0]], track[self.relevant_columns[1]], c= kmeans.labels_.astype(float), s=50, alpha=0.5)
-        plt.scatter(centroids[:, 0], centroids[:, 1], c='red', s=50)
-        plt.show()
+        plotting = False
+        if plotting == True:
+            plt.scatter(track[self.audio_columns[0]], track[self.audio_columns[1]], c= kmeans.labels_.astype(float), s=50, alpha=0.5)
+            plt.scatter(centroids[:, 0], centroids[:, 1], c='red', s=50)
+            plt.show()
         
         return clusters
     
     #**************************************************
-    def build_relevant_columns(self, paths, mode):    # restituisce le colonne rilevanti a partire da una blacklist di colonne
+    def build_audio_columns(self, paths, mode):    # restituisce le colonne rilevanti per l'analisi audio a partire da una blacklist di colonne
         
         track_blacklist = self.get_blacklist(paths, 'track', mode)
         track_whitelist = []
@@ -77,12 +81,12 @@ class Clusterer:
         
         try:
             if mode == 'white':
-                self.relevant_columns = track_whitelist
+                self.audio_columns = track_whitelist
             elif mode == 'black':
                 # OTTENGO LE RILEVANTI DALL'INSIEME DELLE COLONNE
                 for column in self.dataset['track']:
                     if column not in track_blacklist:
-                        self.relevant_columns.append(column)
+                        self.audio_columns.append(column)
             else:
                 raise ValueError
         except ValueError:
@@ -156,8 +160,10 @@ class Clusterer:
         
         tempo_range = {'min' : 0, 'max' : 250}
         
-        if 'tempo' in self.relevant_columns:
+        if 'tempo' in self.audio_columns:
             self.normalize_column(self.dataset['track'], tempo_range['min'], tempo_range['max'], 'tempo')
+        
+        self.weight_features()
         
     #-------------------------------
     def normalize_column(self, dataframe, min_value, max_value, column):  # porto tutti gli elementi della colonna a variare tra [0, 1]
@@ -166,4 +172,12 @@ class Clusterer:
             trasla = dataframe.get_value(row, column) - min_value    # porto la scala ad avere 0 come minimo
             normalized = trasla / (max_value - min_value)
             dataframe.at[row, column] = normalized
+    
+    #-------------------------------        
+    def weight_features(self):
+        
+        self.dataset.apply(self.__weight__, axis=1) # axis = 1 serve a farlo sulle righe anzichè sulle colonne
+    
+    def __weight__(self, x):
+        x * self.weights
             

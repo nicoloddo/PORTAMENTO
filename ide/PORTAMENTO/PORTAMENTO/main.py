@@ -27,7 +27,7 @@ def main():
     n_clusters = 10     # numero di clusters che voglio creare
     
     
-    paths = path.Path(base_path, bundle_name)     # Costruisco i path base  o li collego alle mie strutture
+    paths = path.Path(base_path)     # Costruisco i path base  o li collego alle mie strutture
     
     
     print("Ricorda che se non hai mai fatto il caricamento comprensivo d'analisi, se ora volessi caricare il set con l'analisi, darebbe errori: in quel caso scegli di fare un nuovo caricamento.")
@@ -39,6 +39,8 @@ def main():
     else:
         new_load = False
     
+    # Collego i path del database
+    paths.new_database(bundle_name)
     
     # Carico il dataset
     loaded = dt.Dataset(paths, new_load, SONG_ANALYSIS_BOOL)
@@ -49,7 +51,7 @@ def main():
     # Creo il clusterer       
     clust = cl.Clusterer(data)
     # Avvio il clustering
-    clusters = clust.start(paths, n_clusters) # in ingresso prende il numero di clusters da formare
+    clusters = clust.cluster_new_dataset(paths, n_clusters) # in ingresso prende il numero di clusters da formare
     
     
     filtered_clusters = []

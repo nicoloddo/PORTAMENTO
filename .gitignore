@@ -60,4 +60,6 @@ crashlytics-build.properties
 
 # AGGIUNTO DA ME: ignoro i documenti poichè non fanno parte del codice e tutto ciò di interessante scritto lì sarà da mettere nel README
 documenti/
+# ignoro i risultati del clustering
+track_clust/
 
