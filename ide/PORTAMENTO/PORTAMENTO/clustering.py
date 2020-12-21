@@ -23,7 +23,7 @@ TRACK_TEXTUAL_COLUMNS = ['album_id', 'artists_id', 'disc_number', 'duration_ms',
 # ATTENZONE !! SE UNA FEATURE NON COMPARE TRA QUELLE SOPRA, NON SARA' MAI CONSIDERATA!!!
 
 TRACK_DEFAULT_BLACKLIST = []
-TRACK_DEFAULT_WHITELIST = ['danceability', 'tempo', 'valence', 'energy']
+TRACK_DEFAULT_WHITELIST = ['danceability', 'tempo', 'energy']
 
 class Clusterer:
     
@@ -32,7 +32,7 @@ class Clusterer:
         
         # SPACCHETTO IL DATASET DALL'OGGETTO DATA IN ENTRATA
         self.dataset = data_in    # dataset originale passato per referenza
-        # RICORDA DI NON EFFETTUARE OPERAZIONI DIRETTAMENTE SUL DATASET IN QUANTO MI TOCCHEREBBE RICARICARLO SE POI MI SERVE QUEL CHE HO CANCELLATO
+        # RICORDA DI STAR ATTENTO A EFFETTUARE OPERAZIONI DIRETTAMENTE SUL DATASET IN QUANTO MI TOCCHEREBBE RICARICARLO SE POI MI SERVE QUEL CHE HO CANCELLATO
         
         self.audio_relevant_columns = []   # colonne non filtrate dalla blacklist o whitelist, ossia le colonne audio che consideriamo rilevanti
         self.weights = weights_preset    # salvo nel clusterer le impostazioni di weighting
@@ -52,9 +52,9 @@ class Clusterer:
         # PREPROCESSING
         audio = track[self.audio_relevant_columns]  # filtro le colonne
         self.filter_weights()   # filtro le stesse colonne dai weights
-        audio = self.format_dataset(audio)    # formatto (per ora normalizzazione)
+        audio = self.format_dataset(audio)    # formatto (per ora normalizzazione dei bpm e applicazione weights)
+        self.dataset['track'].update(audio)  # aggiorno il dataset con i pesi e le normalizzazioni
         data_array = audio.to_numpy()    # linearizzo perchè serve alla funzione kmeans
-        
         
         # CLUSTERIZZAZIONE
         model = KMeans(n_clusters=n_clusters).fit(data_array)  # Clusterizzo
@@ -68,10 +68,12 @@ class Clusterer:
         
         
         # PLOTTING
-        plotting = False
+        plotting = True
         if plotting == True:
-            plt.scatter(track[self.audio_relevant_columns[0]], track[self.audio_relevant_columns[1]], c= model.labels_.astype(float), s=50, alpha=0.5)
-            plt.scatter(centroids[:, 0], centroids[:, 1], c='red', s=50)
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            ax.scatter(track[self.audio_relevant_columns[0]], track[self.audio_relevant_columns[1]], track[self.audio_relevant_columns[2]], c= model.labels_.astype(float), s=50)
+            ax.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2], c='red', marker = 'X', s=50)
             plt.show()
         
         return clusters
