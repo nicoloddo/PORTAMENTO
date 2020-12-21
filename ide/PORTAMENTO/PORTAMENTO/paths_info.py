@@ -210,7 +210,7 @@ class Path:
         crea.close()
     def txt_if_not(self, path, default_data):
         if(not os.path.isfile(path)):
-            self.txt_install(self, path, default_data)
+            self.txt_install(path, default_data)
     
     def csv_install(self, path, default_data):  # default_data qui deve essere un dataframe!
         salva = open(path, "w+")
@@ -220,7 +220,7 @@ class Path:
         salva.close()
     def csv_if_not(self, path, default_data):   
         if(not os.path.isfile(path)):
-            self.csv_install(self, path, default_data)
+            self.csv_install(path, default_data)
     
     
     def json_install(self, path, default_data):
@@ -228,7 +228,7 @@ class Path:
             json.dump(DEFAULT_SETTINGS, salva, sort_keys=True, indent=4)
     def json_if_not(self, path, default_data):
         if(not os.path.isfile(path)):
-            self.json_install(self, path, default_data)
+            self.json_install(path, default_data)
     
     #*************************************************************************************************************************************        
 

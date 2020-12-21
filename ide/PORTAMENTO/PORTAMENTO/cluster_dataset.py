@@ -57,7 +57,6 @@ def main():
     else:
         new_load = NEW_LOAD
     
-    print("Importante: assicurati di aver già installato tutto attraverso lo script installation.py prima di avviare questo script.\n")
     # Collego o creo i path del database da caricare o creare
     paths.new_database(bundle_name)
     
@@ -74,6 +73,7 @@ def main():
     clusters = clust.cluster_new_dataset(paths, n_clusters) # in ingresso prende il numero di clusters da formare
     
     
+    # QUESTA PARTE E' ESCLUSIVAMENTE DEDICATA ALLA VISUALIZZAZIONE NELL'INSPECTOR
     filtered_clusters = []
     # filtro i cluster con le informazioni interessanti di clusterizzazione per visualizzarli bene nell'inspector
     relevant_columns = ['id', 'name']
