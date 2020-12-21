@@ -103,6 +103,18 @@ class Path:
         self.weights_table = os.path.join(self.tables, r'weights_table' +  DATAFRAME_EXT)
         self.datasets_table = os.path.join(self.tables, r'datasets_table' +  DATAFRAME_EXT)
         self.axis_table = os.path.join(self.tables, r'axis_table' +  DATAFRAME_EXT)
+        
+        # CREO I FILE SE NON E' STATA AVVIATA L'INSTALLAZIONE
+        # OAUTH
+        self.txt_if_not(self.oauth, "")
+        
+        # SETTINGS
+        self.json_if_not(self.settings, DEFAULT_SETTINGS)
+ 
+        # TABLES
+        self.csv_if_not(self.weights_table, DEFAULT_WEIGHTS)
+        self.csv_if_not(self.datasets_table, DEFAULT_DATASETS)
+        self.csv_if_not(self.axis_table, DEFAULT_AXIS)
     #------------------------------------------------------------------------------------------------------------------------------
     def initialize_default_files(self, base):   # Attenzione: questa funzione sovrascrive, è da chiamare solo in caso di reinstallazione
         
@@ -111,13 +123,10 @@ class Path:
         
         # SETTINGS
         self.json_install(self.settings, DEFAULT_SETTINGS)
-        
             
         # TABLES
         self.csv_install(self.weights_table, DEFAULT_WEIGHTS)
-        
         self.csv_install(self.datasets_table, DEFAULT_DATASETS)
-        
         self.csv_install(self.axis_table, DEFAULT_AXIS)
     
     #******************************************************************************************************************************    
