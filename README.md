@@ -6,6 +6,7 @@ I database utilizzati per questo progetto sono:
 1. **[Spotify](https://developer.spotify.com/documentation/web-api/reference/)**, da cui prelevo metadati delle canzoni, ma anche l'analisi musicale delle tracce.
 2. **[MusicBrainz](https://musicbrainz.org/)**, da cui prelevo informazioni aggiuntive come la lingua della canzone o la città d'origine.
 
+
 > **Disclaimer - sono solo un sognatore:**
 >> Tutto ciò scritto qui sotto è solo per ora un'idea di implementazione non ancora realizzata nel codice. Questo è anche il mio progetto di tesi e mi rendo assolutamente conto che l'intera idea non possa essere implementata entro le scadenze della stessa.
 ### Cenni riguardanti l'interfaccia
