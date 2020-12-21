@@ -6,7 +6,7 @@ I database utilizzati per questo progetto sono:
 1. **[Spotify](https://developer.spotify.com/documentation/web-api/reference/)**, da cui prelevo metadati delle canzoni, ma anche l'analisi musicale delle tracce.
 2. **[MusicBrainz](https://musicbrainz.org/)**, da cui prelevo informazioni aggiuntive come la lingua della canzone o la città d'origine.
 
-**Disclaimer - sono solo un sognatore:
+**Disclaimer - sono solo un sognatore:**
 **Tutto ciò scritto qui sotto è solo per ora un'idea di implementazione non ancora realizzata nel codice. Questo è anche il mio progetto di tesi e mi rendo assolutamente conto che l'intera idea non possa essere implementata entro le scadenze della stessa.**
 ### Cenni riguardanti l'interfaccia
 L'interfaccia è parte costituente della filosofia del software, che punta a evidenziare l'effettiva impossibilità di ridurre la musica a un numero discreto di cluster e le sfumature che derivano da qualunque tipo di catalogazione musicale: ogni cluster è un raggruppamento completamente arbitrario, basato sulla scelta soggettiva dei pesi delle features; inoltre, al livello più basso di specializzazione, ogni cluster è effettivamente una sola canzone, a immagine del fatto che in realtà, alla base, ogni canzone definisce un suo genere unico. 
