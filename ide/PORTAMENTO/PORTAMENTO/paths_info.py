@@ -1,36 +1,81 @@
 import os
 import pandas as pd
+import json
 
-# DEFAULTS
-DEFAULT_TRACK_BLACKLIST = "duration_ms\nloudness\nkey\nmode\npopularity\ntime_signature\n" + "FINE !!ATTENZIONE!!: NON TOCCARE QUESTA RIGA, SERVE A RICONOSCERE LA FINE DELLA BLACKLIST."
-DEFAULT_TEXTUAL_BLACKLIST = "" + "FINE !!ATTENZIONE!!: NON TOCCARE QUESTA RIGA, SERVE A RICONOSCERE LA FINE DELLA BLACKLIST."
+# DEFAULTS ***************************************************************************************************************************
+DEFAULT_SETTINGS = {
+        'axis'    : 'default',
+        'dataset' : 'default',
+        'weights' : 'default'
+        }
+
+DEFAULT_AUDIO_BLACKLIST = "loudness\nkey\nmode\ntime_signature\n"
+DEFAULT_TEXTUAL_BLACKLIST = ""
+DEFAULT_TRACK_BLACKLIST = DEFAULT_AUDIO_BLACKLIST + DEFAULT_TEXTUAL_BLACKLIST + "FINE !!ATTENZIONE!!: NON TOCCARE QUESTA RIGA, SERVE A RICONOSCERE LA FINE DELLA BLACKLIST."
 DEFAULT_SECTIONS_BLACKLIST = "" + "FINE !!ATTENZIONE!!: NON TOCCARE QUESTA RIGA, SERVE A RICONOSCERE LA FINE DELLA BLACKLIST."
 DEFAULT_SEGMENTS_BLACKLIST = "loudness_end\n" + "FINE !!ATTENZIONE!!: NON TOCCARE QUESTA RIGA, SERVE A RICONOSCERE LA FINE DELLA BLACKLIST."
 
-WEIGHTS = {
-        "weights" : {
-                "acousticness"        :1,
-                "danceability"        :1,
-                "energy"              :1,
-                "instrumentalness"    :1,
-                "key"                 :1,
-                "liveness"            :1,
-                "loudness"            :1,
-                "mode"                :1,
-                "popularity"          :1,
-                "speechiness"         :1,
-                "tempo"               :1,
-                "time_signature"      :1,
-                "valence"             :1,
-                    },
-        "name" : "default",
-        "description" : "default",
+# DEFAULT TABLES
+WEIGHTS1 = {
+        # I WEIGHTS SONO IN JSON
+        'weights' : """{
+            "acousticness"        :0.5, 
+            "danceability"        :0.33,
+            "energy"              :0,
+            "instrumentalness"    :100,
+            "key"                 :1,
+            "liveness"            :1,
+            "loudness"            :1,
+            "mode"                :1,
+            "speechiness"         :1,
+            "tempo"               :1,
+            "time_signature"      :1,
+            "valence"             :1}""",
+        'name' : 'default',
+        'description' : 'Optimal weights to obtain a classic genre-like clusterization.',
+        'id' : 'default'
 }
-
+WEIGHTS2 = {
+        # I WEIGHTS SONO IN JSON
+        'weights' : """{
+            "acousticness"        :1, 
+            "danceability"        :1,
+            "energy"              :1,
+            "instrumentalness"    :1,
+            "key"                 :1,
+            "liveness"            :1,
+            "loudness"            :1,
+            "mode"                :1,
+            "speechiness"         :1,
+            "tempo"               :1,
+            "time_signature"      :1,
+            "valence"             :1}""",
+        'name' : 'all ones',
+        'description' : 'All the features considered equally.',
+        'id' : 'all_1'
+}
 DEFAULT_WEIGHTS = pd.DataFrame()
-DEFAULT_WEIGHTS = DEFAULT_WEIGHTS.append(WEIGHTS, ignore_index=True)
+DEFAULT_WEIGHTS = DEFAULT_WEIGHTS.append(WEIGHTS1, ignore_index=True)
+DEFAULT_WEIGHTS = DEFAULT_WEIGHTS.append(WEIGHTS2, ignore_index=True)
 
 
+
+DATASET1 = {
+        'name' : 'default',
+        'id'   : 'default'
+        }
+DEFAULT_DATASETS = pd.DataFrame()
+DEFAULT_DATASETS = DEFAULT_DATASETS.append(DATASET1, ignore_index=True)
+
+
+AXIS1 = {
+        'name' : 'default',
+        'id'   : 'default'
+        }
+DEFAULT_AXIS = pd.DataFrame()
+DEFAULT_AXIS = DEFAULT_AXIS.append(AXIS1, ignore_index=True)
+
+#*************************************************************************************************************************************
 
 # ESTENSIONI BASE
 CONTROL_EXT = ".txt"
@@ -41,6 +86,43 @@ class Path:
     songpack = []
     
     def __init__(self, base):    
+        
+        
+        # COLLEGO I PATH DELLE CARTELLE DI BASE E LE CREO SE NON SON STATE CREATE.
+        self.bundles_path = os.path.join(base, r'bundles')
+        self.mkdir_if_not(self.bundles_path)
+        self.datasets_path = os.path.join(base, r'datasets')
+        self.mkdir_if_not(self.datasets_path)
+        self.tables = os.path.join(base, r'tables')
+        self.mkdir_if_not(self.tables)
+        
+        # COLLEGO I PATH DEI FILE DI DEFAULT
+        self.oauth = os.path.join(base, r'oauth' + CONTROL_EXT)    # Costruisco il path del file dell'oauth token            
+            
+        self.settings = os.path.join(base, r'settings' + CONTROL_EXT)
+        self.weights_table = os.path.join(self.tables, r'weights_table' +  DATAFRAME_EXT)
+        self.datasets_table = os.path.join(self.tables, r'datasets_table' +  DATAFRAME_EXT)
+        self.axis_table = os.path.join(self.tables, r'axis_table' +  DATAFRAME_EXT)
+    #------------------------------------------------------------------------------------------------------------------------------
+    def initialize_default_files(self, base):   # Attenzione: questa funzione sovrascrive, è da chiamare solo in caso di reinstallazione
+        
+        # OAUTH
+        self.txt_install(self.oauth, "")
+        
+        # SETTINGS
+        self.json_install(self.settings, DEFAULT_SETTINGS)
+        
+            
+        # TABLES
+        self.csv_install(self.weights_table, DEFAULT_WEIGHTS)
+        
+        self.csv_install(self.datasets_table, DEFAULT_DATASETS)
+        
+        self.csv_install(self.axis_table, DEFAULT_AXIS)
+    
+    #******************************************************************************************************************************    
+    def new_database(self, bundle_name):   
+        # CREO L'ELENCO DI PATH DA CREARE PER OGNI PLAYLIST
         self.path_name = [                    
                         'sections',  #  - sezioni
                         'sections_confidences',  #  - sections_confidences
@@ -49,22 +131,6 @@ class Path:
                         # 'segments_clust', #  - cluster segment
                         'n_songs']    #  - numero di canzoni  
         
-        # CREO I PATH DI BASE  SE NON SON STATI CREATI
-        self.bundles_path = os.path.join(base, r'bundles')
-        self.mkdir_if_not(self.bundles_path)
-        self.datasets_path = os.path.join(base, r'datasets')
-        self.mkdir_if_not(self.datasets_path)
-        self.presets = os.path.join(base, r'presets')
-        self.mkdir_if_not(self.presets)
-        
-        self.oauth = os.path.join(base, r'oauth' + CONTROL_EXT)    # Costruisco il path del file dell'oauth token            
-        #CREO IL FILE DELL'OAUTH
-        if(not os.path.isfile(self.oauth)):
-            crea = open(self.oauth, "w+")
-            crea.close()
-        #------------------------------------------------------------------------------------------------------------------------------
-    
-    def new_database(self, bundle_name):    
         # CREO I PATH PER IL NUOVO DATABASE
         self.bundle = os.path.join(self.bundles_path, bundle_name)    # Il path dal quale l'user può comandare gli input del software (playlist packs e blacklists)
         self.mkdir_if_not(self.bundle)
@@ -76,16 +142,8 @@ class Path:
         self.mkdir_if_not(self.models)
         
         
-        # GLI UNICI FILE CHE CREO GIA' (E IL CUI PATH COMPRENDE L'ESTENSIONE) SON QUELLI CONTROLLABILI DALL'UTENTE NELLA CARTELLA BUNDLES
-        #------------------------------------------------------------------------------------------------------------------------------
-        self.playlistpack = os.path.join(self.bundle, bundle_name + CONTROL_EXT)    # Costruisco il path del file playlist_pack in cui bisogna inserire tutti i link alle playlist
-        #CREO IL FILE PLAYLISTPACK
-        if(not os.path.isfile(self.playlistpack)):
-           crea = open(self.playlistpack, "w+")
-           crea.close()
-        
-        # INIZIALIZZO BLACKLISTS E I PRESETS
-        self.initialize_default_files()
+        # GLI UNICI FILE CHE CREO E INIZIALIZZO GIA' (E IL CUI PATH COMPRENDE L'ESTENSIONE) SON QUELLI CONTROLLABILI DALL'UTENTE NELLA CARTELLA BUNDLES
+        self.initialize_default_dataset_files(bundle_name)        
         
         
         # CREO LA CARTELLA IN CUI RESTITUIRE I TRACK CLUSTERS
@@ -135,46 +193,51 @@ class Path:
         if(not os.path.isdir(path)):
             os.mkdir(path)
     
+    def txt_install(self, path, default_data):
+        crea = open(path, "w+")
+        crea.write(default_data)
+        crea.close()
     def txt_if_not(self, path, default_data):
         if(not os.path.isfile(path)):
-            crea = open(path, "w+")
-            crea.write(default_data)
-            crea.close()
+            self.txt_install(self, path, default_data)
     
-    def csv_if_not(self, path, default_data):   # default_data qui deve essere un dataframe!
+    def csv_install(self, path, default_data):  # default_data qui deve essere un dataframe!
+        salva = open(path, "w+")
+        export_csv = default_data.to_csv (path, index = None, header=True)    # Esporto il dataset
+        if str(export_csv) != 'None':
+            print("Errore salvando una table di default. Path: " + path)
+        salva.close()
+    def csv_if_not(self, path, default_data):   
         if(not os.path.isfile(path)):
-            salva = open(path, "w+")
-            export_csv = default_data.to_csv (path, index = None, header=True)    # Esporto il dataset
-            if str(export_csv) != 'None':
-                print("Errore salvando un preset di default. Path: " + path)
-            salva.close()
+            self.csv_install(self, path, default_data)
+    
+    
+    def json_install(self, path, default_data):
+        with open(path, 'w+') as salva:
+            json.dump(DEFAULT_SETTINGS, salva, sort_keys=True, indent=4)
+    def json_if_not(self, path, default_data):
+        if(not os.path.isfile(path)):
+            self.json_install(self, path, default_data)
     
     #*************************************************************************************************************************************        
-    def initialize_default_files(self):
+
         
+    
+    def initialize_default_dataset_files(self, bundle_name):
+        
+        #CREO IL FILE PLAYLISTPACK
+        self.playlistpack = os.path.join(self.bundle, bundle_name + CONTROL_EXT)    # Costruisco il path del file playlist_pack in cui bisogna inserire tutti i link alle playlist
+        self.txt_if_not(self.playlistpack, "")
+           
         # PATHS BLACKLISTS
         self.track_blacklist = os.path.join(self.bundle, r'track_blacklist' + CONTROL_EXT) # Costruisco il path del FILE TRACK BLACKLIST
-        self.file_if_not(self.track_blacklist, DEFAULT_TRACK_BLACKLIST)
-        
-        self.textual_blacklist = os.path.join(self.bundle, r'textual_blacklist' + CONTROL_EXT) # Costruisco il path del FILE TRACK BLACKLIST
-        self.file_if_not(self.textual_blacklist, DEFAULT_TEXTUAL_BLACKLIST)
+        self.txt_if_not(self.track_blacklist, DEFAULT_TRACK_BLACKLIST)
 
         self.sections_blacklist = os.path.join(self.bundle, r'sections_blacklist' + CONTROL_EXT) # Costruisco il path FILE SECTIONS BLACKLIST
-        self.file_if_not(self.sections_blacklist, DEFAULT_SECTIONS_BLACKLIST)
+        self.txt_if_not(self.sections_blacklist, DEFAULT_SECTIONS_BLACKLIST)
 
         self.segments_blacklist = os.path.join(self.bundle, r'segments_blacklist' + CONTROL_EXT) # Costruisco il path del FILE SEGMENTS BLACKLIST 
-        self.file_if_not(self.segments_blacklist, DEFAULT_SEGMENTS_BLACKLIST)
-   
-            
-        # PRESETS
-        self.weights_preset = os.path.join(self.presets, r'weights' +  DATAFRAME_EXT)
-        self.csv_if_not(self.weights_preset, DEFAULT_WEIGHTS)
-        
-        
-        
-        
-        
-        
+        self.txt_if_not(self.segments_blacklist, DEFAULT_SEGMENTS_BLACKLIST)
         
         
         

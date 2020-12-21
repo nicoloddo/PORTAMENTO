@@ -63,8 +63,10 @@ def request_thing(request_string, paths):
     
     response = requests.get(request_string, headers = request_headers)
     if response.status_code != CONFIRMATION_CODE:   # Spesso questo problema c'è per l'oauth token scaduto
-        print("C'è stato un problema con la richiesta: \n" + response.text + "\nProva a vedere questo link per ottenere l'OAUTH token: \nhttps://developer.spotify.com/console/get-audio-analysis-track")
+        print("C'è stato un problema con la richiesta (CODE: " + str(response.status_code) + "):\n" + response.text + "\nProva a vedere questo link per ottenere l'OAUTH token: \nhttps://developer.spotify.com/console/get-audio-analysis-track")
         auth = input("Inserisci l'OAUTH token: ") # Rinnovo l'oauth token
+        if auth == "stop" or auth == "STOP":
+            return "Fermato il loop dell'oauth"
         oauth = open(paths.oauth, "w")        
         oauth.write(auth)
         oauth.close()

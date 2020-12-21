@@ -1,0 +1,27 @@
+description,id,name,weights
+Optimal weights to obtain a classic genre-like clusterization.,default,default,"{
+            ""acousticness""        :0.5, 
+            ""danceability""        :0.33,
+            ""energy""              :0,
+            ""instrumentalness""    :100,
+            ""key""                 :1,
+            ""liveness""            :1,
+            ""loudness""            :1,
+            ""mode""                :1,
+            ""speechiness""         :1,
+            ""tempo""               :1,
+            ""time_signature""      :1,
+            ""valence""             :1}"
+All the features considered equally.,all_1,all ones,"{
+            ""acousticness""        :1, 
+            ""danceability""        :1,
+            ""energy""              :1,
+            ""instrumentalness""    :1,
+            ""key""                 :1,
+            ""liveness""            :1,
+            ""loudness""            :1,
+            ""mode""                :1,
+            ""speechiness""         :1,
+            ""tempo""               :1,
+            ""time_signature""      :1,
+            ""valence""             :1}"

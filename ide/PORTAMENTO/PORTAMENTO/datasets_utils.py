@@ -89,7 +89,6 @@ class Dataset:
                     dataset['track'][count_sn].update(song)
                     
                     # ANALISI AGGIUNTIVE E ACCURACIES:
-                    print("Ottengo informazioni d'analisi aggiuntive:\n")
                     if(song_analysis_bool == True):
                         song_id = song['id']
                         
@@ -123,13 +122,16 @@ class Dataset:
                 
                 total_songs = total_songs + count_sn
                 
-                # Aggiorno l'iteratore delle playlist                
-                count_pl = count_pl + 1
                 
                 
                 # ---------- SALVATAGGIO
                 # Salvo il numero delle canzoni della playlist
                 self.save_n_songs(count_pl, count_sn, paths)
+                
+                
+                
+                # Aggiorno l'iteratore delle playlist                
+                count_pl = count_pl + 1
                 #----------------------------------------------- FINE FOR DELLE PLAYLIST
             
             playlist_pack.close()
