@@ -3,7 +3,7 @@ import pandas as pd
 import json
 
 # DEFAULTS ***************************************************************************************************************************
-DEFAULT_SETTINGS = {
+DEFAULT_SETTINGS = {    # CI SI RIFERISCE AI PRESET ATTRAVERSO I LORO IDs.
         'axis'    : 'default',
         'dataset' : 'default',
         'weights' : 'default'
@@ -152,13 +152,15 @@ class Path:
             os.mkdir(self.track_clust)
     
     #------------------------------------------------------------------------------------------------------------------------------------
-    # DA QUI CREO IL PATH PER I FILE IN CUI SALVARE IL DATASET (COMPRESA LA FUNZIONE SEGUENTE CHE CHIAMO PROPRIO QUI SOTTO)
+        # DA QUI CREO IL PATH PER I FILE IN CUI SALVARE IL DATASET (COMPRESA LA FUNZIONE SEGUENTE CHE CHIAMO PROPRIO QUI SOTTO)
         self.track = os.path.join(self.dataset, r'track')
         self.track_confidences = os.path.join(self.dataset, r'track_confidences')
         self.albums = os.path.join(self.dataset, r'albums')
         self.artists = os.path.join(self.dataset, r'artists')
         self.n_playlists = os.path.join(self.dataset, r'n_playlists')
-        self.model = os.path.join(self.dataset, r'model')
+        
+        # FILE IN CUI SALVO IL MODELLO
+        self.model = os.path.join(self.models, r'model_')
         
         # Costruisco i path di ogni playlist
         with open(self.playlistpack, "r") as playlist_pack:

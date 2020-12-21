@@ -19,9 +19,10 @@ All'avvio del programma, vi sarà una schermata di inizio in cui scegliere se ca
 Al selezionamento di "**Impostazioni**", sarà mostrata una schermata da cui:
 -  Si potranno cambiare gli **assi** predefiniti per il viaggio scegliendo tra una lista di pacchetti di assi, oppure si potrà creare un nuovo pacchetto da eventualmente impostare come predefinito.
 	> **Nota bene:** gli assi scelti non cambiano in alcun modo i parametri scelti per la clusterizzazione. Per cambiare questi ultimi bisogna cambiare il pacchetto dei pesi.
-- Si potranno cambiare le impostazioni di clusterizzazione del database, ossia il **pacchetto dei pesi** (set dei pesi per ogni feature della clusterizzazione) e eventualmente lo **script di clusterizzazione**. 
-- Vi sarà inoltre la possibilità di cambiare il **database** su cui si basa l'interfaccia.
-Per fare ciò serve fornire un nuovo database da clusterizzare attraverso l'inserimento di una lista di link a canzoni o playlist di Spotify. Alla creazione bisognerà selezionare il pacchetto di pesi da utilizzare e avviare la clusterizzazione. Finchè il nuovo database non sarà stato clusterizzato, non potrà essere utilizzato. I viaggi salvati che utilizzano questo database si riferiranno ad esso con il suo nome, per cui è importante scegliere un nome identificatorio e non sarà inoltre possibile avere più di un database con lo stesso nome. La condivisione dei database avverrà attraverso la condivisione del modello già clusterizzato: se si volesse condividere il database non clusterizzato basterebbe passarsi il file di testo con i link e il pacchetto di pesi, dunque trovo inutile pensarlo in altro modo.
+- Si potranno cambiare le impostazioni di clusterizzazione del dataset, ossia il **pacchetto dei pesi** (set dei pesi per ogni feature della clusterizzazione) e eventualmente lo **script di clusterizzazione**. 
+- Vi sarà inoltre la possibilità di cambiare il **dataset** su cui si basa l'interfaccia.
+Tutte le impostazioni sopra citate saranno attuate tramite il salvataggio dell'ID del pacchetto di assi, pacchetto di pesi o dataset; l'attributo ID sarà definito durante la creazione di un qualunque preset di quel tipo.
+Per fare ciò serve fornire un nuovo dataset da clusterizzare attraverso l'inserimento di una lista di link a canzoni o playlist di Spotify. Alla creazione bisognerà selezionare il pacchetto di pesi da utilizzare e avviare la clusterizzazione. Finchè il nuovo dataset non sarà stato clusterizzato, non potrà essere utilizzato. I viaggi salvati che utilizzano questo dataset si riferiranno ad esso con il suo ID. La condivisione dei dataset avverrà attraverso la condivisione del modello già clusterizzato: se si volesse condividere il dataset non clusterizzato basterebbe passarsi il file di testo con i link e il pacchetto di pesi, dunque trovo inutile pensarlo in altro modo.
 
 In particolare, per i **pacchetti dei pesi**, sarà possibile scegliere tra alcuni set già definiti, che avranno anche una loro precisa descrizione semantica riguardante che obbiettivo di raggruppamento ottiene. Anche in questo caso sarà possibile crearne di nuovi, salvarli, importarli o condividerli.
 
@@ -38,7 +39,7 @@ Ogni viaggio salvato sarà definito dai seguenti campi:
 - Di impostazione:
 	- Set di assi di movimento.
 	- Set di pesi delle features.
-	- Codice database da utilizzare.
+	- Codice dataset da utilizzare.
 	- Filtri inseriti.
 Saranno dunque semplici oggetti importabili e condivisibili tra utenti
 
@@ -50,12 +51,12 @@ Tutte le canzoni della lista saranno indicate nell'interfaccia all'interno di un
 
 Sarà infine data l'opzione di filtrare le canzoni tramite vari parametri come ad esempio l'anno, la lingua o la città di provenienza.
 
-Se il viaggio è nuovo, gli assi, il database e i pesi, attribuiti al viaggio saranno quelli predefiniti (cambiabili nelle impostazioni).
+Se il viaggio è nuovo, gli assi, il dataset e i pesi, attribuiti al viaggio saranno quelli predefiniti (cambiabili nelle impostazioni).
 Prima di avviare l'interfaccia 3D, verrà mostrata una schermata di riassunto delle impostazioni del viaggio con:
 - La lista delle canzoni che saranno presenti nella mappa.
 - Il filtro.
 - Gli assi scelti, con la possibilità di cambiarli da qui solo per questo viaggio.
-- Il database scelto, anch'esso cambiabile come impostazione temporanea esclusivamente per questo viaggio.
+- Il dataset scelto, anch'esso cambiabile come impostazione temporanea esclusivamente per questo viaggio.
 - I pesi scelti per le features di clusterizzazione, cambiabili solo con pacchetti di pesi già processati. 
 Nella stessa schermata vi sarà la possibilità di modificare il viaggio o di salvare e eventualmente condividere il viaggio.
 
@@ -78,4 +79,4 @@ Il motivo di ciò è che lo scopo di queste canzoni consiste esclusivamente nell
 	- Artista.
 - Altri tipi di filtri:
 	- Lista di link a canzoni o playlist di Spotify: l'uso principale è da whitelist, ma si può usare anche in modalità blacklist. 
-	Utilizzandolo come whitelist permetterebbe ad esempio di organizzare una grande playlist multigenere mantenendo la clusterizzazione del database generale originario (senza dover clusterizzare altri database).
+	Utilizzandolo come whitelist permetterebbe ad esempio di organizzare una grande playlist multigenere mantenendo la clusterizzazione del dataset generale originario (senza dover clusterizzare altri dataset).

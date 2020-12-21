@@ -62,7 +62,8 @@ class Clusterer:
         labels = model.labels_   # Estraggo il vettore che indica in quale cluster è finita ogni canzone.
         
         # SALVATAGGIO
-        pickle.dump(model, paths.models + self.weights_pack["id"] + ".sav")
+        with open(paths.model + self.weights['id'] + ".sav", "wb+") as salva:
+            pickle.dump(model, salva)
         clusters = self.save_clusters(paths, n_clusters, labels, 'track')  # salvo i risultati del clustering track
         
         

@@ -28,9 +28,9 @@ class Tab:    # Le table sono dei dataframe in cui vi sono elencati i vari prese
         pass
 
 
-    def get(self, preset_name):
-        to_return = self.table.loc[preset_name].to_dict()
-        
+    def get(self, preset_id):
+        to_return = self.table.loc[preset_id].to_dict()
+        to_return['id'] = preset_id
         if self.table_type == "weights":
             to_return = format_weight_preset(to_return)
         

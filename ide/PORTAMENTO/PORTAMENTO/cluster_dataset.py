@@ -25,7 +25,7 @@ def main():
     segm_min_confidence = 0.1    # minima accuratezza del risultato delle analisi di spotify per considerare il suono.
     '''    
     
-    base_path = r'D:\PROJECTS\PORTAMENTO'
+    base_path = r'D:\PROJECTS\PORTAMENTO\users\nic'
     bundle_name = "prova_dataset"
     
     SONG_ANALYSIS_BOOL = False    # BOOL PER DECIDERE SE FARE L'ANALISI APPROFONDITA O NO
@@ -78,7 +78,7 @@ def main():
     filtered_clusters = []
     # filtro i cluster con le informazioni interessanti di clusterizzazione per visualizzarli bene nell'inspector
     relevant_columns = ['id', 'name']
-    relevant_columns.extend(clust.relevant_columns)
+    relevant_columns.extend(clust.audio_relevant_columns)
     for cluster in clusters:
         filtered_clusters.append(cluster[relevant_columns])
         
