@@ -17,7 +17,7 @@ def get_playlist(playlist_id, paths):   # Gestisce la richiesta della playlist
 #-------------
 def get_features(songpack, paths, count = 0):   # Gestisce il limite di 100 id per richiesta e effettua la richiesta di features a gruppi
     
-    # TODO: IN QUESTO MOMENTO NON HA SENSO CREDO, RIPETE I PRIMI 100 ID PER SEMPRE
+    # TODO: IN QUESTO MOMENTO NON HA SENSO CREDO, RIPETE I PRIMI 100 ID PER SEMPRE, IN OGNI CASO PER ORA IL SONGPACK MASSIMO PASSABILE E' DA 100 FINCHE' NON CORREGGO ANCHE request_playlist
 
     ids = "?ids="
     
@@ -66,7 +66,7 @@ def request_thing(request_string, paths):
         print("C'è stato un problema con la richiesta (CODE: " + str(response.status_code) + "):\n" + response.text + "\nProva a vedere questo link per ottenere l'OAUTH token: \nhttps://developer.spotify.com/console/get-audio-analysis-track")
         auth = input("Inserisci l'OAUTH token: ") # Rinnovo l'oauth token
         if auth == "stop" or auth == "STOP":
-            return "Fermato il loop dell'oauth"
+            raise ValueError("Oauth aveva il valore di stop del loop")
         oauth = open(paths.oauth, "w")        
         oauth.write(auth)
         oauth.close()
@@ -84,7 +84,7 @@ def request_features(ids, paths):
 
 #-------------
 def request_playlist(playlist_id, paths):
-    
+    #TODO: PER ORA PUO' OTTENERE SOLO LE PRIME 100 CANZONI DELLA PLAYLIST. CONSIDERA PASSARE ALLA RICHIESTA DI SOLO GLI ITEMS
     url_request = get_url_request('playlists', playlist_id)
     response = request_thing(url_request, paths)
     playlist = response.json()

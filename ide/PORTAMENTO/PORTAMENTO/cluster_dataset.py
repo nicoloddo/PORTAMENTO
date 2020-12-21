@@ -1,7 +1,7 @@
 import json
 
 # IMPORTO I PATHS
-import paths_info as install
+import paths_info
 
 # IMPORTO DATASET UTILITIES
 import datasets_utils as dt
@@ -34,8 +34,7 @@ def main():
     
     n_clusters = 10     # numero di clusters che voglio creare 
     
-    paths = install.Path(base_path)    # COLLEGO I PATH ALLE MIE STRUTTURE
-    paths.initialize_default_files(base_path)    # INIZIALIZZO I TABLES
+    paths = paths_info.Path(base_path)    # COLLEGO I PATH ALLE MIE STRUTTURE
     
     # IMPORTO LE SETTINGS
     with open(paths.settings, 'r') as settings:

@@ -97,7 +97,7 @@ class Path:
         self.mkdir_if_not(self.tables)
         
         # COLLEGO I PATH DEI FILE DI DEFAULT
-        self.oauth = os.path.join(base, r'oauth' + CONTROL_EXT)    # Costruisco il path del file dell'oauth token            
+        self.oauth = os.path.join(base, r'oauth' + CONTROL_EXT)    # Costruisco il path del file dell'oauth token         
             
         self.settings = os.path.join(base, r'settings' + CONTROL_EXT)
         self.weights_table = os.path.join(self.tables, r'weights_table' +  DATAFRAME_EXT)
