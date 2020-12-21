@@ -23,7 +23,7 @@ TRACK_TEXTUAL_COLUMNS = ['album_id', 'artists_id', 'disc_number', 'duration_ms',
 # ATTENZONE !! SE UNA FEATURE NON COMPARE TRA QUELLE SOPRA, NON SARA' MAI CONSIDERATA!!!
 
 TRACK_DEFAULT_BLACKLIST = []
-TRACK_DEFAULT_WHITELIST = ['danceability', 'tempo', 'valence', 'energy', 'instrumentalness']
+TRACK_DEFAULT_WHITELIST = ['danceability', 'tempo', 'valence', 'energy']
 
 class Clusterer:
     
@@ -40,7 +40,7 @@ class Clusterer:
     def cluster_new_dataset(self, paths, n_clusters = 8):
         
         # SCELGO MODALITA' DI ESTRAPOLAZIONE DELLE COLONNE RILEVANTI
-        AUDIO_COLUMNS_MODE = 'black'
+        AUDIO_COLUMNS_MODE = 'white'
         
         #************************************************** CLUSTERING DI 'TRACK'
         track = self.dataset['track']

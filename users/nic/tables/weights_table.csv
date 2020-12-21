@@ -1,9 +1,9 @@
 description,id,name,weights
 Optimal weights to obtain a classic genre-like clusterization.,default,default,"{
-            ""acousticness""        :0.5, 
-            ""danceability""        :0.33,
-            ""energy""              :0,
-            ""instrumentalness""    :100,
+            ""acousticness""        :1, 
+            ""danceability""        :1,
+            ""energy""              :1,
+            ""instrumentalness""    :1,
             ""key""                 :1,
             ""liveness""            :1,
             ""loudness""            :1,

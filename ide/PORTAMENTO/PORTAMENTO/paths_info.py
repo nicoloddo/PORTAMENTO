@@ -19,10 +19,10 @@ DEFAULT_SEGMENTS_BLACKLIST = "loudness_end\n" + "FINE !!ATTENZIONE!!: NON TOCCAR
 WEIGHTS1 = {
         # I WEIGHTS SONO IN JSON
         'weights' : """{
-            "acousticness"        :0.5, 
-            "danceability"        :0.33,
-            "energy"              :0,
-            "instrumentalness"    :100,
+            "acousticness"        :1, 
+            "danceability"        :1,
+            "energy"              :1,
+            "instrumentalness"    :1,
             "key"                 :1,
             "liveness"            :1,
             "loudness"            :1,
