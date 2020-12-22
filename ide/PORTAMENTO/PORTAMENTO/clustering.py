@@ -53,7 +53,7 @@ class Clusterer:
         audio = track[self.audio_relevant_columns]  # filtro le colonne
         self.filter_weights()   # filtro le stesse colonne dai weights
         audio = self.format_dataset(audio)    # formatto (per ora normalizzazione dei bpm e applicazione weights)
-        self.dataset['track'].update(audio)  # aggiorno il dataset con i pesi e le normalizzazioni
+        self.dataset['track'].update(audio)  # aggiorno il dataset dopo i pesi e le normalizzazioni
         data_array = audio.to_numpy()    # linearizzo perchè serve alla funzione kmeans
         
         # CLUSTERIZZAZIONE
