@@ -68,7 +68,7 @@ class Clusterer:
         
         
         # PLOTTING
-        plotting = False
+        plotting = True
         if plotting == True:
             fig = plt.figure()
             ax = fig.add_subplot(111, projection='3d')
@@ -192,7 +192,7 @@ class Clusterer:
     def normalize_column(self, dataframe, min_value, max_value, column):  # porto tutti gli elementi della colonna a variare tra [0, 1]
         
         for row in range(len(dataframe.index)):  #len con quell'argomento restituisce il numero di righe
-            trasla = dataframe.get_value(row, column) - min_value    # porto la scala ad avere 0 come minimo
+            trasla = dataframe.at[row, column] - min_value    # porto la scala ad avere 0 come minimo
             normalized = trasla / (max_value - min_value)
             dataframe.at[row, column] = normalized
     
