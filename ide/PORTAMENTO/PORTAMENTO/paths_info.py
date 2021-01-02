@@ -19,18 +19,18 @@ DEFAULT_SEGMENTS_BLACKLIST = "loudness_end\n" + "FINE !!ATTENZIONE!!: NON TOCCAR
 WEIGHTS1 = {
         # I WEIGHTS SONO IN JSON
         'weights' : """{
-            "acousticness"        :1, 
-            "danceability"        :1,
-            "energy"              :1,
-            "instrumentalness"    :1,
-            "key"                 :1,
-            "liveness"            :1,
+            "acousticness"        :0.75, 
+            "danceability"        :0.9,
+            "energy"              :0.9,
+            "instrumentalness"    :0.50,
+            "key"                 :0.35,
+            "liveness"            :0.2,
             "loudness"            :1,
             "mode"                :1,
-            "speechiness"         :1,
-            "tempo"               :1,
+            "speechiness"         :0.9,
+            "tempo"               :0.9,
             "time_signature"      :1,
-            "valence"             :1}""",
+            "valence"             :0.85}""",
         'name' : 'default',
         'description' : 'Optimal weights to obtain a classic genre-like clusterization.',
         'id' : 'default'

@@ -32,7 +32,7 @@ def main():
     CMD_LINE = True    # BOOL PER SAPERE SE LO STO AVVIANDO DA COMMAND_LINE O NO, SARA' PROBABILMENTE NEI PARAMETRI DI AVVIAMENTO DELLO SCRIPT
     NEW_LOAD = False
     
-    n_clusters = 15     # numero di clusters che voglio creare 
+    n_clusters = 30     # numero di clusters che voglio creare 
     
     paths = paths_info.Path(base_path)    # COLLEGO I PATH ALLE MIE STRUTTURE
     

@@ -68,7 +68,7 @@ class Clusterer:
         
         
         # PLOTTING
-        plotting = True
+        plotting = False
         if plotting == True:
             fig = plt.figure()
             ax = fig.add_subplot(111, projection='3d')
