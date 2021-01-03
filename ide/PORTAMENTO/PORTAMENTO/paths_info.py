@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import json
+import glob
 
 # DEFAULTS ***************************************************************************************************************************
 DEFAULT_SETTINGS = {    # CI SI RIFERISCE AI PRESET ATTRAVERSO I LORO IDs.
@@ -159,6 +160,8 @@ class Path:
         self.track_clust = os.path.join(self.bundle, r'track_clust')
         if(not os.path.isdir(self.track_clust)):
             os.mkdir(self.track_clust)
+        else:
+            self.delete_saved_clusters(self.track_clust)
     
     #------------------------------------------------------------------------------------------------------------------------------------
         # DA QUI CREO IL PATH PER I FILE IN CUI SALVARE IL DATASET (COMPRESA LA FUNZIONE SEGUENTE CHE CHIAMO PROPRIO QUI SOTTO)
@@ -231,9 +234,6 @@ class Path:
             self.json_install(path, default_data)
     
     #*************************************************************************************************************************************        
-
-        
-    
     def initialize_default_dataset_files(self, bundle_name):
         
         #CREO IL FILE PLAYLISTPACK
@@ -251,5 +251,10 @@ class Path:
         self.txt_if_not(self.segments_blacklist, DEFAULT_SEGMENTS_BLACKLIST)
         
         
+    #*************************************************************************************************************************************
+    def delete_saved_clusters(self, cluster_path):
         
+        files = glob.glob(cluster_path + '\*')
+        for f in files:
+            os.remove(f)
         
