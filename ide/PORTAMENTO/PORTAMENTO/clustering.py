@@ -11,6 +11,7 @@ import numpy as np
 
 # PER LA CLUSTERIZZAZIONE
 from sklearn.cluster import KMeans
+from sklearn.cluster import Birch
 
 # PER IL SALVATAGGIO DEL MODELLO
 import pickle
@@ -37,7 +38,7 @@ class Clusterer:
         self.audio_relevant_columns = []   # colonne non filtrate dalla blacklist o whitelist, ossia le colonne audio che consideriamo rilevanti
         self.weights = weights_preset    # salvo nel clusterer le impostazioni di weighting
         
-    def cluster_new_dataset(self, paths, n_clusters = 8):
+    def cluster_new_dataset(self, paths, n_clusters_kmeans = 30, threshold = 0.5, branch_factor = 50, n_clusters_birch = None):
         
         # SCELGO MODALITA' DI ESTRAPOLAZIONE DELLE COLONNE RILEVANTI
         AUDIO_COLUMNS_MODE = 'white'
@@ -57,8 +58,19 @@ class Clusterer:
         data_array = audio.to_numpy()    # linearizzo perchè serve alla funzione kmeans
         
         # CLUSTERIZZAZIONE
-        model = KMeans(n_clusters=n_clusters).fit(data_array)  # Clusterizzo
-        centroids = model.cluster_centers_    # Estraggo cluster_centers dalla clusterizzazione
+        algorithm = 'kmeans'
+        if algorithm == 'kmeans':
+            model = KMeans(n_clusters = n_clusters_kmeans)
+            model.fit(data_array)  # Clusterizzo
+            centroids = model.cluster_centers_    # Estraggo cluster_centers dalla clusterizzazione
+            n_clusters = n_clusters_kmeans
+        elif algorithm == 'birch':
+            model = Birch(threshold = threshold, branching_factor = branch_factor, n_clusters = n_clusters_birch)
+            model.fit(data_array)  # Clusterizzo
+            centroids = model.subcluster_centers_    # Estraggo i centroidi
+            n_clusters = centroids.shape[1]
+        
+
         labels = model.labels_   # Estraggo il vettore che indica in quale cluster è finita ogni canzone.
         
         # SALVATAGGIO

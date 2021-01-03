@@ -32,7 +32,13 @@ def main():
     CMD_LINE = True    # BOOL PER SAPERE SE LO STO AVVIANDO DA COMMAND_LINE O NO, SARA' PROBABILMENTE NEI PARAMETRI DI AVVIAMENTO DELLO SCRIPT
     NEW_LOAD = False
     
-    n_clusters = 30     # numero di clusters che voglio creare 
+    # PARAMETRI:
+    # parametri Kmeans:
+    n_clusters_kmeans = 30    
+    # parametri Birch
+    n_clusters_birch = None
+    threshold = 0.5
+    branch_fact = 50
     
     paths = paths_info.Path(base_path)    # COLLEGO I PATH ALLE MIE STRUTTURE
     
@@ -70,7 +76,11 @@ def main():
     # Creo il clusterer       
     clust = cl.Clusterer(data, weights)
     # Avvio il clustering
-    clusters = clust.cluster_new_dataset(paths, n_clusters) # in ingresso prende il numero di clusters da formare
+    params = False    # se usare i parametri inseriti dall'utente o i default
+    if params == True:
+        clusters = clust.cluster_new_dataset(paths, n_clusters_kmeans, n_clusters_birch, threshold, branch_fact) # in ingresso prende i parametri dell'algoritmo utilizzato
+    else:
+        clusters = clust.cluster_new_dataset(paths) # parametri di default
     
     
     # QUESTA PARTE E' ESCLUSIVAMENTE DEDICATA ALLA VISUALIZZAZIONE NELL'INSPECTOR
