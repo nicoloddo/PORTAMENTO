@@ -20,45 +20,48 @@ import pickle
 import matplotlib.pyplot as plt
 
 TRACK_AUDIO_COLUMNS = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'key', 'liveness', 'loudness', 'mode', 'speechiness', 'tempo', 'time_signature', 'valence'] # AUDIO FEATURES
-TRACK_TEXTUAL_COLUMNS = ['album_id', 'artists_id', 'disc_number', 'duration_ms', 'id', 'name', 'playlist', 'popularity', 'track_number']  # QUESTE SONO LE TEXTUAL FEATURES, DA SEPARARE DA QUELLE AUDIO
+TRACK_TEXTUAL_COLUMNS = ['album_id', 'artists_id', 'disc_number', 'duration_ms', 'id', 'name', 'playlist', 'popularity', 'preview_url', 'track_number', 'uri']  # QUESTE SONO LE TEXTUAL FEATURES, DA SEPARARE DA QUELLE AUDIO
 # ATTENZONE !! SE UNA FEATURE NON COMPARE TRA QUELLE SOPRA, NON SARA' MAI CONSIDERATA!!!
 
 TRACK_DEFAULT_BLACKLIST = []
 TRACK_DEFAULT_WHITELIST = ['danceability', 'tempo', 'energy']
 
+# MODALITA' DI ESTRAPOLAZIONE DELLE COLONNE RILEVANTI
+DEFAULT_AUDIO_COLUMNS_MODE = 'black'
+        
 class Clusterer:
     
     #*********************** INIT
-    def __init__(self, data_in, weights_preset):
+    def __init__(self, data_in = None, weights_preset = 'default'):
         
         # SPACCHETTO IL DATASET DALL'OGGETTO DATA IN ENTRATA
-        self.dataset = data_in    # dataset originale passato per referenza
+        if type(data_in) is dict:
+            self.dataset = data_in    # dataset originale passato per referenza
+        else:
+            self.dataset = {'track':data_in, 'artists':{}, 'albums':{}}     # Se il dataset in entrata è solo il dataframe delle features
         # RICORDA DI STAR ATTENTO A EFFETTUARE OPERAZIONI DIRETTAMENTE SUL DATASET IN QUANTO MI TOCCHEREBBE RICARICARLO SE POI MI SERVE QUEL CHE HO CANCELLATO
         
         self.audio_relevant_columns = []   # colonne non filtrate dalla blacklist o whitelist, ossia le colonne audio che consideriamo rilevanti
         self.weights = weights_preset    # salvo nel clusterer le impostazioni di weighting
         
-    def cluster_new_dataset(self, paths, n_clusters_kmeans = 30, threshold = 0.5, branch_factor = 50, n_clusters_birch = None):
         
-        # SCELGO MODALITA' DI ESTRAPOLAZIONE DELLE COLONNE RILEVANTI
-        AUDIO_COLUMNS_MODE = 'white'
+    def cluster_new_dataset(self, paths, n_clusters_kmeans = 30, threshold = 0.2, branch_factor = 5, n_clusters_birch = None, algorithm = 'birch'):
         
         #************************************************** CLUSTERING DI 'TRACK'
         track = self.dataset['track']
         print(track.shape)
         
         audio = track[TRACK_AUDIO_COLUMNS]
-        self.audio_relevant_columns = self.get_relevant_columns(paths, AUDIO_COLUMNS_MODE, 'audio')
+        self.audio_relevant_columns = self.get_relevant_columns(paths, 'audio')
         
         # PREPROCESSING
-        audio = track[self.audio_relevant_columns]  # filtro le colonne
+        audio = audio[self.audio_relevant_columns]  # filtro le colonne
         self.filter_weights()   # filtro le stesse colonne dai weights
         audio = self.format_dataset(audio)    # formatto (per ora normalizzazione dei bpm e applicazione weights)
         self.dataset['track'].update(audio)  # aggiorno il dataset dopo i pesi e le normalizzazioni
-        data_array = audio.to_numpy()    # linearizzo perchè serve alla funzione kmeans
+        data_array = audio.to_numpy()    # linearizzo perchè serve alla funzione di clusterizzazione
         
         # CLUSTERIZZAZIONE
-        algorithm = 'kmeans'
         if algorithm == 'kmeans':
             model = KMeans(n_clusters = n_clusters_kmeans)
             model.fit(data_array)  # Clusterizzo
@@ -68,7 +71,7 @@ class Clusterer:
             model = Birch(threshold = threshold, branching_factor = branch_factor, n_clusters = n_clusters_birch)
             model.fit(data_array)  # Clusterizzo
             centroids = model.subcluster_centers_    # Estraggo i centroidi
-            n_clusters = centroids.shape[1]
+            n_clusters = centroids.shape[0]
         
 
         labels = model.labels_   # Estraggo il vettore che indica in quale cluster è finita ogni canzone.
@@ -91,7 +94,7 @@ class Clusterer:
         return clusters
     
     #**************************************************        
-    def get_relevant_columns(self, paths, mode, scope):    # restituisce le colonne rilevanti tra quelle testuali o audio.
+    def get_relevant_columns(self, paths, scope, mode = DEFAULT_AUDIO_COLUMNS_MODE):    # restituisce le colonne rilevanti tra quelle testuali o audio.
         
         track_blacklist = self.get_blacklist(paths, 'track', mode)
         track_whitelist = []
@@ -214,7 +217,9 @@ class Clusterer:
         weighted = dataset.apply(self.__weight__, axis=1) # axis = 1 serve a farlo sulle righe anzichè sulle colonne
         return weighted
     
-    def __weight__(self, x):
+    def __weight__(self, x):    
+        # La funzione che pesa i parametri è una semplice moltiplicazione. Si basa sul fatto che se io moltiplico per un numero basso una delle coordinate,
+        # i punti saranno più vicini rispetto a quella coordinata e dunque verrà considerata meno influente rispetto alla suddivisione.
         weights_ = list(self.weights['weights'].values())
         return x * weights_
     
@@ -222,3 +227,24 @@ class Clusterer:
         for key in list(self.weights['weights'].keys()):    # è scritto così perchè non posso iterare su un dizionario mentre gli cambio la dimensione
             if key not in self.audio_relevant_columns:
                 del self.weights['weights'][key]
+                
+    #******************************************************************************************************************************************************
+    def predict(self, paths, model, algorithm = 'birch'):
+        
+        track = self.dataset['track']
+        
+        audio = track[TRACK_AUDIO_COLUMNS]
+        self.audio_relevant_columns = self.get_relevant_columns(paths,'audio')
+        
+        # PREPROCESSING
+        audio = audio[self.audio_relevant_columns]  # filtro le colonne
+        self.filter_weights()   # filtro le stesse colonne dai weights
+        audio = self.format_dataset(audio)    # formatto (per ora normalizzazione dei bpm e applicazione weights)
+        
+        labels = model.predict(audio)
+        
+        return labels
+    
+    
+    
+    

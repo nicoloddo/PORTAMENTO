@@ -3,14 +3,14 @@ import json
 # IMPORTO I PATHS
 import paths_info
 
+# IMPORTO I TABLES
+import tables as tb
+
 # IMPORTO DATASET UTILITIES
 import datasets_utils as dt
 
 # IMPORTO LE UTILITIES DI CLUSTERING
 import clustering as cl
-
-# IMPORTO I TABLES
-import tables as tb
 
 #********************************* MAIN ******************************************************
 def main():
@@ -26,7 +26,7 @@ def main():
     '''    
     
     base_path = r'D:\PROJECTS\PORTAMENTO\users\nic'
-    bundle_name = "prova_dataset"
+    bundle_name = "sounds_of_everything"
     
     SONG_ANALYSIS_BOOL = False    # BOOL PER DECIDERE SE FARE L'ANALISI APPROFONDITA O NO
     CMD_LINE = True    # BOOL PER SAPERE SE LO STO AVVIANDO DA COMMAND_LINE O NO, SARA' PROBABILMENTE NEI PARAMETRI DI AVVIAMENTO DELLO SCRIPT
@@ -57,14 +57,17 @@ def main():
 
         if new_load == '1':
             new_load = True
-            input("Inserisci gli uri delle playlist nel file creato in bundles/" + bundle_name + ", poi clicca invio. \n")
         else:
             new_load = False
     else:
         new_load = NEW_LOAD
     
     # Collego o creo i path del database da caricare o creare
-    paths.new_database(bundle_name)
+    paths.link_database(bundle_name)
+    paths.delete_saved_clusters(paths.track_clust)
+    
+    if new_load:
+        input("Inserisci gli uri delle playlist nel file creato in bundles/" + bundle_name + ", poi clicca invio. \n")
     
     # Carico il dataset
     loaded = dt.Dataset(paths, new_load, SONG_ANALYSIS_BOOL)

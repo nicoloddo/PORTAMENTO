@@ -20,23 +20,42 @@ DEFAULT_SEGMENTS_BLACKLIST = "loudness_end\n" + "FINE !!ATTENZIONE!!: NON TOCCAR
 WEIGHTS1 = {
         # I WEIGHTS SONO IN JSON
         'weights' : """{
-            "acousticness"        :0.75, 
-            "danceability"        :0.9,
-            "energy"              :0.9,
+            "acousticness"        :0.7, 
+            "danceability"        :0.7,
+            "energy"              :1,
             "instrumentalness"    :0.50,
             "key"                 :0.35,
             "liveness"            :0.2,
             "loudness"            :1,
             "mode"                :1,
-            "speechiness"         :0.9,
-            "tempo"               :0.9,
+            "speechiness"         :1,
+            "tempo"               :1,
             "time_signature"      :1,
-            "valence"             :0.85}""",
+            "valence"             :1}""",
         'name' : 'default',
         'description' : 'Optimal weights to obtain a classic genre-like clusterization.',
         'id' : 'default'
 }
 WEIGHTS2 = {
+        # I WEIGHTS SONO IN JSON
+        'weights' : """{
+            "acousticness"        :0.7, 
+            "danceability"        :0.7,
+            "energy"              :0.6,
+            "instrumentalness"    :0.50,
+            "key"                 :0.35,
+            "liveness"            :0.2,
+            "loudness"            :1,
+            "mode"                :1,
+            "speechiness"         :1,
+            "tempo"               :1,
+            "time_signature"      :1,
+            "valence"             :1}""",
+        'name' : 'maybe_default',
+        'description' : 'Optimal weights to obtain a classic genre-like clusterization.',
+        'id' : 'good'
+}
+WEIGHTS3 = {
         # I WEIGHTS SONO IN JSON
         'weights' : """{
             "acousticness"        :1, 
@@ -131,7 +150,7 @@ class Path:
         self.csv_install(self.axis_table, DEFAULT_AXIS)
     
     #******************************************************************************************************************************    
-    def new_database(self, bundle_name):   
+    def link_database(self, bundle_name):   
         # CREO L'ELENCO DI PATH DA CREARE PER OGNI PLAYLIST
         self.path_name = [                    
                         'sections',  #  - sezioni
@@ -160,8 +179,6 @@ class Path:
         self.track_clust = os.path.join(self.bundle, r'track_clust')
         if(not os.path.isdir(self.track_clust)):
             os.mkdir(self.track_clust)
-        else:
-            self.delete_saved_clusters(self.track_clust)
     
     #------------------------------------------------------------------------------------------------------------------------------------
         # DA QUI CREO IL PATH PER I FILE IN CUI SALVARE IL DATASET (COMPRESA LA FUNZIONE SEGUENTE CHE CHIAMO PROPRIO QUI SOTTO)

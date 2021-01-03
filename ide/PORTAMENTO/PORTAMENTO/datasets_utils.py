@@ -20,7 +20,7 @@ DATASET_EXT = ".csv"
 class Dataset:
     
     #*************************************** INIT
-    def __init__(self, paths, new_load = True, song_analysis_bool = True):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
+    def __init__(self, paths, new_load = True, song_analysis_bool = False):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
         
         if(new_load):   # SE NON E' MAI STATO CREATO, LO CREIAMO DA ZERO E LO SALVIAMO
             self.get_and_save_dataset(paths, song_analysis_bool) # (salvare non è opzionale e viene fatto durante la creazione)
@@ -29,7 +29,7 @@ class Dataset:
         self.dataset = self.load_dataset(paths, song_analysis_bool)
 
     #---------------------------
-    def get_and_save_dataset(self, paths, song_analysis_bool = True):  # Crea il dataset, e lo salva, creando i path di salvataggio
+    def get_and_save_dataset(self, paths, song_analysis_bool = False):  # Crea il dataset, e lo salva, creando i path di salvataggio
         
         dataset = {'track':[], 'track_confidences':[], 'sections':[], 'sections_confidences':[], 'segments':[], 'segments_confidences':[], 'artists':{}, 'albums':{}}
         
@@ -352,11 +352,9 @@ class Dataset:
             del item['external_urls']
             del item['explicit']
             del item['type']
-            del item['uri']
             del item['href']
             del item['track']
             del item['is_local']
-            del item['preview_url']
             playlist['tracks'][i] = item
         
         return playlist
