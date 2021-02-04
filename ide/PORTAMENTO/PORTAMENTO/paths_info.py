@@ -105,21 +105,30 @@ class Path:
     
     songpack = []
     
-    def __init__(self, base):    
+    def __init__(self, user):    
+        
+        # COSTRUISCO IL PATH BASE
+        self.root = os.getcwd()
+        self.root = self.root[:-26] # 25 PERCHE' QUESTO E' IL NUMERO DI CARATTERI DA CANCELLARE DATI DA "ide\PORTAMENTO\PORTAMENTO". DA RIACCORDARE SE SI CAMBIANO NOMI ALLE DIRECTORY
+        self.base = self.root + r'\users\nic'
+        
+        # COLLEGO IL PATH DEL LAST_PATH CHE SERVE ALL'INTERFACCIA
+        self.last_path = os.path.join(self.root, r'last_path' + DATAFRAME_EXT)
         
         
         # COLLEGO I PATH DELLE CARTELLE DI BASE E LE CREO SE NON SON STATE CREATE.
-        self.bundles_path = os.path.join(base, r'bundles')
+        self.bundles_path = os.path.join(self.base, r'bundles')
         self.mkdir_if_not(self.bundles_path)
-        self.datasets_path = os.path.join(base, r'datasets')
+        self.datasets_path = os.path.join(self.base, r'datasets')
         self.mkdir_if_not(self.datasets_path)
-        self.tables = os.path.join(base, r'tables')
+        self.tables = os.path.join(self.base, r'tables')
         self.mkdir_if_not(self.tables)
         
+        
         # COLLEGO I PATH DEI FILE DI DEFAULT
-        self.oauth = os.path.join(base, r'oauth' + CONTROL_EXT)    # Costruisco il path del file dell'oauth token         
+        self.oauth = os.path.join(self.base, r'oauth' + CONTROL_EXT)    # Costruisco il path del file dell'oauth token         
             
-        self.settings = os.path.join(base, r'settings' + CONTROL_EXT)
+        self.settings = os.path.join(self.base, r'settings' + CONTROL_EXT)
         self.weights_table = os.path.join(self.tables, r'weights_table' +  DATAFRAME_EXT)
         self.datasets_table = os.path.join(self.tables, r'datasets_table' +  DATAFRAME_EXT)
         self.axis_table = os.path.join(self.tables, r'axis_table' +  DATAFRAME_EXT)
@@ -136,7 +145,7 @@ class Path:
         self.csv_if_not(self.datasets_table, DEFAULT_DATASETS)
         self.csv_if_not(self.axis_table, DEFAULT_AXIS)
     #------------------------------------------------------------------------------------------------------------------------------
-    def initialize_default_files(self, base):   # Attenzione: questa funzione sovrascrive, è da chiamare solo in caso di reinstallazione
+    def initialize_default_files(self):   # Attenzione: questa funzione sovrascrive, è da chiamare solo in caso di reinstallazione
         
         # OAUTH
         self.txt_install(self.oauth, "")
@@ -198,6 +207,9 @@ class Path:
         
         # FILE IN CUI SALVO I CENTROIDI
         self.centroids = os.path.join(self.track_clust, r'centroids')
+        
+        # IMPACCHETTO QUI I NOSTRI PATH, PERCHE' NON CI INTERESSANO I PATH DELLE PLAYLIST PER L'INTERFACCIA.
+        self.pack_paths()
         
         # Costruisco i path di ogni playlist
         with open(self.playlistpack, "r") as playlist_pack:
@@ -282,4 +294,16 @@ class Path:
         files = glob.glob(cluster_path + '\*')
         for f in files:
             os.remove(f)
+    
+    #*************************************************************************************************************************************
+    def pack_paths(self):
+        pack = pd.DataFrame(self.__dict__)
+        pack = pack[:1]
+        
+        with open(self.last_path, "w+") as salva:
+            export_csv = pack.to_csv (self.last_path, index = None, header=True)    # Esporto il dataset
+            if str(export_csv) != 'None':
+                print("Errore salvando il last_paths.")
+        
+        
         

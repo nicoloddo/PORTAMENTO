@@ -25,7 +25,7 @@ def main():
     segm_min_confidence = 0.1    # minima accuratezza del risultato delle analisi di spotify per considerare il suono.
     '''    
     
-    base_path = r'D:\PROJECTS\PORTAMENTO\users\nic'
+    user = r'nic'
     bundle_name = "sounds_of_everything"
     
     SONG_ANALYSIS_BOOL = False    # BOOL PER DECIDERE SE FARE L'ANALISI APPROFONDITA O NO
@@ -40,7 +40,7 @@ def main():
     threshold = 0.5
     branch_fact = 50
     
-    paths = paths_info.Path(base_path)    # COLLEGO I PATH ALLE MIE STRUTTURE
+    paths = paths_info.Path(user)    # COLLEGO I PATH ALLE MIE STRUTTURE
     
     # IMPORTO LE SETTINGS
     with open(paths.settings, 'r') as settings:
