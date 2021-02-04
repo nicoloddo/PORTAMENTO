@@ -17,8 +17,9 @@ public class get_clusters : MonoBehaviour
         base_path = current_path.Remove(current_path.Length - 27);  // 27 PERCHE' QUESTO E' IL NUMERO DI CARATTERI DA CANCELLARE PER OTTENERE IL base_path
         string last_path_file = string.Concat(base_path, PATHS_FILE_NAME);
 
-        paths = strings_csv_to_dict(last_path_file);
+        paths = strings_csv_to_dict(last_path_file)[0];
         
+        // ora ciò che penso di fare è ottenere il numero di clusters creati e iterare su quel numero recuperando un csv per ogni cluster
     }
 
     // Update is called once per frame
@@ -27,12 +28,69 @@ public class get_clusters : MonoBehaviour
         
     }
 
-    private Dictionary<string, string> strings_csv_to_dict(string path_csv)
+    private List<Dictionary<string, string>> strings_csv_to_dict(string path_csv)
     {
-        Dictionary<string, string> dict = new Dictionary<string, string>();
-        string file_data = System.IO.File.ReadAllText(path_csv);
-        string[] keys = file_data.Split('\n')[0].Split(',');
+        List<Dictionary<string, string>> dict = new List<Dictionary<string, string>>();
+        string temp_key = "error";
+        string temp_value = "error";
+
+        // LETTURA E FORMATTAZIONE DEL FILE
+        string file_data = System.IO.File.ReadAllText(path_csv);    // Leggo l'intero file
+        file_data = file_data.Replace("\r", string.Empty);  // tolgo i caratteri \r di fine riga perchè in windows il fine riga è indicato con \r\n e non solo \n
+
+        string[] splitted = file_data.Split('\n');  // Ora il fine riga è indicato solo con \n, posso separare secondo quel carattere
+        System.Array.Resize(ref splitted, splitted.Length - 1); // tolgo l'ultimo elemento che è una stringa vuota
+        string[] keys = splitted[0].Split(','); // Ogni campo è separato da una virgola. La prima riga del csv indica il nome delle colonne, ossia le keys
         
+        // INSERIMENTO NELLA LISTA DI DIZIONARI
+        for (int i = 0; i < splitted.Length - 1; i++)   // Lenght-1 perchè nell'iterazione abbiamo i+1
+        {
+            Dictionary<string, string> dict_row = new Dictionary<string, string>(); // dizionario temporaneo per ogni elemento della lista di dizionari
+            for (int j = 0; j < keys.Length; j++)
+            {
+                temp_key = keys[j];
+                temp_value = splitted[i + 1].Split(',')[j]; // i+1 perchè la prima riga è occupata dai nomi delle keys
+                
+                dict_row.Add(temp_key, temp_value);
+            }
+            
+            dict.Add(dict_row); 
+        }
+
+        return dict;
+    }
+
+    private List<Dictionary<string, float>> floats_csv_to_dict(string path_csv)
+    {
+        List<Dictionary<string, float>> dict = new List<Dictionary<string, float>>();
+        string temp_key = "error";
+        string temp_string = "error";
+        float temp_value = -1;
+
+        // LETTURA E FORMATTAZIONE DEL FILE
+        string file_data = System.IO.File.ReadAllText(path_csv);    // Leggo l'intero file
+        file_data = file_data.Replace("\r", string.Empty);  // tolgo i caratteri \r di fine riga perchè in windows il fine riga è indicato con \r\n e non solo \n
+
+        string[] splitted = file_data.Split('\n');  // Ora il fine riga è indicato solo con \n, posso separare secondo quel carattere
+        System.Array.Resize(ref splitted, splitted.Length - 1); // tolgo l'ultimo elemento che è una stringa vuota
+        string[] keys = splitted[0].Split(','); // Ogni campo è separato da una virgola. La prima riga del csv indica il nome delle colonne, ossia le keys
+
+        // INSERIMENTO NELLA LISTA DI DIZIONARI
+        for (int i = 0; i < splitted.Length - 1; i++)   // Lenght-1 perchè nell'iterazione abbiamo i+1
+        {
+            Dictionary<string, float> dict_row = new Dictionary<string, float>(); // dizionario temporaneo per ogni elemento della lista di dizionari
+            for (int j = 0; j < keys.Length; j++)
+            {
+                temp_key = keys[j];
+                temp_string = splitted[i + 1].Split(',')[j]; // i+1 perchè la prima riga è occupata dai nomi delle keys
+                // Converto la stringa in un float
+                temp_value = float.Parse(temp_string, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+
+                dict_row.Add(temp_key, temp_value);
+            }
+
+            dict.Add(dict_row);
+        }
 
         return dict;
     }
