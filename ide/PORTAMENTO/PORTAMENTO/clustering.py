@@ -18,9 +18,12 @@ import pickle
 
 # PER LA VISUALIZZAZIONE
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 
 TRACK_AUDIO_COLUMNS = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'key', 'liveness', 'loudness', 'mode', 'speechiness', 'tempo', 'time_signature', 'valence'] # AUDIO FEATURES
-TRACK_TEXTUAL_COLUMNS = ['album_id', 'artists_id', 'disc_number', 'duration_ms', 'id', 'name', 'playlist', 'popularity', 'preview_url', 'track_number', 'uri']  # QUESTE SONO LE TEXTUAL FEATURES, DA SEPARARE DA QUELLE AUDIO
+TRACK_META_TEXTUAL_COLUMNS = ['album_id', 'artists_id', 'disc_number', 'id', 'name', 'playlist', 'preview_url', 'track_number', 'uri']  # QUESTE SONO LE TEXTUAL FEATURES, DA SEPARARE DA QUELLE AUDIO
+TRACK_META_NUMERICAL_COLUMNS = ['duration_ms', 'popularity']
+TRACK_TEXTUAL_COLUMNS = TRACK_META_TEXTUAL_COLUMNS + TRACK_META_NUMERICAL_COLUMNS
 # ATTENZONE !! SE UNA FEATURE NON COMPARE TRA QUELLE SOPRA, NON SARA' MAI CONSIDERATA!!!
 
 TRACK_DEFAULT_BLACKLIST = []
@@ -77,13 +80,21 @@ class Clusterer:
         labels = model.labels_   # Estraggo il vettore che indica in quale cluster è finita ogni canzone.
         
         # SALVATAGGIO
+        # Salvo il modello
         with open(paths.model + self.weights['id'] + ".sav", "wb+") as salva:
             pickle.dump(model, salva)
+        # Salvo i centroidi
+        # NOTA CHE PER I CENTROIDI VIENE SALVATA COME PRIMA RIGA UNA RIGA SENZA VALORI VERI MA SOLO CON I NOMI DELLE COLONNE, OSSIA "0, 1, 2, 3, 4, 5, 6, 7..."
+        with open(paths.centroids + ".csv", "w+") as salva:
+            export_csv = pd.DataFrame(centroids).to_csv (paths.centroids + ".csv", index = None, header=True)    # Esporto il dataset
+            if str(export_csv) != 'None':
+                print("Errore salvando i centroidi.")
+        # Salvo i clusters
         clusters = self.save_clusters(paths, n_clusters, labels, 'track')  # salvo i risultati del clustering track
         
         
         # PLOTTING
-        plotting = True
+        plotting = False
         if plotting == True:
             fig = plt.figure()
             ax = fig.add_subplot(111, projection='3d')
@@ -163,6 +174,8 @@ class Clusterer:
     def save_clusters(self, paths, n_clusters, labels, scope):  # Funzione che smista le canzoni e le salva in files: un file per cluster.
         
         salva = []      # lista in cui salvo tutti i riferimenti ai file di ogni cluster: salverò infatti gli uri di ogni cluster in un separato file
+        salva_track = []    # lista in cui salvo i riferimenti ai file csv track di ogni cluster, ossia con le informazioni audio
+        salva_meta = []    # lista in cui salvo i riferimenti ai file csv meta di ogni cluster, ossia le informazioni testuali
         
         rows = [] # matrice in cui divido le canzoni tra ogni cluster per indice (per ora è solo una lista ma creo una matrice nel prossimo for)
         clusters = []   # lista di dataframe con ogni cluster separato
@@ -170,7 +183,9 @@ class Clusterer:
         clusterized_df = self.dataset[scope]
         
         for i in range(n_clusters): # Inizializzazione dei vettori
-             salva.append(open(paths.__dict__[scope + '_clust'] + r'\cluster' + str(i) + ".txt", "w+"))
+             salva.append(open(paths.__dict__[scope + '_uri_clust'] + r'\cluster' + str(i) + ".txt", "w+"))
+             salva_track.append(open(paths.__dict__[scope + '_clust'] + r'\track' + str(i) + ".csv", "w+"))
+             salva_meta.append(open(paths.__dict__[scope + '_clust'] + r'\meta' + str(i) + ".csv", "w+"))
              rows.append([])
         
         for song_index, label in enumerate(labels):
@@ -180,14 +195,28 @@ class Clusterer:
             
             rows[label].append(song_index)    # mi segno la canzone nella riga giusta
             
-        for i in range(n_clusters): # Chiudo i files
-             salva[i].close()
+        for i in range(n_clusters): # Chiudo i files             
              clusters.append(clusterized_df.iloc[rows[i], :])  # seleziono le canzoni del dataframe seguendo lo smistamento di rows: avrò ora un dataframe per ogni cluster
+             cluster_track = clusters[i][TRACK_AUDIO_COLUMNS + TRACK_META_NUMERICAL_COLUMNS]   # separo le informazioni numeriche
+             cluster_meta = clusters[i][TRACK_META_TEXTUAL_COLUMNS]  # separo le informazioni testuali
+             
+             # salvo il dataset delle informazioni audio
+             export_csv = cluster_track.to_csv (paths.__dict__[scope + '_clust'] + r'\track' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
+             if str(export_csv) != 'None':
+                 print("Errore salvando la parte track dei clusters")
+             
+             # salvo il dataset delle informazioni testuali
+             export_csv = cluster_meta.to_csv (paths.__dict__[scope + '_clust'] + r'\meta' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
+             if str(export_csv) != 'None':
+                 print("Errore salvando la parte meta dei clusters") 
+            
+             salva_track[i].close()
+             salva_meta[i].close()
+             salva[i].close()
         
-        print("\n**I clusters son stati salvati nella cartella!**  PATH: " + paths.__dict__[scope + '_clust'])
+        print("\n**I clusters son stati salvati nella cartella!**  PATH: " + paths.__dict__[scope + '_uri_clust'])
         print("\nUSA QUESTO STRUMENTO PER VEDERE LE CANZONI IN UN CLUSTER:")
         print("https://www.spotlistr.com/search/textbox") 
-        print("\nI risultati scarsi possono essere dovuti, oltre al numero basso di parametri utilizzati, al fatto che non sto ancora considerando l'accuracy dei parametri  le canzoni.")
         
         return clusters
     

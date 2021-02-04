@@ -63,6 +63,7 @@ documenti/
 # ignoro file che cambiano ad ogni prova del software
 __pycache__/
 models/
+clust/
 track_clust/
 oauth.txt
 

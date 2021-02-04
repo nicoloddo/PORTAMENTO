@@ -65,6 +65,7 @@ def main():
     # Collego o creo i path del database da caricare o creare
     paths.link_database(bundle_name)
     paths.delete_saved_clusters(paths.track_clust)
+    paths.delete_saved_clusters(paths.track_uri_clust)
     
     if new_load:
         input("Inserisci gli uri delle playlist nel file creato in bundles/" + bundle_name + ", poi clicca invio. \n")

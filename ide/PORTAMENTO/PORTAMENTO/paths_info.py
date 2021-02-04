@@ -175,8 +175,13 @@ class Path:
         self.initialize_default_dataset_files(bundle_name)        
         
         
-        # CREO LA CARTELLA IN CUI RESTITUIRE I TRACK CLUSTERS
-        self.track_clust = os.path.join(self.bundle, r'track_clust')
+        # CREO LA CARTELLA IN CUI RESTITUIRE I TRACK CLUSTERS DIVISI PER URI
+        self.track_uri_clust = os.path.join(self.bundle, r'track_clust')
+        if(not os.path.isdir(self.track_uri_clust)):
+            os.mkdir(self.track_uri_clust)
+        
+        # CREO LA CARTELLA IN CUI RESTITUIRE I CLUSTERS DIVISI IN DATASETS
+        self.track_clust = os.path.join(self.dataset, r'clust')
         if(not os.path.isdir(self.track_clust)):
             os.mkdir(self.track_clust)
     
@@ -190,6 +195,9 @@ class Path:
         
         # FILE IN CUI SALVO IL MODELLO
         self.model = os.path.join(self.models, r'model_')
+        
+        # FILE IN CUI SALVO I CENTROIDI
+        self.centroids = os.path.join(self.track_clust, r'centroids')
         
         # Costruisco i path di ogni playlist
         with open(self.playlistpack, "r") as playlist_pack:
