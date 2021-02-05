@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class cluster : MonoBehaviour
 {
-    static int number_of_params_track = 21;    // Numero di parametri numerici
-    static int number_of_params_meta = 21;    // Numero di parametri stringa
-    private Dictionary<string, float>[] track = new Dictionary<string, float>[number_of_params_track];
-    private Dictionary<string, string>[] meta = new Dictionary<string, string>[number_of_params_meta];
+    private List<Dictionary<string, float>> track = new List<Dictionary<string, float>>();
+    private List<Dictionary<string, string>> meta = new List<Dictionary<string, string>>();
 
     public Dictionary<string, float> centroid = new Dictionary<string, float>();
 
@@ -25,17 +23,14 @@ public class cluster : MonoBehaviour
         
     }
 
-    public void define_centroid(Dictionary<string, float> centroid_params)
+    public void set_centroid(Dictionary<string, float> centroid_params)
     {
         centroid = centroid_params;
     }
 
-    public void new_cluster_row(Dictionary<string, float> track_line, Dictionary<string, string> meta_line)
+    public void set_cluster_data(List<Dictionary<string, float>> track_data, List<Dictionary<string, string>> meta_data)
     {
-        track[n_rows] = new Dictionary<string, float>();
-        track[n_rows] = track_line;
-
-        meta[n_rows] = new Dictionary<string, string>();
-        meta[n_rows] = meta_line;
+        track = track_data;
+        meta = meta_data;
     }
 }

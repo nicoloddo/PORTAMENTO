@@ -6,20 +6,48 @@ public class get_clusters : MonoBehaviour
 {
     private static string PATHS_FILE_NAME = @"\last_path.csv";
 
+    public GameObject cluster_prefab;
+
     private string current_path = System.IO.Directory.GetCurrentDirectory();
     public string base_path;
+    public int n_clusters;
 
     Dictionary<string, string> paths = new Dictionary<string, string>();
 
     // Start is called before the first frame update
     void Start()
     {
+        string last_path_file;
+        List<Dictionary<string, float>> centroids;
+        List<Dictionary<string, float>> track_data;
+        List<Dictionary<string, string>> meta_data;
+        string clusters_path;
+
         base_path = current_path.Remove(current_path.Length - 27);  // 27 PERCHE' QUESTO E' IL NUMERO DI CARATTERI DA CANCELLARE PER OTTENERE IL base_path
-        string last_path_file = string.Concat(base_path, PATHS_FILE_NAME);
+        last_path_file = string.Concat(base_path, PATHS_FILE_NAME);
 
         paths = strings_csv_to_dict(last_path_file)[0];
-        
-        // ora ciò che penso di fare è ottenere il numero di clusters creati e iterare su quel numero recuperando un csv per ogni cluster
+
+        clusters_path = paths["track_clust"];
+        n_clusters = System.IO.Directory.GetFiles(clusters_path).Length;
+        // Tolgo uno perchè c'è il file delle coordinate del centroide, divido per due perchè per ogni cluster c'è il file meta e il file track
+        n_clusters = (n_clusters - 1) / 2;
+
+
+        // ********************* DA QUI ESTRAPOLO LE INFORMAZIONI NEI .CSV
+        centroids = floats_csv_to_dict(clusters_path + @"centroids.csv");
+
+        for(int i = 0; i < n_clusters; i++)
+        {
+            // OTTENGO LE INFORMAZIONI TRACK E META DAI CSV
+            track_data = floats_csv_to_dict(clusters_path + @"\track" + i.ToString() + @".csv");
+            meta_data = strings_csv_to_dict(clusters_path + @"\meta" + i.ToString() + @".csv");
+
+            // ISTANZIO IL CLUSTER E INSERISCO LE INFORMAZIONI
+            GameObject cluster = Instantiate(cluster_prefab);
+            cluster.GetComponent<cluster>().set_cluster_data(track_data, meta_data);
+            cluster.GetComponent<cluster>().set_centroid(centroids[i]);
+        }
     }
 
     // Update is called once per frame

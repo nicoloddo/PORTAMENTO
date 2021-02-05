@@ -327,7 +327,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6139d82521037d843bb2c486fd86e14a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cluster_prefab: {fileID: 3540678583313869968, guid: 4295a1791b09a9e4c8e625283bb353d0, type: 3}
   base_path: 
+  n_clusters: 0
 --- !u!4 &1207135409
 Transform:
   m_ObjectHideFlags: 0
