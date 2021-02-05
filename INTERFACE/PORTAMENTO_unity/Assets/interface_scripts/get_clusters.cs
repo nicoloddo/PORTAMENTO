@@ -29,13 +29,11 @@ public class get_clusters : MonoBehaviour
         paths = strings_csv_to_dict(last_path_file)[0];
 
         clusters_path = paths["track_clust"];
-        n_clusters = System.IO.Directory.GetFiles(clusters_path).Length;
-        // Tolgo uno perchè c'è il file delle coordinate del centroide, divido per due perchè per ogni cluster c'è il file meta e il file track
-        n_clusters = (n_clusters - 1) / 2;
-
 
         // ********************* DA QUI ESTRAPOLO LE INFORMAZIONI NEI .CSV
-        centroids = floats_csv_to_dict(clusters_path + @"centroids.csv");
+        centroids = floats_csv_to_dict(clusters_path + @"\centroids.csv");
+
+        n_clusters = centroids.Count;
 
         for(int i = 0; i < n_clusters; i++)
         {
@@ -45,8 +43,8 @@ public class get_clusters : MonoBehaviour
 
             // ISTANZIO IL CLUSTER E INSERISCO LE INFORMAZIONI
             GameObject cluster = Instantiate(cluster_prefab);
-            cluster.GetComponent<cluster>().set_cluster_data(track_data, meta_data);
             cluster.GetComponent<cluster>().set_centroid(centroids[i]);
+            cluster.GetComponent<cluster>().set_cluster_data(track_data, meta_data);
         }
     }
 

@@ -9,8 +9,6 @@ public class cluster : MonoBehaviour
 
     public Dictionary<string, float> centroid = new Dictionary<string, float>();
 
-    public int n_rows = 0;
-
     // Start is called before the first frame update
     void Start()
     {
