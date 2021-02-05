@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     private float rotateSpeedX = 4f; //Velocita' di rotazione X
     private float rotateSpeedY = 3f; //Velocita' di rotazione Y
     public float forwardSpeed = 0.5f; // Velocità di avanzamento
+    public float lateralSpeed = 0.2f; // Velocità movimento laterale
     public float upwardSpeed = 0.3f; // Velocità di levitazione
 
     // Start is called before the first frame update
@@ -45,12 +46,13 @@ public class PlayerController : MonoBehaviour
 
         // Controller della rotazione, è fatto così per evitare la rotazione in z, che può avvenire per somma di rotazioni in x e y
         totalXRot += Input.GetAxis("Mouse X") * rotateSpeedX;
-        totalXRot += inputHorizontal * rotateSpeedX;
+        
         totalYRot -= Input.GetAxis("Mouse Y") * rotateSpeedY;
         transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
 
         // Movimento
         characterController.Move(transform.forward * inputVertical * forwardSpeed);
+        characterController.Move(transform.right * inputHorizontal * forwardSpeed);
         characterController.Move(transform.up * inputUpward * upwardSpeed);
 
     }
