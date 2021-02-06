@@ -74,6 +74,8 @@ def main():
     loaded = dt.Dataset(paths, new_load, SONG_ANALYSIS_BOOL)
     data = loaded.dataset
     
+
+
     if CMD_LINE:
         input("Caricamento avvenuto, premi invio per avviare la clusterizzazione.\n")
     

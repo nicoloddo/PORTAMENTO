@@ -203,9 +203,10 @@ class Path:
         self.artists = os.path.join(self.dataset, r'artists')
         self.n_playlists = os.path.join(self.dataset, r'n_playlists')
         
-        # FILE IN CUI SALVO IL MODELLO
-        self.model = os.path.join(self.models, r'model_')
+        # FILE IN CUI SALVO I DUMP DEL MODELLO, DEL DATASET E DEL CLUSTERER
+        self.model = os.path.join(self.models, r'model_') # Il nome del file andrà completato e aggiornato nel momento del salvataggio
         self.dataset_dump = os.path.join(self.dataset, r'dump' + DUMP_EXT)
+        self.clusterer_dump = os.path.join(self.track_clust, r'clusterer_dump' + DUMP_EXT)
         
         # FILE IN CUI SALVO I CENTROIDI
         self.centroids = os.path.join(self.track_clust, r'centroids')
