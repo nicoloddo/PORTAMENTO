@@ -11,7 +11,7 @@ import numpy as np
 
 # PER LA CLUSTERIZZAZIONE
 from sklearn.cluster import KMeans
-from sklearn.cluster import Birch
+from birch_mod import Birch
 
 # PER IL SALVATAGGIO DEL MODELLO
 import pickle
