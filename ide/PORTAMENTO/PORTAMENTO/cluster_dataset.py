@@ -87,8 +87,12 @@ def main():
         clusters = clust.cluster_new_dataset(paths) # parametri di default
     
     
+    paths.pack_paths()
+    
     # QUESTA PARTE E' ESCLUSIVAMENTE DEDICATA ALLA VISUALIZZAZIONE NELL'INSPECTOR
     filtered_clusters = []
+    
+    
     # filtro i cluster con le informazioni interessanti di clusterizzazione per visualizzarli bene nell'inspector
     relevant_columns = ['id', 'name']
     relevant_columns.extend(clust.audio_relevant_columns)

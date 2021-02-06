@@ -66,6 +66,7 @@ models/
 clust/
 track_clust/
 oauth.txt
+prove_ausiliarie.py
 # altri aggiuntivi
 Temp/
 

@@ -83,6 +83,9 @@ class Clusterer:
         # Salvo il modello
         with open(paths.model + self.weights['id'] + ".sav", "wb+") as salva:
             pickle.dump(model, salva)
+        # Aggiorno il percorso in cui si trova il dump
+        paths.model = paths.model + self.weights['id'] + ".sav"
+        
         # Salvo i centroidi
         # NOTA CHE PER I CENTROIDI VIENE SALVATA COME PRIMA RIGA UNA RIGA SENZA VALORI VERI MA SOLO CON I NOMI DELLE COLONNE, OSSIA "0, 1, 2, 3, 4, 5, 6, 7..."
         with open(paths.centroids + ".csv", "w+") as salva:

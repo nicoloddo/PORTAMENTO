@@ -1,8 +1,8 @@
 # IMPORTO LE UTILITA' PER LE CANZONI
 import loading as load
 
-# IMPORT GENERICHE
-# import copy
+# PER SALVATAGGIO
+import pickle
 
 # PER GESTIRE I DATASET
 import pandas as pd
@@ -24,9 +24,15 @@ class Dataset:
         
         if(new_load):   # SE NON E' MAI STATO CREATO, LO CREIAMO DA ZERO E LO SALVIAMO
             self.get_and_save_dataset(paths, song_analysis_bool) # (salvare non è opzionale e viene fatto durante la creazione)
+            # POI CARICHIAMO. 
+            self.dataset = self.load_format_dataset(paths, song_analysis_bool)
+            # NE FACCIO UN DUMP PER I PROSSIMI CARICAMENTI              
+            with open(paths.dataset_dump, "wb+") as salva:
+                pickle.dump(self.dataset, salva)
             
-        # POI CARICHIAMO. 
-        self.dataset = self.load_dataset(paths, song_analysis_bool)
+        else:
+            with open(paths.dataset_dump, "rb") as file:
+                self.dataset = pickle.load(file)
 
     #---------------------------
     def get_and_save_dataset(self, paths, song_analysis_bool = False):  # Crea il dataset, e lo salva, creando i path di salvataggio
@@ -191,7 +197,7 @@ class Dataset:
            
     
     #************************************************************************************************************************************
-    def load_dataset(self, paths, song_analysis_bool):
+    def load_format_dataset(self, paths, song_analysis_bool):
         
         # Il dataset non sarà altro in realtà che un dizionario di dataset:
         dataset = {}
@@ -239,8 +245,7 @@ class Dataset:
                 # CARICO I SEGMENTI
                     dataset['segments'].append( pd.read_csv(paths.songpack[playlist_num]['segments'] + r'\song' + str(i) + ".csv") )
                     dataset['segments_confidences'].append( pd.read_csv(paths.songpack[playlist_num]['segments_confidences'] + r'\song' + str(i) + ".csv") )
-                        
-       
+                
         return dataset
     
     

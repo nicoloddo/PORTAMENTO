@@ -100,6 +100,7 @@ DEFAULT_AXIS = DEFAULT_AXIS.append(AXIS1, ignore_index=True)
 # ESTENSIONI BASE
 CONTROL_EXT = ".txt"
 DATAFRAME_EXT = ".csv"
+DUMP_EXT = ".sav"
 
 class Path:
     
@@ -204,12 +205,11 @@ class Path:
         
         # FILE IN CUI SALVO IL MODELLO
         self.model = os.path.join(self.models, r'model_')
+        self.dataset_dump = os.path.join(self.dataset, r'dump' + DUMP_EXT)
         
         # FILE IN CUI SALVO I CENTROIDI
         self.centroids = os.path.join(self.track_clust, r'centroids')
         
-        # IMPACCHETTO QUI I NOSTRI PATH, PERCHE' NON CI INTERESSANO I PATH DELLE PLAYLIST PER L'INTERFACCIA.
-        self.pack_paths()
         
         # Costruisco i path di ogni playlist
         with open(self.playlistpack, "r") as playlist_pack:
