@@ -262,6 +262,9 @@ class _CFSubcluster(object):
 
     Attributes
     ----------
+    semples_ : list
+        List of indexes of samples belonging to the subcluster. (Added by nicol)
+        
     n_samples_ : int
         Number of samples that belong to each subcluster.
 
@@ -284,12 +287,14 @@ class _CFSubcluster(object):
         Squared norm of the subcluster. Used to prevent recomputing when
         pairwise minimum distances are computed.
     """
-    def __init__(self, linear_sum=None):
+    def __init__(self, index=[], linear_sum=None):
+        self.samples = []
         if linear_sum is None:
             self.n_samples_ = 0
             self.squared_sum_ = 0.0
             self.linear_sum_ = 0
         else:
+            self.samples.append(index)  # MOD
             self.n_samples_ = 1
             self.centroid_ = self.linear_sum_ = linear_sum
             self.squared_sum_ = self.sq_norm_ = np.dot(
@@ -297,6 +302,7 @@ class _CFSubcluster(object):
         self.child_ = None
 
     def update(self, subcluster):
+        self.samples.extend(subcluster.samples)  # MOD
         self.n_samples_ += subcluster.n_samples_
         self.linear_sum_ += subcluster.linear_sum_
         self.squared_sum_ += subcluster.squared_sum_
@@ -307,6 +313,8 @@ class _CFSubcluster(object):
         """Check if a cluster is worthy enough to be merged. If
         yes then merge.
         """
+        new_samples = list(self.samples)    # MOD
+        new_samples.extend(nominee_cluster.samples) # MOD
         new_ss = self.squared_sum_ + nominee_cluster.squared_sum_
         new_ls = self.linear_sum_ + nominee_cluster.linear_sum_
         new_n = self.n_samples_ + nominee_cluster.n_samples_
@@ -315,9 +323,9 @@ class _CFSubcluster(object):
         dot_product = (-2 * new_n) * new_norm
         sq_radius = (new_ss + dot_product) / new_n + new_norm
         if sq_radius <= threshold ** 2:
-            (self.n_samples_, self.linear_sum_, self.squared_sum_,
+            (self.samples, self.n_samples_, self.linear_sum_, self.squared_sum_,
              self.centroid_, self.sq_norm_) = \
-                new_n, new_ls, new_ss, new_centroid, new_norm
+                new_samples, new_n, new_ls, new_ss, new_centroid, new_norm
             return True
         return False
 
@@ -488,8 +496,8 @@ class Birch(BaseEstimator, TransformerMixin, ClusterMixin):
         else:
             iter_func = _iterate_sparse_X
 
-        for sample in iter_func(X):
-            subcluster = _CFSubcluster(linear_sum=sample)
+        for index, sample in enumerate(iter_func(X)):
+            subcluster = _CFSubcluster(index, linear_sum=sample)
             split = self.root_.insert_cf_subcluster(subcluster)
 
             if split:
