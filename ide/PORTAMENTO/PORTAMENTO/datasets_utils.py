@@ -20,12 +20,13 @@ DATASET_EXT = ".csv"
 class Dataset:
     
     #*************************************** INIT
-    def __init__(self, paths, new_load = True, song_analysis_bool = False):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
+    def __init__(self, paths, new_load = True, save_dataset = False, song_analysis_bool = False):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
+        
+        self.dataset = {}
+        self.save_dataset = save_dataset
         
         if(new_load):   # SE NON E' MAI STATO CREATO, LO CREIAMO DA ZERO E LO SALVIAMO
-            self.get_and_save_dataset(paths, song_analysis_bool) # (salvare non è opzionale e viene fatto durante la creazione)
-            # POI CARICHIAMO. 
-            self.dataset = self.load_format_dataset(paths, song_analysis_bool)
+            self.get_and_save_dataset(paths, song_analysis_bool)
             # NE FACCIO UN DUMP PER I PROSSIMI CARICAMENTI              
             with open(paths.dataset_dump, "wb+") as salva:
                 pickle.dump(self.dataset, salva)
@@ -35,15 +36,21 @@ class Dataset:
                 self.dataset = pickle.load(file)
 
     #---------------------------
-    def get_and_save_dataset(self, paths, song_analysis_bool = False):  # Crea il dataset, e lo salva, creando i path di salvataggio
+    def get_and_save_dataset(self, paths, is_map = False, song_analysis_bool = False):  # Crea il dataset, e lo salva, creando i path di salvataggio
         
         dataset = {'track':[], 'track_confidences':[], 'sections':[], 'sections_confidences':[], 'segments':[], 'segments_confidences':[], 'artists':{}, 'albums':{}}
         
         count_pl = 0    #counter che si segna il numero di playlist
         count_sn = 0    #counter che si segna il numero di canzone
         total_songs = 0 #counter per tutte le canzoni del dataset
-                    
-        with open(paths.playlistpack, "r") as playlist_pack:
+        
+        if is_map:
+            playlistpack_path = paths.map
+            self.save_dataset = False    # Per assicurarmi che non venga salvato per errori nel chiamare la funzione
+        else:
+            playlistpack_path = paths.playlistpack
+            
+        with open(playlistpack_path, "r") as playlist_pack:
             for uri_pl in playlist_pack:
                 uri_pl = uri_pl[:URI_LENGHT]  # Questo serve a togliere il carattere in più (ossia '\n')
                 playlist_id = uri_pl[URI_PORTION:] # Taglio la porzione che ci serve, ossia l'ID
@@ -119,7 +126,8 @@ class Dataset:
                         
                         # -------------- SALVATAGGIO
                         # Salvo i dataset creati
-                        self.save_analysis(analysis, count_pl, count_sn, paths)
+                        if self.save_dataset:
+                            self.save_analysis(analysis, count_pl, count_sn, paths)
                     #-------------------------------------------------------------------- FINE DELL'IF
                     
                     # Aggiorno l'iteratore delle canzoni
@@ -132,7 +140,8 @@ class Dataset:
                 
                 # ---------- SALVATAGGIO
                 # Salvo il numero delle canzoni della playlist
-                self.save_n_songs(count_pl, count_sn, paths)
+                if self.save_dataset:
+                    self.save_n_songs(count_pl, count_sn, paths)
                 
                 
                 
@@ -140,19 +149,20 @@ class Dataset:
                 count_pl = count_pl + 1
                 #----------------------------------------------- FINE FOR DELLE PLAYLIST
             
-            playlist_pack.close()
-            
             
             # SALVATAGGI FINALI
-            if(song_analysis_bool):
-                self.save_dataset_key(dataset, 'track_confidences', paths)  # la ho solo se ho fatto l'analisi
-                
+        if(song_analysis_bool):
+            self.save_dataset_key(dataset, 'track_confidences', paths)  # la ho solo se ho fatto l'analisi
+        
+        if self.save_dataset:
             self.save_dataset_key(dataset, 'track', paths)
             self.save_dataset_key(dataset, 'albums', paths)
             self.save_dataset_key(dataset, 'artists', paths)
             self.save_n_playlists(count_pl, paths)
         
-        
+        self.dataset['track'] = pd.DataFrame(dataset['track'])
+        self.dataset['albums'] = pd.DataFrame(dataset['albums'])
+        self.dataset['artists'] = pd.DataFrame(dataset['artists'])
         
         
     #************************************************************************************************************************************
@@ -197,59 +207,6 @@ class Dataset:
            
     
     #************************************************************************************************************************************
-    def load_format_dataset(self, paths, song_analysis_bool):
-        
-        # Il dataset non sarà altro in realtà che un dizionario di dataset:
-        dataset = {}
-        # 'n_song' è un semplice numero che indica il numero di canzoni nel dataset
-        # 'track' contiene il dataset track
-        # 'track_confidences' contiene il dataset track_confidence
-        # 'sections' è una lista di dataset: un dataset per ogni canzone, contenente tutti le rispettive sections
-        # 'segments' è una lista di dataset: un dataset per ogni canzone, contenente tutti i rispettivi segment
-        # 'uris' e una lista degli uri di tutte le canzoni nel dataset.
-        
-        # Carico il dataset lineare        
-        dataset['track'] = pd.read_csv(paths.track + ".csv")      # Caricamento del dataset track
-        dataset['albums'] = pd.read_csv(paths.albums + ".csv")
-        dataset['artists'] = pd.read_csv(paths.artists + ".csv")
-        
-        # Carico il numero di playlist nel dataset
-        load = open(paths.n_playlists + ".txt", "r")
-        n_playlists = int(load.read())
-        load.close()
-        
-        
-        if(song_analysis_bool):
-            
-            dataset['track_confidences'] = pd.read_csv(paths.track_confidences + ".csv")      # Caricamento del dataset track_confidences (esiste solo se ho fatto l'analisi)
-            
-            # INIZIALIZZO SEZIONI DI FRAMMENTAZIONE
-            dataset['sections'] = []  # inizializzazione
-            dataset['sections_confidences'] = []  # inizializzazione
-            dataset['segments'] = []  # inizializzazione
-            dataset['segments_confidences'] = []  # inizializzazione
-        
-            # PER OGNI PLAYLIST
-            for playlist_num in range(n_playlists):
-                
-                # CARICO IL NUMERO DI CANZONI
-                load = open(paths.songpack[playlist_num]['n_songs'] + ".txt", "r")
-                n_songs = int(load.read())
-                load.close()            
-                
-                for i in range(n_songs):
-                # CARICAMENTO SEZIONI
-                    dataset['sections'].append( pd.read_csv(paths.songpack[playlist_num]['sections'] + r'\song' + str(i) + ".csv") )
-                    dataset['sections_confidences'].append( pd.read_csv(paths.songpack[playlist_num]['sections_confidences'] + r'\song' + str(i) + ".csv") )
-                
-                # CARICO I SEGMENTI
-                    dataset['segments'].append( pd.read_csv(paths.songpack[playlist_num]['segments'] + r'\song' + str(i) + ".csv") )
-                    dataset['segments_confidences'].append( pd.read_csv(paths.songpack[playlist_num]['segments_confidences'] + r'\song' + str(i) + ".csv") )
-                
-        return dataset
-    
-    
-    #*************************************************************************************************************************************
     def format_analysis(self, song):
     
         # Rimuovo cose di cui non so che farmene o che trovo inutili per i miei scopi, anche per semplificare la struttura

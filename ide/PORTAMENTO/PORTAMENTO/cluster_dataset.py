@@ -15,10 +15,7 @@ import clustering as cl
 #********************************* MAIN ******************************************************
 def main(user = r'nic', bundle_name = "sounds_of_everything", SONG_ANALYSIS_BOOL = False, NEW_LOAD = False, CMD_LINE = True):    
     
-    '''
-    user = r'nic'
-    bundle_name = "sounds_of_everything"
-    
+    '''    
     SONG_ANALYSIS_BOOL :
         BOOL PER DECIDERE SE FARE L'ANALISI APPROFONDITA O NO
         
@@ -64,7 +61,7 @@ def main(user = r'nic', bundle_name = "sounds_of_everything", SONG_ANALYSIS_BOOL
     paths.delete_saved_clusters(paths.track_final_clust)
     paths.delete_saved_clusters(paths.track_uri_clust)
     
-    if new_load:
+    if new_load and CMD_LINE:
         input("Inserisci gli uri delle playlist nel file creato in bundles/" + bundle_name + ", poi clicca invio. \n")
     
     # Carico il dataset

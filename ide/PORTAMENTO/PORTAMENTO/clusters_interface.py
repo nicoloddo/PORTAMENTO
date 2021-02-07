@@ -11,8 +11,13 @@ import paths_info
 from clustering import TRACK_AUDIO_COLUMNS, TRACK_META_NUMERICAL_COLUMNS, TRACK_META_TEXTUAL_COLUMNS
 
 import pandas as pd
+import numpy as np
 
 import pickle
+
+# IMPORT PER IL PREDICT
+from sklearn.utils import check_array
+from sklearn.utils.extmath import safe_sparse_dot, row_norms
 
 def main(user, node_id):
 
@@ -35,6 +40,7 @@ def main(user, node_id):
      
     return 0
 
+
 def get_node(node, node_id, iter_index = 1):
     '''
     Questa funzione viene fatta partire con node=root.
@@ -56,7 +62,41 @@ def get_node(node, node_id, iter_index = 1):
     else:
         return node
 
+
+def node_predict(self, node, X):
+    
+    """
+    Predict data using the ``centroids_`` of subclusters
+    Avoid computation of the row norms of X.
+
+    Parameters
+    ----------
+    X : {array-like, sparse matrix}, shape (n_samples, n_features)
+       Input data.
+
+    Returns
+    -------
+    labels : ndarray, shape(n_samples)
+        Labelled data.
+        """
         
+     # Preprocessing
+    subcluster_norms = row_norms(node.centroids_, squared=True)
+
+    # Sto usando questi subcluster_labels perchè non essendo il clustering finale, non serve a nulla fare la clusterizzazione dei centroidi.
+    # La clusterizzazione dei centroidi veniva fatta tramite Agglomerative Clustering ed era un passaggio di clusterizzazione finale.
+    # Era però utile solo nel caso in cui avessimo dichiarato di volere meno clusters di quelli formati (pari al numero di centroidi), possibile
+    # specificandolo nella dichiarazione del modello durante il clustering. È in ogni caso inutile durante l'assegnamento dei label per ogni nodo.
+    self.subcluster_labels_ = np.arange(len(node.centroids_))
+        
+    X = check_array(X, accept_sparse='csr')
+    reduced_distance = safe_sparse_dot(X, node.centroids_.T)
+    reduced_distance *= -2
+    reduced_distance += subcluster_norms
+    return self.subcluster_labels_[np.argmin(reduced_distance, axis=1)]
+
+
+
 def return_clusters(node, data, columns, paths, scope):
     # Cancello il precedente return
     paths.delete_saved_clusters(paths.track_clust)
@@ -86,7 +126,7 @@ def return_clusters(node, data, columns, paths, scope):
             if str(export_csv) != 'None':
                 print("Errore salvando la parte track dei clusters")
         
-        
+      
 
 if __name__=="__main__":
     # main(sys.argv[1], sys.argv[2])
