@@ -10,11 +10,11 @@ import json
 
 class Tab:    # Le table sono dei dataframe in cui vi sono elencati i vari preset di: weights, datasets e axis
     
-    def __init__(self, table_type_in, paths):
+    def __init__(self, table_type, paths):
         
-        self.table_type = table_type_in
+        self.table_type = table_type
         
-        self.table = pd.read_csv(table_path(self.table_type, paths))    # Carico il dataframe
+        self.table = pd.read_csv(self.table_path(paths))    # Carico il dataframe
         self.table = self.table.set_index('id')
     
     
@@ -37,18 +37,18 @@ class Tab:    # Le table sono dei dataframe in cui vi sono elencati i vari prese
         return to_return
 
 
-def table_path(table, paths):
-    
-    if table == "weights":
-        table_path = paths.weights_table
-    elif table == "datasets":
-        table_path = paths.datasets_table
-    elif table == "axis":
-        table_path = paths.axis_table
-    else:
-        raise ValueError("Table type invalido in Table.table_path")
-            
-    return table_path
+    def table_path(self, paths):
+        
+        if self.table_type == "weights":
+            table_path = paths.weights_table
+        elif self.table_type == "datasets":
+            table_path = paths.datasets_table
+        elif self.table_type == "axis":
+            table_path = paths.axis_table
+        else:
+            raise ValueError("Table type invalido in Table.table_path")
+                
+        return table_path
         
 
 def format_weight_preset(preset):   # mette in una forma utilizzabile meglio il preset weight.
@@ -56,7 +56,7 @@ def format_weight_preset(preset):   # mette in una forma utilizzabile meglio il 
     return preset
 
 
-class Tables:
+class Tables:   # Classe contenente tutti i tab
     
     def __init__(self, paths):
         

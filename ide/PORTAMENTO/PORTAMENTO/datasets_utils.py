@@ -20,23 +20,30 @@ DATASET_EXT = ".csv"
 class Dataset:
     
     #*************************************** INIT
-    def __init__(self, paths, new_load = True, save_dataset = False, song_analysis_bool = False):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
+    def __init__(self, paths, is_radar = False, new_load = True, save_dataset = False, song_analysis_bool = False):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
         
         self.dataset = {}
+        self.is_radar = is_radar
         self.save_dataset = save_dataset
+        
+        if(is_radar):
+            dump_path = paths.radar_dump
+        else:
+            dump_path = paths.dataset_dump
         
         if(new_load):   # SE NON E' MAI STATO CREATO, LO CREIAMO DA ZERO E LO SALVIAMO
             self.get_and_save_dataset(paths, song_analysis_bool)
-            # NE FACCIO UN DUMP PER I PROSSIMI CARICAMENTI              
-            with open(paths.dataset_dump, "wb+") as salva:
+            
+            # NE FACCIO UN DUMP PER I PROSSIMI CARICAMENTI            
+            with open(dump_path, "wb+") as salva:
                 pickle.dump(self.dataset, salva)
             
         else:
-            with open(paths.dataset_dump, "rb") as file:
+            with open(dump_path, "rb") as file:
                 self.dataset = pickle.load(file)
 
     #---------------------------
-    def get_and_save_dataset(self, paths, is_map = False, song_analysis_bool = False):  # Crea il dataset, e lo salva, creando i path di salvataggio
+    def get_and_save_dataset(self, paths, song_analysis_bool = False):  # Crea il dataset, e lo salva, creando i path di salvataggio
         
         dataset = {'track':[], 'track_confidences':[], 'sections':[], 'sections_confidences':[], 'segments':[], 'segments_confidences':[], 'artists':{}, 'albums':{}}
         
@@ -44,7 +51,7 @@ class Dataset:
         count_sn = 0    #counter che si segna il numero di canzone
         total_songs = 0 #counter per tutte le canzoni del dataset
         
-        if is_map:
+        if self.is_radar:
             playlistpack_path = paths.map
             self.save_dataset = False    # Per assicurarmi che non venga salvato per errori nel chiamare la funzione
         else:

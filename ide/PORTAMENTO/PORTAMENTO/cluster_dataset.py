@@ -13,7 +13,7 @@ import datasets_utils as dt
 import clustering as cl
 
 #********************************* MAIN ******************************************************
-def main(user = r'nic', bundle_name = "sounds_of_everything", SONG_ANALYSIS_BOOL = False, NEW_LOAD = False, CMD_LINE = True):    
+def main(user = r'nic', bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = True, SONG_ANALYSIS_BOOL = False, CMD_LINE = True):    
     
     '''    
     SONG_ANALYSIS_BOOL :
@@ -65,7 +65,7 @@ def main(user = r'nic', bundle_name = "sounds_of_everything", SONG_ANALYSIS_BOOL
         input("Inserisci gli uri delle playlist nel file creato in bundles/" + bundle_name + ", poi clicca invio. \n")
     
     # Carico il dataset
-    loaded = dt.Dataset(paths, new_load, SONG_ANALYSIS_BOOL)
+    loaded = dt.Dataset(paths, new_load, SAVE_DATASET, SONG_ANALYSIS_BOOL)
     data = loaded.dataset
     
 

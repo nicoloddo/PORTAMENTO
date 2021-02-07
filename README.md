@@ -43,6 +43,7 @@ Ogni viaggio salvato sarà definito dai seguenti campi:
 	- Set di assi di movimento.
 	- Set di pesi delle features.
 	- Codice dataset da utilizzare.
+	- Set di tracce radar
 	- Filtri inseriti.
 Saranno dunque semplici oggetti importabili e condivisibili tra utenti
 

@@ -91,6 +91,9 @@ DEFAULT_DATASETS = DEFAULT_DATASETS.append(DATASET1, ignore_index=True)
 
 
 AXIS1 = {
+        'axis1': 'valence',
+        'axis2': 'energy',
+        'axis3': 'tempo',
         'name' : 'default',
         'id'   : 'default'
         }
@@ -126,6 +129,8 @@ class Path:
         self.mkdir_if_not(self.datasets_path)
         self.tables = os.path.join(self.base, r'tables')
         self.mkdir_if_not(self.tables)
+        self.radars = os.path.join(self.base, r'radars')
+        self.mkdir_if_not(self.radars)
         
         
         # COLLEGO I PATH DEI FILE DI DEFAULT
@@ -225,7 +230,21 @@ class Path:
             for playlist_num, playlist in enumerate(playlist_pack):
                 self.build_playlistpath(playlist_num)
 
-
+    
+    def link_radar(self, radar_name):
+        
+        #CREO O COLLEGO IL FILE RADARPACK
+        self.radarpack = os.path.join(self.radars, radar_name + CONTROL_EXT)    # Costruisco il path del file playlist_pack in cui bisogna inserire tutti i link alle playlist
+        self.txt_if_not(self.radarpack, "")
+        
+        # CREO O COLLEGO LA CARTELLA DOVE RILASCIARE I DUMP
+        self.radar_dumps = os.path.join(self.radars, r'radar_dumps')
+        if(not os.path.isdir(self.radar_dumps)):
+            os.mkdir(self.radar_dumps)
+        
+        # CREO O COLLEGO IL FILE DOVE SALVARE E CARICARE IL DUMP
+        self.radar_dump = os.path.join(self.radar_dumps, radar_name + DUMP_EXT)
+    
     #************************************************************************************************************************************
     def build_playlistpath(self, playlist_num):
           
