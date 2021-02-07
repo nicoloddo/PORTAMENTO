@@ -4,7 +4,11 @@ Created on Sat Feb  6 13:00:15 2021
 
 @author: nicol
 """
+
+import sys
+
 import paths_info
+from clustering import TRACK_AUDIO_COLUMNS, TRACK_META_NUMERICAL_COLUMNS, TRACK_META_TEXTUAL_COLUMNS
 
 import pandas as pd
 import numpy as np
@@ -15,61 +19,61 @@ import pickle
 from sklearn.utils import check_array
 from sklearn.utils.extmath import safe_sparse_dot, row_norms
 
-class Clusters_interface:
+def main(user, node_id):
+
+    last_path = paths_info.Path(user).last_path
     
-    def __init__(self, user):
+    paths = pd.read_csv(last_path)
+            
+    with open(paths.clusterer_dump[0], "rb") as file:
+        clusterer = pickle.load(file)
+        cluster_in_inspector = [clusterer]  # TODO: da cancellare quando hai finito di fare debugging dello script
         
-        last_path = paths_info.Path(user).last_path
+    # ASSEGNAMENTI UTILI
+    model = clusterer.model
+    track = clusterer.dataset['track']
+    data_track = track[TRACK_AUDIO_COLUMNS + TRACK_META_NUMERICAL_COLUMNS]   # separo le informazioni numeriche
+    data_meta = track[TRACK_META_TEXTUAL_COLUMNS]  # separo le informazioni testuali
+    data = [data_track, data_meta]
+    
+    current_node = get_node(model.root_)
+    return_clusters(current_node, data)
+     
+    return 0
 
-        paths = pd.read_csv(last_path)
-        
-        with open(paths.clusterer_dump[0], "rb") as file:
-            self.clusterer = pickle.load(file)
-        
-        # PREPROCESSING DEI DATI
-        track = self.clusterer.dataset['track']
-        audio = track[self.clusterer.audio_relevant_columns]  # filtro le colonne
-        self.clusterer.filter_weights()   # filtro le stesse colonne dai weights
-        audio = self.clusterer.format_dataset(audio)    # formatto (per ora normalizzazione dei bpm e applicazione weights)
-        data_array = audio.to_numpy()    # linearizzo perchè serve alla funzione di clusterizzazione
-        
-        self.labels = self.node_predict(self.clusterer.model.root_, data_array)
-        
-        
-        
-        
-    def node_predict(self, node, X):
-        """
-        Predict data using the ``centroids_`` of subclusters.
+def get_node(node, node_id, iter_index = 1):
+    '''
+    Questa funzione viene fatta partire con node=root.
+    Il node_id è una stringa composta da numeri. 
+    Ognuno di questi numeri indica quale nodo seguire. Il primo numero sarà l'indice del nodo da seguire dopo il precedente e così via.
+    Il root è descritto dal primo numero ed è sempre pari a 0, quindi il node_id del root è semplicemente '0'.
+    Se il node_id è formato da un solo carattere, ossia siamo al root, poichè l'iter_index parte da 1, la funzione restituirà direttemente il root.
+    O comunque restituirà il primo nodo root a cui non segue un solo nodo identico.
+    '''
+    if len(node.subclusters_) == 1: # Se ha un solo subcluster, il nodo successivo è identico, dunque saltiamo direttamente al successivo
+        next_node = node.subclusters_[0].child_
+        return get_node(next_node, node_id, iter_index)
+    
+    if iter_index < len(node_id):
+        char_id = int(node_id[iter_index])
+        next_node = node.subclusters_[char_id].child_
+        iter_index = iter_index + 1
+        return get_node(next_node, node_id, iter_index)
+    else:
+        return node
 
-        Avoid computation of the row norms of X.
+        
+def return_clusters(node, data):
+    
+    
+    
+    pass
+        
+        
 
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape (n_samples, n_features)
-            Input data.
-
-        Returns
-        -------
-        labels : ndarray, shape(n_samples)
-            Labelled data.
-        """
-        
-        # Preprocessing
-        subcluster_norms = row_norms(node.centroids_, squared=True)
-        
-        # Sto usando questi subcluster_labels perchè non essendo il clustering finale, non serve a nulla fare la clusterizzazione dei centroidi.
-        # La clusterizzazione dei centroidi veniva fatta tramite Agglomerative Clustering ed era un passaggio di clusterizzazione finale.
-        # Era però utile solo nel caso in cui avessimo dichiarato di volere meno clusters di quelli formati (pari al numero di centroidi), possibile
-        # specificandolo nella dichiarazione del modello durante il clustering. È in ogni caso inutile durante l'assegnamento dei label per ogni nodo.
-        self.subcluster_labels_ = np.arange(len(node.centroids_))
-        
-        X = check_array(X, accept_sparse='csr')
-        reduced_distance = safe_sparse_dot(X, node.centroids_.T)
-        reduced_distance *= -2
-        reduced_distance += subcluster_norms
-        return self.subcluster_labels_[np.argmin(reduced_distance, axis=1)]
-        
+if __name__=="__main__":
+    # main(sys.argv[1], sys.argv[2])
+    main('nic', "0012")     
         
         
         
