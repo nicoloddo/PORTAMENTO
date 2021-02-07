@@ -48,10 +48,11 @@ Ogni viaggio salvato sarà definito dai seguenti campi:
 Saranno dunque semplici oggetti importabili e condivisibili tra utenti
 
 #### Creazione di un viaggio
-Alla crazione di un viaggio, l'utente dovrà inserire una lista di link a canzoni o playlist di Spotify. 
+Alla crazione di un viaggio, l'utente dovrà inserire una playlist di Spotify. 
 
 Subito dopo, gli verrà chiesto di selezionare una specifica *canzone di partenza* dalla lista: questa costituirà appunto la posizione di partenza all'interno dell'interfaccia. 
-Tutte le canzoni della lista saranno indicate nell'interfaccia all'interno di una mappa.
+Tutte le canzoni della lista saranno sempre presenti nell'interfaccia all'interno di una mappa per eseguire la funzione di orientamento: indicheranno infatti il cluster a cui apparterrebbero tra quelli presenti nella scena.
+Non più di 10 canzoni saranno accettate per la costituzione di tale funzione *"radar"*.
 
 Sarà infine data l'opzione di filtrare le canzoni tramite vari parametri come ad esempio l'anno, la lingua o la città di provenienza.
 
