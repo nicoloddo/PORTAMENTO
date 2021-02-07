@@ -15,7 +15,10 @@ import clustering as cl
 #********************************* MAIN ******************************************************
 def main(user = r'nic', bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = True, SONG_ANALYSIS_BOOL = False, CMD_LINE = True):    
     
-    '''    
+    '''   
+    QUESTO SCRIPT SERVE A CLUSTERIZZARE UN DATASET QUALUNQUE CHE POI UTILIZZEREMO PER I CLUSTER DELL'INTERFACCIA.
+    
+    
     SONG_ANALYSIS_BOOL :
         BOOL PER DECIDERE SE FARE L'ANALISI APPROFONDITA O NO
         
@@ -82,8 +85,6 @@ def main(user = r'nic', bundle_name = "sounds_of_everything", NEW_LOAD = False, 
     else:
         clusters = clust.cluster_new_dataset(paths) # parametri di default
     
-    
-    paths.pack_paths()
     
     # QUESTA PARTE E' ESCLUSIVAMENTE DEDICATA ALLA VISUALIZZAZIONE NELL'INSPECTOR
     filtered_clusters = []

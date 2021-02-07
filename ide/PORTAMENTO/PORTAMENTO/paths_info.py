@@ -216,7 +216,7 @@ class Path:
         self.centroids = os.path.join(self.track_clust, r'centroids' + DATAFRAME_EXT)
         self.final_centroids = os.path.join(self.track_final_clust, r'final_centroids' + DATAFRAME_EXT)
     
-    #------------------------------------------------------------------------------------------------------------------------------------
+    #------------------------------------------------------------------------
         # DA QUI CREO IL PATH PER I FILE IN CUI RESTITUIRE IL DATASET LEGGIBILE (COMPRESA LA FUNZIONE SEGUENTE CHE CHIAMO PROPRIO QUI SOTTO)
         self.track = os.path.join(self.bundle, r'track')
         self.track_confidences = os.path.join(self.bundle, r'track_confidences')
@@ -335,24 +335,9 @@ class Path:
     
     #*************************************************************************************************************************************    
     def load_pack(self, last_paths):
+        # CARICA UN PACK_PATH SALVATO
+        for key in last_paths:
+            self.__dict__[key] = last_paths[key][0]
         
-        self.bundle = last_paths.bundle[0]
-        self.dataset = last_paths.dataset[0]
-        self.models = last_paths.models[0]
-        self.playlistpack = last_paths.playlistpack[0]
-        self.track_blacklist = last_paths.track_blacklist[0]
-        self.sections_blacklist = last_paths.sections_blacklist[0]
-        self.segments_blacklist = last_paths.segments_blacklist[0]
-        self.track_uri_clust = last_paths.track_uri_clust[0]
-        self.track_clust = last_paths.track_clust[0]
-        self.track = last_paths.track[0]
-        self.track_confidences = last_paths.track_confidences[0]
-        self.albums = last_paths.albums[0]
-        self.artists = last_paths.artists[0]
-        self.n_playlists = last_paths.n_playlists[0]
-        self.model = last_paths.model[0]
-        self.dataset_dump = last_paths.dataset_dump[0]
-        self.clusterer_dump = last_paths.clusterer_dump[0]
-        self.centroids = last_paths.centroids[0]
         
         
