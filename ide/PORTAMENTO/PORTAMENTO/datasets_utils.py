@@ -52,7 +52,7 @@ class Dataset:
         total_songs = 0 #counter per tutte le canzoni del dataset
         
         if self.is_radar:
-            playlistpack_path = paths.map
+            playlistpack_path = paths.radarpack
             self.save_dataset = False    # Per assicurarmi che non venga salvato per errori nel chiamare la funzione
         else:
             playlistpack_path = paths.playlistpack
