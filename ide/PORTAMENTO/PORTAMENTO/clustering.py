@@ -35,7 +35,9 @@ DEFAULT_AUDIO_COLUMNS_MODE = 'black'
 class Clusterer:
     
     #*********************** INIT
-    def __init__(self, data_in = None, weights_preset = 'default'):
+    def __init__(self, data_in = None, weights_preset = 'default', return_clusters = True):
+        
+        self.return_clusters = return_clusters
         
         # SPACCHETTO IL DATASET DALL'OGGETTO DATA IN ENTRATA
         if type(data_in) is dict:
@@ -79,27 +81,25 @@ class Clusterer:
 
         labels = model.labels_   # Estraggo il vettore che indica in quale cluster è finita ogni canzone.
         
-        # SALVATAGGIO
+        
+        # ************************SALVATAGGIO
+        
         # Salvo il modello
         with open(paths.model + self.weights['id'] + ".sav", "wb+") as salva:
-            pickle.dump(model, salva)
-        # Aggiorno il percorso in cui si trova il dump
-        paths.model = paths.model + self.weights['id'] + ".sav"
+            pickle.dump(model, salva) 
+        paths.model = paths.model + self.weights['id'] + ".sav"    # Aggiorno il percorso in cui si trova il dump
         
         # Salvo il Clusterer
-        self.model = model
+        self.model = model    # Aggiungo il modello al clusterer prima di fare il dump
         with open(paths.clusterer_dump, "wb+") as salva:
             pickle.dump(self, salva)
         
-        # Salvo i centroidi
-        centroids_df = pd.DataFrame(data = centroids, columns = audio.columns)
-
-        with open(paths.centroids + ".csv", "w+") as salva:
-            export_csv = centroids_df.to_csv (paths.centroids + ".csv", index = None, header=True)    # Esporto il dataset
-            if str(export_csv) != 'None':
-                print("Errore salvando i centroidi.")
         # Salvo i clusters
-        clusters = self.save_clusters(paths, n_clusters, labels, 'track')  # salvo i risultati del clustering track
+        if self.return_clusters == True:
+            self.save_centroids(paths, centroids, audio)
+            clusters = self.save_clusters(paths, n_clusters, labels, 'track')  # salvo i risultati del clustering track
+        else:
+            clusters = []
         
         
         # PLOTTING
@@ -193,8 +193,8 @@ class Clusterer:
         
         for i in range(n_clusters): # Inizializzazione dei vettori
              salva.append(open(paths.__dict__[scope + '_uri_clust'] + r'\cluster' + str(i) + ".txt", "w+"))
-             salva_track.append(open(paths.__dict__[scope + '_clust'] + r'\track' + str(i) + ".csv", "w+"))
-             salva_meta.append(open(paths.__dict__[scope + '_clust'] + r'\meta' + str(i) + ".csv", "w+"))
+             salva_track.append(open(paths.__dict__[scope + '_final_clust'] + r'\track' + str(i) + ".csv", "w+"))
+             salva_meta.append(open(paths.__dict__[scope + '_final_clust'] + r'\meta' + str(i) + ".csv", "w+"))
              rows.append([])
         
         for song_index, label in enumerate(labels):
@@ -210,12 +210,12 @@ class Clusterer:
              cluster_meta = clusters[i][TRACK_META_TEXTUAL_COLUMNS]  # separo le informazioni testuali
              
              # salvo il dataset delle informazioni audio
-             export_csv = cluster_track.to_csv (paths.__dict__[scope + '_clust'] + r'\track' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
+             export_csv = cluster_track.to_csv (paths.__dict__[scope + '_final_clust'] + r'\track' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
              if str(export_csv) != 'None':
                  print("Errore salvando la parte track dei clusters")
              
              # salvo il dataset delle informazioni testuali
-             export_csv = cluster_meta.to_csv (paths.__dict__[scope + '_clust'] + r'\meta' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
+             export_csv = cluster_meta.to_csv (paths.__dict__[scope + '_final_clust'] + r'\meta' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
              if str(export_csv) != 'None':
                  print("Errore salvando la parte meta dei clusters") 
             
@@ -228,6 +228,15 @@ class Clusterer:
         print("https://www.spotlistr.com/search/textbox") 
         
         return clusters
+    
+    def save_centroids(self, paths, centroids, audio):
+        # Salvo i centroidi
+        centroids_df = pd.DataFrame(data = centroids, columns = audio.columns)
+
+        with open(paths.final_centroids, "w+"):
+            export_csv = centroids_df.to_csv (paths.final_centroids, index = None, header=True)    # Esporto il dataset
+            if str(export_csv) != 'None':
+                print("Errore salvando i centroidi.")
     
     #******************************************************
     def format_dataset(self, dataset):   # Funzione statica in cui decido cosa normalizzare

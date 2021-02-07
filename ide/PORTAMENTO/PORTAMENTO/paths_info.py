@@ -3,6 +3,8 @@ import pandas as pd
 import json
 import glob
 
+DATASET_README = "Qui dentro il dump è importante per il ricaricamento del dataset, mentre"
+
 # DEFAULTS ***************************************************************************************************************************
 DEFAULT_SETTINGS = {    # CI SI RIFERISCE AI PRESET ATTRAVERSO I LORO IDs.
         'axis'    : 'default',
@@ -191,25 +193,31 @@ class Path:
             os.mkdir(self.track_uri_clust)
         
         # CREO LA CARTELLA IN CUI RESTITUIRE I CLUSTERS DIVISI IN DATASETS
+        self.track_final_clust = os.path.join(self.dataset, r'final_clust')
+        if(not os.path.isdir(self.track_final_clust)):
+            os.mkdir(self.track_final_clust)
+            
+        # CREO LA CARTELLA IN CUI RESTITUIRE I CLUSTERS DEL NODO DA VISUALIZZARE DIVISI IN DATASET
         self.track_clust = os.path.join(self.dataset, r'clust')
         if(not os.path.isdir(self.track_clust)):
             os.mkdir(self.track_clust)
-    
-    #------------------------------------------------------------------------------------------------------------------------------------
-        # DA QUI CREO IL PATH PER I FILE IN CUI SALVARE IL DATASET (COMPRESA LA FUNZIONE SEGUENTE CHE CHIAMO PROPRIO QUI SOTTO)
-        self.track = os.path.join(self.dataset, r'track')
-        self.track_confidences = os.path.join(self.dataset, r'track_confidences')
-        self.albums = os.path.join(self.dataset, r'albums')
-        self.artists = os.path.join(self.dataset, r'artists')
-        self.n_playlists = os.path.join(self.dataset, r'n_playlists')
-        
+            
         # FILE IN CUI SALVO I DUMP DEL MODELLO, DEL DATASET E DEL CLUSTERER
         self.model = os.path.join(self.models, r'model_') # Il nome del file andrà completato e aggiornato nel momento del salvataggio
-        self.dataset_dump = os.path.join(self.dataset, r'dump' + DUMP_EXT)
-        self.clusterer_dump = os.path.join(self.track_clust, r'clusterer_dump' + DUMP_EXT)
+        self.dataset_dump = os.path.join(self.dataset, r'dataset_dump' + DUMP_EXT)
+        self.clusterer_dump = os.path.join(self.track_final_clust, r'clusterer_dump' + DUMP_EXT)
         
         # FILE IN CUI SALVO I CENTROIDI
-        self.centroids = os.path.join(self.track_clust, r'centroids')
+        self.centroids = os.path.join(self.track_clust, r'centroids' + DATAFRAME_EXT)
+        self.final_centroids = os.path.join(self.track_final_clust, r'final_centroids' + DATAFRAME_EXT)
+    
+    #------------------------------------------------------------------------------------------------------------------------------------
+        # DA QUI CREO IL PATH PER I FILE IN CUI RESTITUIRE IL DATASET LEGGIBILE (COMPRESA LA FUNZIONE SEGUENTE CHE CHIAMO PROPRIO QUI SOTTO)
+        self.track = os.path.join(self.bundle, r'track')
+        self.track_confidences = os.path.join(self.bundle, r'track_confidences')
+        self.albums = os.path.join(self.bundle, r'albums')
+        self.artists = os.path.join(self.bundle, r'artists')
+        self.n_playlists = os.path.join(self.bundle, r'n_playlists')
         
         
         # Costruisco i path di ogni playlist
@@ -221,7 +229,7 @@ class Path:
     #************************************************************************************************************************************
     def build_playlistpath(self, playlist_num):
           
-        playlist_path = os.path.join(self.dataset, str(playlist_num))    # Il path di ogni playlist del bundle
+        playlist_path = os.path.join(self.bundle, str(playlist_num))    # Il path di ogni playlist del bundle
         if(not os.path.isdir(playlist_path)):
                 os.mkdir(playlist_path)
 
@@ -301,10 +309,31 @@ class Path:
         pack = pd.DataFrame(self.__dict__)
         pack = pack[:1]
         
-        with open(self.last_path, "w+") as salva:
+        with open(self.last_path, "w+"):
             export_csv = pack.to_csv (self.last_path, index = None, header=True)    # Esporto il dataset
             if str(export_csv) != 'None':
                 print("Errore salvando il last_paths.")
+    
+    #*************************************************************************************************************************************    
+    def load_pack(self, last_paths):
         
+        self.bundle = last_paths.bundle[0]
+        self.dataset = last_paths.dataset[0]
+        self.models = last_paths.models[0]
+        self.playlistpack = last_paths.playlistpack[0]
+        self.track_blacklist = last_paths.track_blacklist[0]
+        self.sections_blacklist = last_paths.sections_blacklist[0]
+        self.segments_blacklist = last_paths.segments_blacklist[0]
+        self.track_uri_clust = last_paths.track_uri_clust[0]
+        self.track_clust = last_paths.track_clust[0]
+        self.track = last_paths.track[0]
+        self.track_confidences = last_paths.track_confidences[0]
+        self.albums = last_paths.albums[0]
+        self.artists = last_paths.artists[0]
+        self.n_playlists = last_paths.n_playlists[0]
+        self.model = last_paths.model[0]
+        self.dataset_dump = last_paths.dataset_dump[0]
+        self.clusterer_dump = last_paths.clusterer_dump[0]
+        self.centroids = last_paths.centroids[0]
         
         

@@ -13,24 +13,21 @@ import datasets_utils as dt
 import clustering as cl
 
 #********************************* MAIN ******************************************************
-def main():
+def main(user = r'nic', bundle_name = "sounds_of_everything", SONG_ANALYSIS_BOOL = False, NEW_LOAD = False, CMD_LINE = True):    
     
-    ''' QUESTA E' ROBA CHE SERVIVA IN SPOTIWORLD PER USARE SECTIONS E SEGMENTS:
-    # r' '  serve ad evitare che python interpreti \t come un <tab> e tutte le altre cose dovute al backslash. Conviene sempre usarlo nei path
-    percent_track_clust = 0.25  # Precisione della ricerca per track: quante canzoni dovrei mettere nello stesso gruppo rispetto a quante sono quelle totali
-    percent_segm_clust = 0.25    # Precisione della ricerca per suoni: quanti suoni dovrei mettere nello stesso gruppo rispetto a quanti sono i totali 
-    percent_sound_min = 0.3    # Percentuale di suoni di quel tipo devono esserci in una canzone per cui ci sia una somiglianza con un'altra. In termini di suoni/suoni_totali
-    percent_sound_acc = 0.1  # Ogni quanti suoni tratti dall'analisi, possiamo considerare come un solo suono all'interno di una canzone? Se è 0.2 ad esempio, suoni totali * 1/5 significa che avremo un suono ogni 5 suoni analizzati
-    track_min_confidence = 0.3    # minima accuratezza di uno dei vari parametri del risultato delle analisi di spotify per considerare la canzone
-    segm_min_confidence = 0.1    # minima accuratezza del risultato delle analisi di spotify per considerare il suono.
-    '''    
-    
+    '''
     user = r'nic'
     bundle_name = "sounds_of_everything"
     
-    SONG_ANALYSIS_BOOL = False    # BOOL PER DECIDERE SE FARE L'ANALISI APPROFONDITA O NO
-    CMD_LINE = True    # BOOL PER SAPERE SE LO STO AVVIANDO DA COMMAND_LINE O NO, SARA' PROBABILMENTE NEI PARAMETRI DI AVVIAMENTO DELLO SCRIPT
-    NEW_LOAD = False
+    SONG_ANALYSIS_BOOL :
+        BOOL PER DECIDERE SE FARE L'ANALISI APPROFONDITA O NO
+        
+    CMD_LINE:
+        BOOL PER SAPERE SE LO STO AVVIANDO DA COMMAND_LINE O NO
+    
+    NEW_LOAD:
+        BOOL PER SAPERE SE E' UN NUOVO CARICAMENTO O NO, SE L'AVVIAMENTO E' DA COMMAND LINE, VIENE CHIESTO DURANTE L'ESECUZIONE
+    '''
     
     # PARAMETRI:
     # parametri Kmeans:
@@ -64,7 +61,7 @@ def main():
     
     # Collego o creo i path del database da caricare o creare
     paths.link_database(bundle_name)
-    paths.delete_saved_clusters(paths.track_clust)
+    paths.delete_saved_clusters(paths.track_final_clust)
     paths.delete_saved_clusters(paths.track_uri_clust)
     
     if new_load:

@@ -11,23 +11,17 @@ import paths_info
 from clustering import TRACK_AUDIO_COLUMNS, TRACK_META_NUMERICAL_COLUMNS, TRACK_META_TEXTUAL_COLUMNS
 
 import pandas as pd
-import numpy as np
 
 import pickle
 
-# IMPORT PER IL PREDICT
-from sklearn.utils import check_array
-from sklearn.utils.extmath import safe_sparse_dot, row_norms
-
 def main(user, node_id):
 
-    last_path = paths_info.Path(user).last_path
+    paths = paths_info.Path(user)
     
-    paths = pd.read_csv(last_path)
+    paths.load_pack(pd.read_csv(paths.last_path))
             
-    with open(paths.clusterer_dump[0], "rb") as file:
+    with open(paths.clusterer_dump, "rb") as file:
         clusterer = pickle.load(file)
-        cluster_in_inspector = [clusterer]  # TODO: da cancellare quando hai finito di fare debugging dello script
         
     # ASSEGNAMENTI UTILI
     model = clusterer.model
@@ -36,8 +30,8 @@ def main(user, node_id):
     data_meta = track[TRACK_META_TEXTUAL_COLUMNS]  # separo le informazioni testuali
     data = [data_track, data_meta]
     
-    current_node = get_node(model.root_)
-    return_clusters(current_node, data)
+    current_node = get_node(model.root_, node_id)
+    return_clusters(current_node, data, clusterer.audio_relevant_columns, paths, 'track')
      
     return 0
 
@@ -63,17 +57,40 @@ def get_node(node, node_id, iter_index = 1):
         return node
 
         
-def return_clusters(node, data):
+def return_clusters(node, data, columns, paths, scope):
+    # Cancello il precedente return
+    paths.delete_saved_clusters(paths.track_clust)
     
-    
-    
-    pass
+    # Salvo i centroidi
+    centroids_df = pd.DataFrame(data = node.centroids_, columns = columns)
+    with open(paths.centroids, "w+"):
+        export_csv = centroids_df.to_csv (paths.centroids, index = None, header=True)    # Esporto i centroidi
+        if str(export_csv) != 'None':
+            print("Errore salvando i centroidi.")
+                
+    for i, subcluster in enumerate(node.subclusters_):
+        cluster_track = []    # cluster ausiliario usato per salvare il subcluster selezionato
+        cluster_meta = []    # cluster ausiliario usato per salvare il subcluster selezionato
+        cluster_track = data[0].iloc[subcluster.samples, :]  # seleziono le canzoni del dataframe track
+        cluster_meta = data[1].iloc[subcluster.samples, :]  # seleziono le canzoni del dataframe meta
+
+        with open(paths.__dict__[scope + '_clust'] + r'\track' + str(i) + ".csv", "w+"):
+            # salvo il dataset delle informazioni audio
+            export_csv = cluster_track.to_csv (paths.__dict__[scope + '_clust'] + r'\track' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
+            if str(export_csv) != 'None':
+                print("Errore salvando la parte track dei clusters")
+                
+        with open(paths.__dict__[scope + '_clust'] + r'\meta' + str(i) + ".csv", "w+"):
+            # salvo il dataset delle informazioni audio
+            export_csv = cluster_meta.to_csv (paths.__dict__[scope + '_clust'] + r'\meta' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
+            if str(export_csv) != 'None':
+                print("Errore salvando la parte track dei clusters")
         
         
 
 if __name__=="__main__":
     # main(sys.argv[1], sys.argv[2])
-    main('nic', "0012")     
+    main('nic', "011")     
         
         
         
