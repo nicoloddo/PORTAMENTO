@@ -20,7 +20,7 @@ import pickle
 from sklearn.utils import check_array
 from sklearn.utils.extmath import safe_sparse_dot, row_norms
 
-def main(user, node_id):
+def main(node_id, user = 'nic'):
     '''
     QUESTO SCRIPT SERVE A RESTITUIRE ALL'INTERFACCIA I CLUSTER DEL NODO IN CUI CI TROVIAMO
     '''
@@ -175,8 +175,8 @@ def return_clusters(node, data, columns, paths, scope):
       
 
 if __name__=="__main__":
-    # main(sys.argv[1], sys.argv[2])
-    main('nic', "011")     
+    main(sys.argv[1], sys.argv[2])
+    # main("011")     # Per prove
         
         
         
