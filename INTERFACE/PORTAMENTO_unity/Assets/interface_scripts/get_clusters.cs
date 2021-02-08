@@ -14,8 +14,8 @@ public class get_clusters : MonoBehaviour
 
     Dictionary<string, string> paths = new Dictionary<string, string>();
 
-    // Start is called before the first frame update
-    void Start()
+    // Awake is called during the initialization
+    void Awake()
     {
         string last_path_file;
         List<Dictionary<string, float>> centroids;
@@ -41,11 +41,36 @@ public class get_clusters : MonoBehaviour
             track_data = floats_csv_to_dict(clusters_path + @"\track" + i.ToString() + @".csv");
             meta_data = strings_csv_to_dict(clusters_path + @"\meta" + i.ToString() + @".csv");
 
+            // CONVERTO L'INFORMAZIONE IS_LEAF
+            float is_leaf = centroids[i]["is_leaf"];
+            bool is_leaf_bool = false;
+            centroids[i].Remove("is_leaf");
+            switch(is_leaf)
+            {
+                case 0:
+                    is_leaf_bool = false;
+                    break;
+                case 1:
+                    is_leaf_bool = true;
+                    break;
+                default:
+                    throw new System.Exception("Il valore di is_leaf non era nè 1 nè 0.");
+                    break;
+            }
+
+
             // ISTANZIO IL CLUSTER E INSERISCO LE INFORMAZIONI
             GameObject cluster = Instantiate(cluster_prefab);
+            cluster.GetComponent<cluster>().set_is_leaf(is_leaf_bool);
             cluster.GetComponent<cluster>().set_centroid(centroids[i]);
             cluster.GetComponent<cluster>().set_cluster_data(track_data, meta_data);
         }
+    }
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        
     }
 
     // Update is called once per frame

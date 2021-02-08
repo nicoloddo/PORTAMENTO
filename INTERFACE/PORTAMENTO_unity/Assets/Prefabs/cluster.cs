@@ -8,6 +8,7 @@ public class cluster : MonoBehaviour
     private List<Dictionary<string, string>> meta = new List<Dictionary<string, string>>();
 
     public Dictionary<string, float> centroid = new Dictionary<string, float>();
+    public bool is_leaf;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +20,11 @@ public class cluster : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void set_is_leaf(bool is_leaf_bool)
+    {
+        is_leaf = is_leaf_bool;
     }
 
     public void set_centroid(Dictionary<string, float> centroid_params)
