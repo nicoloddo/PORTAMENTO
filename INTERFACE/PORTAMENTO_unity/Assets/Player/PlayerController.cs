@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // 
+    // ASSEGNAZIONI UTILI
     private Animator animator;
     private CharacterController characterController;
+
+    // LINKS
+    public GameObject camera;
 
     // INPUTS
     private float inputUpward; // Per muoversi verso sù
@@ -32,7 +35,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
 
@@ -46,14 +49,25 @@ public class PlayerController : MonoBehaviour
 
         // Controller della rotazione, è fatto così per evitare la rotazione in z, che può avvenire per somma di rotazioni in x e y
         totalXRot += Input.GetAxis("Mouse X") * rotateSpeedX;
-        
         totalYRot -= Input.GetAxis("Mouse Y") * rotateSpeedY;
-        transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
+
+        transform.forward = camera.transform.forward;
+
+        if (inputVertical > 0)
+        {
+            camera.transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
+        }
+        else
+        {
+            camera.transform.rotation = transform.rotation;
+            transform.rotation = Quaternion.Euler(0f, totalXRot, 0f);
+            camera.transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
+        }
 
         // Movimento
-        characterController.Move(transform.forward * inputVertical * forwardSpeed);
-        characterController.Move(transform.right * inputHorizontal * forwardSpeed);
-        characterController.Move(transform.up * inputUpward * upwardSpeed);
+        characterController.Move(camera.transform.forward * inputVertical * forwardSpeed);
+        characterController.Move(camera.transform.right * inputHorizontal * forwardSpeed);
+        characterController.Move(camera.transform.up * inputUpward * upwardSpeed);
 
     }
 

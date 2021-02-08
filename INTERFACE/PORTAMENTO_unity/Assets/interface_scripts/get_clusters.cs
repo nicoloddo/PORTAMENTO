@@ -55,7 +55,7 @@ public class get_clusters : MonoBehaviour
                     break;
                 default:
                     throw new System.Exception("Il valore di is_leaf non era nè 1 nè 0.");
-                    break;
+                    // break;
             }
 
 
