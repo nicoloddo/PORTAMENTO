@@ -69,7 +69,8 @@ def main(user = r'nic', bundle_name = "sounds_of_everything", NEW_LOAD = False, 
         input("Inserisci gli uri delle playlist nel file creato in bundles/" + bundle_name + ", poi clicca invio. \n")
     
     # Carico il dataset
-    loaded = dt.Dataset(paths, new_load, SAVE_DATASET, SONG_ANALYSIS_BOOL)
+    is_radar = False
+    loaded = dt.Dataset(paths, is_radar, new_load, SAVE_DATASET, SONG_ANALYSIS_BOOL)
     data = loaded.dataset
     
 

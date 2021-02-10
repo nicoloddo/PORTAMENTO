@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 
 # PER LA CLUSTERIZZAZIONE
-from sklearn.cluster import KMeans
+from sklearn.cluster import AgglomerativeClustering
 from birch_mod import Birch
 
 # PER IL SALVATAGGIO DEL MODELLO
@@ -50,7 +50,7 @@ class Clusterer:
         self.weights = weights_preset    # salvo nel clusterer le impostazioni di weighting
         
         
-    def cluster_new_dataset(self, paths, n_clusters_kmeans = 30, threshold = 0.2, branch_factor = 5, n_clusters_birch = None, algorithm = 'birch'):
+    def cluster_new_dataset(self, paths, birch_threshold = 0.2, branch_factor = 5, n_clusters_birch = None, algorithm = 'birch'):
         
         #************************************************** CLUSTERING DI 'TRACK'
         track = self.dataset['track']
@@ -67,13 +67,8 @@ class Clusterer:
         data_array = audio.to_numpy()    # linearizzo perchè serve alla funzione di clusterizzazione
         
         # CLUSTERIZZAZIONE
-        if algorithm == 'kmeans':
-            model = KMeans(n_clusters = n_clusters_kmeans)
-            model.fit(data_array)  # Clusterizzo
-            centroids = model.cluster_centers_    # Estraggo cluster_centers dalla clusterizzazione
-            n_clusters = n_clusters_kmeans
-        elif algorithm == 'birch':
-            model = Birch(threshold = threshold, branching_factor = branch_factor, n_clusters = n_clusters_birch)
+        if algorithm == 'birch':
+            model = Birch(threshold = birch_threshold, branching_factor = branch_factor, n_clusters = n_clusters_birch)
             model.fit(data_array)  # Clusterizzo
             centroids = model.subcluster_centers_    # Estraggo i centroidi
             n_clusters = centroids.shape[0]
