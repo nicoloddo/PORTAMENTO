@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class cluster : MonoBehaviour
+public class Cluster : MonoBehaviour
 {
     private List<Dictionary<string, float>> track = new List<Dictionary<string, float>>();
     private List<Dictionary<string, string>> meta = new List<Dictionary<string, string>>();
+    private string[] axis = new string[3];  // I nomi degli assi di riferimento (keys del dizionario delle caratteristiche track)
+    int axis_multiplier = 100;
 
     public Dictionary<string, float> centroid = new Dictionary<string, float>();
     public bool is_leaf;
@@ -13,7 +15,7 @@ public class cluster : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        transform.position = new Vector3(centroid[axis[0]] * axis_multiplier, centroid[axis[1]] * axis_multiplier, centroid[axis[2]] * axis_multiplier);
     }
 
     // Update is called once per frame
@@ -37,4 +39,12 @@ public class cluster : MonoBehaviour
         track = track_data;
         meta = meta_data;
     }
+
+    public void set_axis(string x, string y, string z)
+    {
+        axis[0] = x;
+        axis[1] = y;
+        axis[2] = z;
+    }
+
 }
