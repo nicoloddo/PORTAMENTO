@@ -35,9 +35,10 @@ DEFAULT_AUDIO_COLUMNS_MODE = 'black'
 class Clusterer:
     
     #*********************** INIT
-    def __init__(self, data_in = None, weights_preset = 'default', return_clusters = True):
+    def __init__(self, data_in = None, weights_preset = 'default', return_clusters = True, save_final_clusters = False):
         
         self.return_clusters = return_clusters
+        self.save_final_clusters = save_final_clusters
         
         # SPACCHETTO IL DATASET DALL'OGGETTO DATA IN ENTRATA
         if type(data_in) is dict:
@@ -50,7 +51,7 @@ class Clusterer:
         self.weights = weights_preset    # salvo nel clusterer le impostazioni di weighting
         
         
-    def cluster_new_dataset(self, paths, birch_threshold = 0.2, branch_factor = 5, n_clusters_birch = None, algorithm = 'birch'):
+    def cluster_new_dataset(self, paths, birch_threshold = 0.2, branch_factor = 10, n_clusters_birch = None, algorithm = 'birch'):
         
         #************************************************** CLUSTERING DI 'TRACK'
         track = self.dataset['track']
@@ -187,16 +188,17 @@ class Clusterer:
         clusterized_df = self.dataset[scope]
         
         for i in range(n_clusters): # Inizializzazione dei vettori
-             salva.append(open(paths.__dict__[scope + '_uri_clust'] + r'\cluster' + str(i) + ".txt", "w+"))
-             salva_track.append(open(paths.__dict__[scope + '_final_clust'] + r'\track' + str(i) + ".csv", "w+"))
-             salva_meta.append(open(paths.__dict__[scope + '_final_clust'] + r'\meta' + str(i) + ".csv", "w+"))
-             rows.append([])
+            if(self.save_final_clusters):
+                salva.append(open(paths.__dict__[scope + '_uri_clust'] + r'\cluster' + str(i) + ".txt", "w+"))
+                salva_track.append(open(paths.__dict__[scope + '_final_clust'] + r'\track' + str(i) + ".csv", "w+"))
+                salva_meta.append(open(paths.__dict__[scope + '_final_clust'] + r'\meta' + str(i) + ".csv", "w+"))
+            rows.append([])
         
         for song_index, label in enumerate(labels):
-            song_id = clusterized_df.at[song_index, 'id']
-            uri = "spotify:track:" + song_id
-            salva[label].write(uri + '\n')
-            
+            if(self.save_final_clusters):
+                song_id = clusterized_df.at[song_index, 'id']
+                uri = "spotify:track:" + song_id
+                salva[label].write(uri + '\n')
             rows[label].append(song_index)    # mi segno la canzone nella riga giusta
             
         for i in range(n_clusters): # Chiudo i files             
@@ -204,23 +206,24 @@ class Clusterer:
              cluster_track = clusters[i][TRACK_AUDIO_COLUMNS + TRACK_META_NUMERICAL_COLUMNS]   # separo le informazioni numeriche
              cluster_meta = clusters[i][TRACK_META_TEXTUAL_COLUMNS]  # separo le informazioni testuali
              
-             # salvo il dataset delle informazioni audio
-             export_csv = cluster_track.to_csv (paths.__dict__[scope + '_final_clust'] + r'\track' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
-             if str(export_csv) != 'None':
-                 print("Errore salvando la parte track dei clusters")
-             
-             # salvo il dataset delle informazioni testuali
-             export_csv = cluster_meta.to_csv (paths.__dict__[scope + '_final_clust'] + r'\meta' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
-             if str(export_csv) != 'None':
-                 print("Errore salvando la parte meta dei clusters") 
-            
-             salva_track[i].close()
-             salva_meta[i].close()
-             salva[i].close()
-        
-        print("\n**I clusters son stati salvati nella cartella!**  PATH: " + paths.__dict__[scope + '_uri_clust'])
-        print("\nUSA QUESTO STRUMENTO PER VEDERE LE CANZONI IN UN CLUSTER:")
-        print("https://www.spotlistr.com/search/textbox") 
+             if(self.save_final_clusters):
+                 # salvo il dataset delle informazioni audio
+                 export_csv = cluster_track.to_csv (paths.__dict__[scope + '_final_clust'] + r'\track' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
+                 if str(export_csv) != 'None':
+                     print("Errore salvando la parte track dei clusters")
+                 
+                 # salvo il dataset delle informazioni testuali
+                 export_csv = cluster_meta.to_csv (paths.__dict__[scope + '_final_clust'] + r'\meta' + str(i) + ".csv", index = None, header=True)    # Esporto il dataset
+                 if str(export_csv) != 'None':
+                     print("Errore salvando la parte meta dei clusters") 
+                
+                 salva_track[i].close()
+                 salva_meta[i].close()
+                 salva[i].close()
+        if(self.save_final_clusters):
+            print("\n**I clusters son stati salvati nella cartella!**  PATH: " + paths.__dict__[scope + '_uri_clust'])
+            print("\nUSA QUESTO STRUMENTO PER VEDERE LE CANZONI IN UN CLUSTER:")
+            print("https://www.spotlistr.com/search/textbox") 
         
         return clusters
     

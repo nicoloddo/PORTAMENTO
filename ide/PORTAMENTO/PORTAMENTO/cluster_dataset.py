@@ -111,5 +111,5 @@ def main(user = r'nic', bundle_name = "sounds_of_everything", NEW_LOAD = False, 
     return 0
 
 if __name__=="__main__":
-    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], False)
-    # main()    # Per prove
+    #main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], False)
+    main()    # Per prove
