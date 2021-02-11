@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public string user = "nic";
+
     private Settings settings = new Settings();
     private static string PATHS_FILE_NAME = @"\last_path.csv";
+    private static string PATH_CLUSTERS_INTERFACE_SCRIPT = @"\ide\PORTAMENTO\PORTAMENTO\clusters_interface.py";
 
     public GameObject cluster_prefab;
 
     private string current_path = System.IO.Directory.GetCurrentDirectory();
-    public string base_path;
+    public string root_path;
     public int n_clusters;
 
     Dictionary<string, string> paths = new Dictionary<string, string>();
@@ -26,8 +29,8 @@ public class GameManager : MonoBehaviour
         Dictionary<string, string> axis;
         string clusters_path;
 
-        base_path = current_path.Remove(current_path.Length - 27);  // 27 PERCHE' QUESTO E' IL NUMERO DI CARATTERI DA CANCELLARE PER OTTENERE IL base_path
-        last_path_file = string.Concat(base_path, PATHS_FILE_NAME);
+        root_path = current_path.Remove(current_path.Length - 27);  // 27 PERCHE' QUESTO E' IL NUMERO DI CARATTERI DA CANCELLARE PER OTTENERE IL base_path
+        last_path_file = string.Concat(root_path, PATHS_FILE_NAME);
 
         paths = strings_csv_to_dict(last_path_file)[0];
 
@@ -164,6 +167,27 @@ public class GameManager : MonoBehaviour
                 return dict;
         }
         throw new System.Exception("Nessun dict ha questo id.");
+    }
+
+    public string runClustersInterface(string current_cluster_id, string cluster_id)
+    {
+        current_cluster_id = current_cluster_id + cluster_id;   // Aggioro il current_cluster_id, che è tenuto all'interno del player.
+
+        System.Diagnostics.Process process = new System.Diagnostics.Process();
+        process.StartInfo.FileName = string.Concat(root_path, PATH_CLUSTERS_INTERFACE_SCRIPT); ;
+        process.StartInfo.Arguments = string.Concat(current_cluster_id, " ", user);
+
+        //use to create no window when running cmd script
+        process.StartInfo.UseShellExecute = true;
+        process.StartInfo.CreateNoWindow = true;
+        process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+
+        process.Start();
+
+        //if you want program to halt until script is finished
+        process.WaitForExit();
+
+        return current_cluster_id;
     }
 }
 

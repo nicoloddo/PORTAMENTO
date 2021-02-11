@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Cluster : MonoBehaviour
 {
+    string id;
     private List<Dictionary<string, float>> track = new List<Dictionary<string, float>>();
     private List<Dictionary<string, string>> meta = new List<Dictionary<string, string>>();
     private string[] axis = new string[3];  // I nomi degli assi di riferimento (keys del dizionario delle caratteristiche track)
@@ -22,6 +23,11 @@ public class Cluster : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void set_id(string clust_id)
+    {
+        id = clust_id;
     }
 
     public void set_is_leaf(bool is_leaf_bool)
@@ -45,6 +51,11 @@ public class Cluster : MonoBehaviour
         axis[0] = x;
         axis[1] = y;
         axis[2] = z;
+    }
+
+    public string get_id()
+    {
+        return id;
     }
 
 }

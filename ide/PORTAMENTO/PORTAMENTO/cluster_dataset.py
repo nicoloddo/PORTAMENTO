@@ -14,7 +14,7 @@ import datasets_utils as dt
 import clustering as cl
 
 #********************************* MAIN ******************************************************
-def main(user = r'nic', bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = True, SONG_ANALYSIS_BOOL = False, CMD_LINE = True):    
+def main(bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = True, SONG_ANALYSIS_BOOL = False, CMD_LINE = True, user = r'nic'):    
     
     '''   
     QUESTO SCRIPT SERVE A CLUSTERIZZARE UN DATASET QUALUNQUE CHE POI UTILIZZEREMO PER I CLUSTER DELL'INTERFACCIA.

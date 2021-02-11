@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
 
     // LINKS
     public GameObject camera;
+    public GameManager gameManager;
 
     // INPUTS
     private float inputUpward; // Per muoversi verso sù
@@ -25,9 +26,27 @@ public class PlayerController : MonoBehaviour
     public float lateralSpeed = 0.2f; // Velocità movimento laterale
     public float upwardSpeed = 0.3f; // Velocità di levitazione
 
+    // NAVIGAZIONE
+    public string current_cluster_id = "0";
+
+    private void Awake()
+    {
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        if (PlayerPrefs.HasKey("current_cluster_id"))
+        {
+            current_cluster_id = PlayerPrefs.GetString("current_cluster_id");
+        }
+        else
+        {
+            current_cluster_id = "0";
+        }
+
+        gameManager = FindObjectOfType<GameManager>();
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
     }
@@ -81,6 +100,16 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    public void enterCluster(string cluster_id)
+    {
+        current_cluster_id = gameManager.runClustersInterface(current_cluster_id, cluster_id);
+        PlayerPrefs.SetString("current_cluster_id", current_cluster_id);
+    }
 
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.DeleteAll();
+    }
 
 }
