@@ -1,9 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Diagnostics;
+using System.Threading;
+using System.Text;
 
 public class GameManager : MonoBehaviour
 {
+    // PERCORSO DELL'ESEGUIBILE DI PYTHON, DA OTTENERE DURANTE L'INSTALLAZIONE MAGARI
+    public string python_path = @"D:\Anaconda3\python.exe";
+
     public string user = "nic";
 
     private Settings settings = new Settings();
@@ -167,24 +173,43 @@ public class GameManager : MonoBehaviour
         throw new System.Exception("Nessun dict ha questo id.");
     }
 
+    public void boh(string current_cluster_id)
+    {
+        var thread = new Thread(delegate () { runClustersInterface(current_cluster_id); });
+        thread.Start();
+    }
     public void runClustersInterface(string current_cluster_id)
     {
-        string process_path = string.Concat(root_path, PATH_CLUSTERS_INTERFACE_SCRIPT);
-        string process_arguments = string.Concat(current_cluster_id, " ", user);
-        System.Diagnostics.Process process = new System.Diagnostics.Process();
+        string process_path = python_path;
+        string script_path = string.Concat(root_path, PATH_CLUSTERS_INTERFACE_SCRIPT);
+        string process_arguments = string.Concat(script_path, " ", current_cluster_id, " ", user);
 
-        process.StartInfo.FileName = process_path;
-        process.StartInfo.Arguments = process_arguments;
+        var psi = new ProcessStartInfo(process_path, process_arguments);
+        psi.FileName = process_path;
+        psi.Arguments = script_path;
 
-        //use to create no window when running cmd script
-        process.StartInfo.UseShellExecute = true;
-        process.StartInfo.CreateNoWindow = true;
-        process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+        // Process config
+        psi.UseShellExecute = false;
+        psi.CreateNoWindow = false;
+        psi.RedirectStandardOutput = true;
+        psi.RedirectStandardError = true;
 
-        process.Start();
+        // Execute process and get output
+        var results = "nothing";
+        var errors = "nothing";
 
-        //if you want program to halt until script is finished
-        process.WaitForExit();
+        using (var process = Process.Start(psi))
+        {
+            results = process.StandardOutput.ReadToEnd();
+            errors = process.StandardError.ReadToEnd();
+        }
+
+        StringBuilder buffy = new StringBuilder();
+        buffy.Append(results);
+        buffy.Append("\n\n");
+        buffy.Append(errors);
+
+        UnityEngine.Debug.Log(buffy.ToString());
     }
 }
 
