@@ -8,7 +8,8 @@ using System.Text;
 public class GameManager : MonoBehaviour
 {
     // PERCORSO DELL'ESEGUIBILE DI PYTHON, DA OTTENERE DURANTE L'INSTALLAZIONE MAGARI
-    public string python_path = @"D:\Anaconda3\python.exe";
+    private string anaconda_activate_path = @"D:\Anaconda3\Scripts\activate";
+    private string anaconda_env = "base";
 
     public string user = "nic";
 
@@ -173,24 +174,21 @@ public class GameManager : MonoBehaviour
         throw new System.Exception("Nessun dict ha questo id.");
     }
 
-    public void boh(string current_cluster_id)
-    {
-        var thread = new Thread(delegate () { runClustersInterface(current_cluster_id); });
-        thread.Start();
-    }
     public void runClustersInterface(string current_cluster_id)
     {
-        string process_path = python_path;
+        string process_path = @"CMD.exe";
         string script_path = string.Concat(root_path, PATH_CLUSTERS_INTERFACE_SCRIPT);
-        string process_arguments = string.Concat(script_path, " ", current_cluster_id, " ", user);
+        string script_arguments = string.Concat(current_cluster_id, " ", user);
+        string process_arguments = string.Concat(@"/C ", anaconda_activate_path, " ", anaconda_env, " && ", "python ", script_path, " ", script_arguments);
+        // '/C' è molto importante qui: senza di quello non funziona e deve precedere i comandi da dare al prompt
 
-        var psi = new ProcessStartInfo(process_path, process_arguments);
+        var psi = new ProcessStartInfo();
         psi.FileName = process_path;
-        psi.Arguments = script_path;
+        psi.Arguments = process_arguments;
 
         // Process config
         psi.UseShellExecute = false;
-        psi.CreateNoWindow = false;
+        psi.CreateNoWindow = true;
         psi.RedirectStandardOutput = true;
         psi.RedirectStandardError = true;
 
@@ -209,8 +207,9 @@ public class GameManager : MonoBehaviour
         buffy.Append("\n\n");
         buffy.Append(errors);
 
-        UnityEngine.Debug.Log(buffy.ToString());
+        UnityEngine.Debug.Log("Script: " + buffy.ToString());
     }
+
 }
 
 [System.Serializable]

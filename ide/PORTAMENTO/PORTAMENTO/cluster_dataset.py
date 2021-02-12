@@ -37,8 +37,8 @@ def main(bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = 
     
     
     # ************* INIZIO
-    
-    paths = paths_info.Path(user)    # COLLEGO I PATH ALLE MIE STRUTTURE
+    root = r'D:\PROJECTS\PORTAMENTO'
+    paths = paths_info.Path(user, root)    # COLLEGO I PATH ALLE MIE STRUTTURE
     
     # IMPORTO LE SETTINGS
     with open(paths.settings, 'r') as settings:

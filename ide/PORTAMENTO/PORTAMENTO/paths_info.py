@@ -111,11 +111,10 @@ class Path:
     
     songpack = []
     
-    def __init__(self, user):    
+    def __init__(self, user, root):    
         
         # COSTRUISCO IL PATH BASE
-        self.root = os.getcwd()
-        self.root = self.root[:-26] # 26 PERCHE' QUESTO E' IL NUMERO DI CARATTERI DA CANCELLARE DATI DA "ide\PORTAMENTO\PORTAMENTO". DA RIACCORDARE SE SI CAMBIANO NOMI ALLE DIRECTORY
+        self.root = root
         self.base = self.root + r'\users\nic'
         
         # COLLEGO IL PATH DEL LAST_PATH CHE SERVE ALL'INTERFACCIA

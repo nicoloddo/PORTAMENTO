@@ -24,8 +24,8 @@ def main(node_id, user = 'nic'):
     '''
     QUESTO SCRIPT SERVE A RESTITUIRE ALL'INTERFACCIA I CLUSTER DEL NODO IN CUI CI TROVIAMO
     '''
-
-    paths = paths_info.Path(user)
+    root = r'D:\PROJECTS\PORTAMENTO'
+    paths = paths_info.Path(user, root)
     
     paths.load_pack(pd.read_csv(paths.last_path))
     
@@ -69,6 +69,7 @@ def main(node_id, user = 'nic'):
             if str(export_csv) != 'None':
                 print("Errore salvando la parte meta del radar")
     
+    print("node_id: " + node_id) # Informazione mandata al debugging nell'interfaccia
     
     return 0
 
@@ -176,7 +177,7 @@ def return_clusters(node, data, columns, paths, scope):
 
 if __name__=="__main__":
     main(sys.argv[1], sys.argv[2])
-    # main("011")     # Per avvio dall'ide
+    #main("0")     # Per avvio dall'ide
         
         
         

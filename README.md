@@ -1,4 +1,7 @@
 # PORTAMENTO 
+ATTENZIONE: NEL CODICE VI SONO UN PO' DI PATHS CHE SAREBBERO DA CAMBIARE PER IL FUNZIONAMENTO IN COMPUTER DIVERSI.
+Sono presenti nel GameManager e poi negli script python col main. 
+
 Portamento parte da una riscrittura del progetto "**SpotiWorld**" per la catalogazione di musica tramite analisi della traccia.
 Il cuore del software è scritto in Python, l'interfaccia invece è scritta in C# e sfrutta l'editor Unity e il suo 3D Engine.
 
