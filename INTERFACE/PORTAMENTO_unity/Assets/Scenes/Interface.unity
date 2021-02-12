@@ -244,8 +244,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6139d82521037d843bb2c486fd86e14a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  user: nic
   cluster_prefab: {fileID: 3540678583313869968, guid: 4295a1791b09a9e4c8e625283bb353d0, type: 3}
-  base_path: 
+  root_path: 
   n_clusters: 0
 --- !u!4 &1207135409
 Transform:
@@ -271,6 +272,10 @@ PrefabInstance:
     - target: {fileID: 2282478500844428254, guid: 88ebb03da2be0ff4cb531b2e792b8f3d, type: 3}
       propertyPath: m_Name
       value: Fri
+      objectReference: {fileID: 0}
+    - target: {fileID: 2282478500844428254, guid: 88ebb03da2be0ff4cb531b2e792b8f3d, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 3024070128982206925, guid: 88ebb03da2be0ff4cb531b2e792b8f3d, type: 3}
       propertyPath: m_RootOrder

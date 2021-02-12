@@ -18,10 +18,19 @@ public class GameManager : MonoBehaviour
 
     Dictionary<string, string> paths = new Dictionary<string, string>();
 
-    // Awake is called during the initialization
-    void Awake()
+    private void Awake()
     {
-        string last_path_file;
+        root_path = current_path.Remove(current_path.Length - 27);  // 27 PERCHE' QUESTO E' IL NUMERO DI CARATTERI DA CANCELLARE PER OTTENERE IL base_path
+        string last_path_file = string.Concat(root_path, PATHS_FILE_NAME);
+
+        paths = strings_csv_to_dict(last_path_file)[0];
+        // OTTENGO LE INFORMAZIONI DI IMPOSTAZIONE
+        settings.get_settings(paths["settings"]);   // Ottengo le settings
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
         List<Dictionary<string, float>> centroids;
         List<Dictionary<string, float>> track_data;
         List<Dictionary<string, string>> meta_data;
@@ -29,16 +38,9 @@ public class GameManager : MonoBehaviour
         Dictionary<string, string> axis;
         string clusters_path;
 
-        root_path = current_path.Remove(current_path.Length - 27);  // 27 PERCHE' QUESTO E' IL NUMERO DI CARATTERI DA CANCELLARE PER OTTENERE IL base_path
-        last_path_file = string.Concat(root_path, PATHS_FILE_NAME);
-
-        paths = strings_csv_to_dict(last_path_file)[0];
-
         clusters_path = paths["track_clust"];
 
         // ********************* DA QUI ESTRAPOLO LE INFORMAZIONI NEI .CSV
-        // OTTENGO LE INFORMAZIONI DI IMPOSTAZIONE
-        settings.get_settings(paths["settings"]);   // Ottengo le settings
         axis_packs = strings_csv_to_dict(paths["axis_table"]);
         axis = select_axis(axis_packs, settings.axis);
 
@@ -54,6 +56,8 @@ public class GameManager : MonoBehaviour
             meta_data = strings_csv_to_dict(clusters_path + @"\meta" + i.ToString() + @".csv");
 
             // CONVERTO L'INFORMAZIONE IS_LEAF
+            // L'INFORMAZIONE IS_LEAF E' MOLTO IMPORTANTE PERCHE' SE UN CLUSTER E' FOGLIA, NON BISOGNA RIAVVIARE clusters_interface.py
+            // BISOGNA INFATTI NELLA PROSSIMA SCENA MOSTRARE TUTTE LE CANZONI APPARTENENTI AL CLUSTER E NON ALTRI CLUSTER.
             float is_leaf = centroids[i]["is_leaf"];
             bool is_leaf_bool = false;
             centroids[i].Remove("is_leaf");
@@ -78,12 +82,6 @@ public class GameManager : MonoBehaviour
             cluster.GetComponent<Cluster>().set_cluster_data(track_data, meta_data);
             cluster.GetComponent<Cluster>().set_axis(axis["axis1"], axis["axis2"], axis["axis3"]);
         }
-    }
-
-    // Start is called before the first frame update
-    private void Start()
-    {
-        
     }
 
     // Update is called once per frame
@@ -169,13 +167,14 @@ public class GameManager : MonoBehaviour
         throw new System.Exception("Nessun dict ha questo id.");
     }
 
-    public string runClustersInterface(string current_cluster_id, string cluster_id)
+    public void runClustersInterface(string current_cluster_id)
     {
-        current_cluster_id = current_cluster_id + cluster_id;   // Aggioro il current_cluster_id, che è tenuto all'interno del player.
-
+        string process_path = string.Concat(root_path, PATH_CLUSTERS_INTERFACE_SCRIPT);
+        string process_arguments = string.Concat(current_cluster_id, " ", user);
         System.Diagnostics.Process process = new System.Diagnostics.Process();
-        process.StartInfo.FileName = string.Concat(root_path, PATH_CLUSTERS_INTERFACE_SCRIPT); ;
-        process.StartInfo.Arguments = string.Concat(current_cluster_id, " ", user);
+
+        process.StartInfo.FileName = process_path;
+        process.StartInfo.Arguments = process_arguments;
 
         //use to create no window when running cmd script
         process.StartInfo.UseShellExecute = true;
@@ -186,8 +185,6 @@ public class GameManager : MonoBehaviour
 
         //if you want program to halt until script is finished
         process.WaitForExit();
-
-        return current_cluster_id;
     }
 }
 

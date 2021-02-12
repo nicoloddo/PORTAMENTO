@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -31,12 +32,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
         if (PlayerPrefs.HasKey("current_cluster_id"))
         {
             current_cluster_id = PlayerPrefs.GetString("current_cluster_id");
@@ -51,6 +46,12 @@ public class PlayerController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
     }
 
+    void Start()
+    {
+        // DEVO RICORDARMI, PRIMA DI AVVIARE IL "VIAGGIO" DI UTILIZZARE LO SCRIPT start_trip.py
+        gameManager.runClustersInterface(current_cluster_id);   // All'inizio del caricamento della scena eseguiamo il ClustersInterface
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -60,6 +61,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // ******************* GESTIONE DEL MOVIMENTO
         inputVertical = Input.GetAxis("Vertical");
         inputHorizontal = Input.GetAxis("Horizontal"); 
         inputUpward = Input.GetAxis("Jump");
@@ -88,6 +90,7 @@ public class PlayerController : MonoBehaviour
         characterController.Move(camera.transform.right * inputHorizontal * forwardSpeed);
         characterController.Move(camera.transform.up * inputUpward * upwardSpeed);
 
+        // ******************* FINE GESTIONE MOVIMENTO
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -102,8 +105,10 @@ public class PlayerController : MonoBehaviour
 
     public void enterCluster(string cluster_id)
     {
-        current_cluster_id = gameManager.runClustersInterface(current_cluster_id, cluster_id);
+        current_cluster_id = current_cluster_id + cluster_id;   // Aggiorno il current_cluster_id, che è tenuto all'interno del player.
         PlayerPrefs.SetString("current_cluster_id", current_cluster_id);
+        
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Ricarico la scena
     }
 
 
