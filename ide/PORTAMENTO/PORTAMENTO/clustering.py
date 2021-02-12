@@ -35,7 +35,7 @@ DEFAULT_AUDIO_COLUMNS_MODE = 'black'
 class Clusterer:
     
     #*********************** INIT
-    def __init__(self, data_in = None, weights_preset = 'default', return_clusters = True, save_final_clusters = False):
+    def __init__(self, data_in = None, weights_preset = 'default', save_final_clusters = False, return_clusters = True):
         
         self.return_clusters = return_clusters
         self.save_final_clusters = save_final_clusters
@@ -51,7 +51,7 @@ class Clusterer:
         self.weights = weights_preset    # salvo nel clusterer le impostazioni di weighting
         
         
-    def cluster_new_dataset(self, paths, birch_threshold = 0.2, branch_factor = 10, n_clusters_birch = None, algorithm = 'birch'):
+    def cluster_new_dataset(self, paths, birch_threshold = 0.2, branch_factor = 5, n_clusters_birch = None, algorithm = 'birch'):
         
         #************************************************** CLUSTERING DI 'TRACK'
         track = self.dataset['track']

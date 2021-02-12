@@ -29,5 +29,5 @@ def build_user_path(user):
 
 
 if __name__=="__main__":
-    main(sys.argv[1])
-    #main()    # Per prove
+    #main(sys.argv[1])
+    main()    # Per avvio dall'ide

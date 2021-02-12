@@ -14,7 +14,7 @@ import datasets_utils as dt
 import clustering as cl
 
 #********************************* MAIN ******************************************************
-def main(bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = True, SONG_ANALYSIS_BOOL = False, CMD_LINE = True, user = r'nic'):    
+def main(bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = True, SAVE_FINAL_CLUSTERS = False, SONG_ANALYSIS_BOOL = False, CMD_LINE = True, user = r'nic'):    
     
     '''   
     QUESTO SCRIPT SERVE A CLUSTERIZZARE UN DATASET QUALUNQUE CHE POI UTILIZZEREMO PER I CLUSTER DELL'INTERFACCIA.
@@ -30,13 +30,13 @@ def main(bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = 
         BOOL PER SAPERE SE E' UN NUOVO CARICAMENTO O NO, SE L'AVVIAMENTO E' DA COMMAND LINE, VIENE CHIESTO DURANTE L'ESECUZIONE
     '''
     
-    # PARAMETRI:
-    # parametri Kmeans:
-    n_clusters_kmeans = 30    
+    # PARAMETRI:   
     # parametri Birch
-    n_clusters_birch = None
-    threshold = 0.5
-    branch_fact = 50
+    birch_threshold = 0.15
+    branch_factor = 15
+    
+    
+    # ************* INIZIO
     
     paths = paths_info.Path(user)    # COLLEGO I PATH ALLE MIE STRUTTURE
     
@@ -79,11 +79,11 @@ def main(bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = 
         input("Caricamento avvenuto, premi invio per avviare la clusterizzazione.\n")
     
     # Creo il clusterer       
-    clust = cl.Clusterer(data, weights)
+    clust = cl.Clusterer(data, weights, SAVE_FINAL_CLUSTERS)
     # Avvio il clustering
-    params = False    # se usare i parametri inseriti dall'utente o i default
+    params = True    # se usare i parametri inseriti dall'utente o i default
     if params == True:
-        clusters = clust.cluster_new_dataset(paths, n_clusters_kmeans, n_clusters_birch, threshold, branch_fact) # in ingresso prende i parametri dell'algoritmo utilizzato
+        clusters = clust.cluster_new_dataset(paths, birch_threshold, branch_factor) # in ingresso prende i parametri dell'algoritmo utilizzato
     else:
         clusters = clust.cluster_new_dataset(paths) # parametri di default
     
@@ -112,4 +112,4 @@ def main(bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = 
 
 if __name__=="__main__":
     #main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], False)
-    main()    # Per prove
+    main()    # Per avvio dall'ide

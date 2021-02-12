@@ -176,7 +176,7 @@ def return_clusters(node, data, columns, paths, scope):
 
 if __name__=="__main__":
     main(sys.argv[1], sys.argv[2])
-    # main("011")     # Per prove
+    # main("011")     # Per avvio dall'ide
         
         
         
