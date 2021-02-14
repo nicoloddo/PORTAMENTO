@@ -10,10 +10,12 @@ public class SongMenu : MonoBehaviour
 
     public GameObject FeaturesContainer;
     private Text featuresLabel;
+    private GameObject player;
 
     // Start is called before the first frame update
     void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
         featuresLabel = FeaturesContainer.GetComponentInChildren<Text>();
         featuresLabel.text = "Premi una canzone per vedere le sue caratteristiche qui.";
     }
@@ -45,7 +47,7 @@ public class SongMenu : MonoBehaviour
             {
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
-                background.GetComponentInChildren<Text>().text = "Enter Cluster\n" + "[" + cluster_id + "]";
+                background.GetComponentInChildren<Text>().text = "Enter Cluster\n" + "[" + player.GetComponent<PlayerController>().current_cluster_id + cluster_id + "]";
 
                 button.onClick.AddListener(() => launch_button_enter(cluster_id));
             }
@@ -150,7 +152,11 @@ public class SongMenu : MonoBehaviour
                     }
                     else if (key == "tempo")
                     {
-                        featuresLabel.text += key + " = " + track[key] * 250 + " BPM";   // Valore tramite il quale avevo normalizzato il tempo. Per il display è meglio esprimerlo in BPM
+                        featuresLabel.text += key + " = " + (track[key] * 250).ToString("0") + " BPM";   // Valore tramite il quale avevo normalizzato il tempo. Per il display è meglio esprimerlo in BPM
+                    }
+                    else if(key == "loudness")
+                    {
+                        featuresLabel.text += key + " = " + track[key] + " dB";
                     }
                     else if (key == "key" || key == "loudness" || key == "mode" || key == "time_signature")
                     {
@@ -168,7 +174,6 @@ public class SongMenu : MonoBehaviour
 
     public void launch_button_enter(string cluster_id)
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
         player.GetComponent<PlayerController>().enterCluster(cluster_id);
     }
 }

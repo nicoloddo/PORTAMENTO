@@ -29,9 +29,9 @@ public class PlayerController : MonoBehaviour
     // PARAMETRI
     private float rotateSpeedX = 4f; //Velocita' di rotazione X
     private float rotateSpeedY = 3f; //Velocita' di rotazione Y
-    public float forwardSpeed = 0.5f; // Velocità di avanzamento
-    public float lateralSpeed = 0.2f; // Velocità movimento laterale
-    public float upwardSpeed = 0.3f; // Velocità di levitazione
+    public float forwardSpeed = 0.8f; // Velocità di avanzamento
+    public float lateralSpeed = 0.5f; // Velocità movimento laterale
+    public float upwardSpeed = 0.5f; // Velocità di levitazione
 
     // NAVIGAZIONE
     public string current_cluster_id = "0";

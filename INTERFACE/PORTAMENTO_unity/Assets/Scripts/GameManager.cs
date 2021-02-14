@@ -93,6 +93,7 @@ public class GameManager : MonoBehaviour
 
             // ISTANZIO IL CLUSTER E INSERISCO LE INFORMAZIONI
             GameObject cluster = Instantiate(cluster_prefab);
+            cluster.GetComponent<Cluster>().set_id(i.ToString());
             cluster.GetComponent<Cluster>().set_is_leaf(is_leaf_bool);
             cluster.GetComponent<Cluster>().set_centroid(centroids[i]);
             cluster.GetComponent<Cluster>().set_cluster_data(track_data, meta_data);

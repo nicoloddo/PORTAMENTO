@@ -35,7 +35,7 @@ public class DisplayMenu : MonoBehaviour
             }
             else
             {
-                pos[i] = (player_pos[i]/axis_multiplier*2.50f).ToString("0.00");
+                pos[i] = (player_pos[i]/axis_multiplier*250).ToString("0.00");
             }
         }
             
