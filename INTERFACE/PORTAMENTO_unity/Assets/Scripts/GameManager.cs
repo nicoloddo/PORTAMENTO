@@ -18,7 +18,10 @@ public class GameManager : MonoBehaviour
     private static string PATH_CLUSTERS_INTERFACE_SCRIPT = @"\ide\PORTAMENTO\PORTAMENTO\clusters_interface.py";
 
     public GameObject cluster_prefab;
-    public GameObject main_menu;
+
+    // UI LINKS
+    public GameObject cluster_menu;
+    public GameObject display_menu;
     private GameObject song_menu;
 
     private string current_path = System.IO.Directory.GetCurrentDirectory();
@@ -36,8 +39,8 @@ public class GameManager : MonoBehaviour
         // OTTENGO LE INFORMAZIONI DI IMPOSTAZIONE
         settings.get_settings(paths["settings"]);   // Ottengo le settings
 
-        main_menu.GetComponent<Canvas>().enabled = false;
-        song_menu = main_menu.transform.GetChild(0).gameObject;
+        cluster_menu.GetComponent<Canvas>().enabled = false;
+        song_menu = cluster_menu.transform.GetChild(0).gameObject;
     }
 
     // Start is called before the first frame update
@@ -99,19 +102,22 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void start_songMenu(GameObject cluster)
     {
         List<Dictionary<string, string>> cluster_meta = cluster.GetComponent<Cluster>().meta;
-        main_menu.GetComponent<Canvas>().enabled = true;
-        song_menu.GetComponent<SongMenu>().CreateMenu(cluster_meta);
+        List<Dictionary<string, float>> cluster_track = cluster.GetComponent<Cluster>().track;
+        cluster_menu.GetComponent<Canvas>().enabled = true;
+        display_menu.SetActive(false);
+        song_menu.GetComponent<SongMenu>().CreateMenu(cluster_meta, cluster_track);
     }
 
     public void stop_songMenu()
     {
-        main_menu.GetComponent<Canvas>().enabled = false;
+        cluster_menu.GetComponent<Canvas>().enabled = false;
+        display_menu.SetActive(true);
         song_menu.GetComponent<SongMenu>().CancelMenu();
     }
 
