@@ -19,14 +19,22 @@ public class SongMenu : MonoBehaviour
 
     public void CreateMenu(List<Dictionary<string, string>> songs_meta)
     {
+        GameObject songButton;  // Variabile temporanea in cui metto il song_button per ogni canzone
         int i = 0;
         foreach(var song in songs_meta)
         {
-            var songButton = gameObject.transform.GetChild(i).gameObject;
+            do
+            {
+                songButton = gameObject.transform.GetChild(i).gameObject;
+                i += 1;
+            } while (!songButton.CompareTag("SongButton"));
+
             var button = songButton.GetComponent<Button>();
             var background = button.gameObject.transform.GetChild(0).gameObject;
             background.GetComponentInChildren<Text>().text = song["name"] + " - " + song["artist"];
-            button.onClick.AddListener(() => launch_song(song["url"]));
+
+            string url = song["uri"];
+            button.onClick.AddListener(() => launch_song(url));
         }
         
     }

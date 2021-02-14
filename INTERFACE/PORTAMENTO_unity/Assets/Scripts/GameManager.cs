@@ -123,6 +123,8 @@ public class GameManager : MonoBehaviour
         // LETTURA E FORMATTAZIONE DEL FILE
         string file_data = System.IO.File.ReadAllText(path_csv);    // Leggo l'intero file
         file_data = file_data.Replace("\r", string.Empty);  // tolgo i caratteri \r di fine riga perchè in windows il fine riga è indicato con \r\n e non solo \n
+        file_data = file_data.Replace("\"", string.Empty);  // compaiono anche di questi caratteri \" per qualche motivo
+        file_data = file_data.Replace(", ", "<COMMA> ");  // per evitare che virgole di punteggiatura si confondano con le , che separano i campi. Dopo le risostituisco.
 
         string[] splitted = file_data.Split('\n');  // Ora il fine riga è indicato solo con \n, posso separare secondo quel carattere
         System.Array.Resize(ref splitted, splitted.Length - 1); // tolgo l'ultimo elemento che è una stringa vuota
@@ -136,6 +138,8 @@ public class GameManager : MonoBehaviour
             {
                 temp_key = keys[j];
                 temp_value = splitted[i + 1].Split(',')[j]; // i+1 perchè la prima riga è occupata dai nomi delle keys
+
+                temp_value = temp_value.Replace("<COMMA> ", ", ");
                 
                 dict_row.Add(temp_key, temp_value);
             }
