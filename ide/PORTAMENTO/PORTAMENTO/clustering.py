@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 
 TRACK_AUDIO_COLUMNS = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'key', 'liveness', 'loudness', 'mode', 'speechiness', 'tempo', 'time_signature', 'valence'] # AUDIO FEATURES
-TRACK_META_TEXTUAL_COLUMNS = ['album_id', 'artists_id', 'disc_number', 'id', 'name', 'playlist', 'preview_url', 'track_number', 'uri']  # QUESTE SONO LE TEXTUAL FEATURES, DA SEPARARE DA QUELLE AUDIO
+TRACK_META_TEXTUAL_COLUMNS = ['album', 'album_id', 'artist', 'artists_id', 'disc_number', 'id', 'name', 'playlist', 'preview_url', 'track_number', 'uri']  # QUESTE SONO LE TEXTUAL FEATURES, DA SEPARARE DA QUELLE AUDIO
 TRACK_META_NUMERICAL_COLUMNS = ['duration_ms', 'popularity']
 TRACK_TEXTUAL_COLUMNS = TRACK_META_TEXTUAL_COLUMNS + TRACK_META_NUMERICAL_COLUMNS
 # ATTENZONE !! SE UNA FEATURE NON COMPARE TRA QUELLE SOPRA, NON SARA' MAI CONSIDERATA!!!

@@ -88,7 +88,7 @@ class Dataset:
                     
                     # Aggiungo nome playlist alla struttura della canzone
                     song['playlist'] = playlist['name']
-                    
+                    song['artist'] = song['artists'][0]['name']
                     song['artists_id'] = []
                     # Aggiungo gli artisti alla sezione del dataset e salvo solo gli id
                     for i, artist in enumerate(song['artists']):
@@ -103,7 +103,7 @@ class Dataset:
                     song['album_id'] = song['album']['id']
                     if(song['album_id'] not in dataset['albums']):
                         dataset['albums'][song['album_id']] = song['album']
-                    del song['album']
+                    song['album'] = song['album']['name']
                         
                     # Aggiungo le nuove informazioni alla sezione track
                     dataset['track'][count_sn].update(song)

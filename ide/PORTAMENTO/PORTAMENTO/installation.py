@@ -11,6 +11,7 @@ import sys
 def main(user = r'nic'):
     
     root = r'D:\PROJECTS\PORTAMENTO'
+    
     paths = install.Path(user, root)    # COSTRUISCO I PATH BASE
     paths.initialize_default_files()    # INIZIALIZZO I TABLES (QUESTO LI SOVRASCRIVE)
     

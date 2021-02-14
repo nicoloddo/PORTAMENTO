@@ -15,8 +15,9 @@ def main(bundle_name = "sounds_of_everything", radar_name = "default", NEW_RADAR
     QUESTO SCRIPT SERVE A CREARE IL RADAR NEL CASO SIA NUOVO E A SALVARE DATASET E RADAR NEL LAST_PATH.
     E' SOSTANZIALMENTE UNA PREPARAZIONE A cluster_interface.py CHE USA IL LAST_PATH PER FORNIRE I CLUSTER ALL'INTERFACCIA.
     '''
-     
-    paths = paths_info.Path(user)
+    root = r'D:\PROJECTS\PORTAMENTO'
+    
+    paths = paths_info.Path(user, root)
     
     # COLLEGO DATASET E RADAR
     paths.link_database(bundle_name)
