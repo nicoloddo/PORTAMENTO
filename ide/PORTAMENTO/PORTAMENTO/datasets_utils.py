@@ -96,7 +96,7 @@ class Dataset:
                         if(song['artists_id'][i] not in dataset['artists']):
                             dataset['artists'][song['artists_id'][i]] = song['artists'][i]
                     # Linearizzo la lista in una sola stringa separata da virgole. Per riottenere una lista posso fare my_string.split(",")
-                    song['artists_id'] = ",".join(song['artists_id'])   # Lo faccio perchè semplifica la struttura e facilita la procedura di salvataggio
+                    song['artists_id'] = " AND ".join(song['artists_id'])   # Lo faccio perchè semplifica la struttura e facilita la procedura di salvataggio
                     del song['artists']
                     
                     # Aggiungo l'album alla sezione del dataset e salvo solo l'id
