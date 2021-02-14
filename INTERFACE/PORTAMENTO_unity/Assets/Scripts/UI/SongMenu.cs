@@ -23,18 +23,24 @@ public class SongMenu : MonoBehaviour
         int i = 0;
         foreach(var song in songs_meta)
         {
-            do
+            try
             {
-                songButton = gameObject.transform.GetChild(i).gameObject;
-                i += 1;
-            } while (!songButton.CompareTag("SongButton"));
+                do
+                {
+                    songButton = gameObject.transform.GetChild(i).gameObject;
+                    i += 1;
+                } while (!songButton.CompareTag("SongButton"));
 
-            var button = songButton.GetComponent<Button>();
-            var background = button.gameObject.transform.GetChild(0).gameObject;
-            background.GetComponentInChildren<Text>().text = song["name"] + " - " + song["artist"];
+                var button = songButton.GetComponent<Button>();
+                var background = button.gameObject.transform.GetChild(0).gameObject;
+                background.GetComponentInChildren<Text>().text = song["name"] + " - " + song["artist"];
 
-            string url = song["uri"];
-            button.onClick.AddListener(() => launch_song(url));
+                string url = song["uri"];
+                button.onClick.AddListener(() => launch_song(url));
+            }
+            catch (UnityException)   // Ci sarà una eccezione appena finiscono gli oggetti child
+            {
+            }
         }
         
     }
