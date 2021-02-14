@@ -112,6 +112,7 @@ public class GameManager : MonoBehaviour
     public void stop_songMenu()
     {
         main_menu.GetComponent<Canvas>().enabled = false;
+        song_menu.GetComponent<SongMenu>().CancelMenu();
     }
 
     private List<Dictionary<string, string>> strings_csv_to_dict(string path_csv)

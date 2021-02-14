@@ -20,16 +20,22 @@ public class SongMenu : MonoBehaviour
     public void CreateMenu(List<Dictionary<string, string>> songs_meta)
     {
         GameObject songButton;  // Variabile temporanea in cui metto il song_button per ogni canzone
-        int i = 0;
-        foreach(var song in songs_meta)
+        
+        Transform[] children; // Variabile da cui accedo ai figli del menu, ossia tutti i song_button
+        children = gameObject.GetComponentsInChildren<Transform>();
+
+        int j = 0;
+        for(int i = 0; i < songs_meta.Count; i++)
         {
+            var song = songs_meta[i];
+
             try
             {
                 do
                 {
-                    songButton = gameObject.transform.GetChild(i).gameObject;
-                    i += 1;
-                } while (!songButton.CompareTag("SongButton"));
+                    songButton = children[j].gameObject;
+                    j += 1;
+                } while (!songButton.CompareTag("SongButton") && j < children.Length);
 
                 var button = songButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
@@ -38,11 +44,36 @@ public class SongMenu : MonoBehaviour
                 string url = song["uri"];
                 button.onClick.AddListener(() => launch_song(url));
             }
-            catch (UnityException)   // Ci sarà una eccezione appena finiscono gli oggetti child
+            catch (System.IndexOutOfRangeException)   // Ci sarà una eccezione appena finiscono gli oggetti child
             {
             }
+
+            if (j == children.Length)   // Abbiamo finito i tasti, dovremmo 
+                break;
         }
         
+    }
+
+    public void CancelMenu()
+    {
+        Transform[] children; // Variabile da cui accedo ai figli del menu, ossia tutti i song_button
+        children = gameObject.GetComponentsInChildren<Transform>();
+
+        GameObject songButton;
+
+        for (int i = 0; i < children.Length; i++)
+        {
+            songButton = children[i].gameObject;
+
+            if (songButton.CompareTag("SongButton")) // Solo se è effettivamente un SongButton
+            {
+                var button = songButton.GetComponent<Button>();
+                var background = button.gameObject.transform.GetChild(0).gameObject;
+                background.GetComponentInChildren<Text>().text = "";
+
+                button.onClick.RemoveAllListeners();
+            }
+        }
     }
 
     public void launch_song(string url)

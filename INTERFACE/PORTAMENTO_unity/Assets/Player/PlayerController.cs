@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey("f") && is_near)
         {
-            if(song_menu_opened)
+            if(!song_menu_opened)
             {
                 song_menu_run();
             }
