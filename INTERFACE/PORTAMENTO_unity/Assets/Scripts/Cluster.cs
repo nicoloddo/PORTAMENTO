@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Cluster : MonoBehaviour
 {
+    int axis_multiplier = 400; // Presente anche nella classe SongMenu e DisplayMenu serve a distanziare i cluster
+
     string id;
     public List<Dictionary<string, float>> track = new List<Dictionary<string, float>>();
     public List<Dictionary<string, string>> meta = new List<Dictionary<string, string>>();
     private string[] axis = new string[3];  // I nomi degli assi di riferimento (keys del dizionario delle caratteristiche track)
-    int axis_multiplier = 100;
 
     public Dictionary<string, float> centroid = new Dictionary<string, float>();
     public bool is_leaf;

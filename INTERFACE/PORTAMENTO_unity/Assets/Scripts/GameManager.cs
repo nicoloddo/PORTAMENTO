@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
         // ********************* DA QUI ESTRAPOLO LE INFORMAZIONI NEI .CSV
         axis_packs = strings_csv_to_dict(paths["axis_table"]);
         axis = select_axis(axis_packs, settings.axis);
+        display_menu.GetComponent<DisplayMenu>().set_axis_labels(axis["axis1"], axis["axis2"], axis["axis3"]);
 
         // OTTENGO I CENTROIDI
         centroids = floats_csv_to_dict(clusters_path + @"\centroids.csv");
@@ -109,9 +110,10 @@ public class GameManager : MonoBehaviour
     {
         List<Dictionary<string, string>> cluster_meta = cluster.GetComponent<Cluster>().meta;
         List<Dictionary<string, float>> cluster_track = cluster.GetComponent<Cluster>().track;
+        string clusterID = cluster.GetComponent<Cluster>().get_id();
         cluster_menu.GetComponent<Canvas>().enabled = true;
         display_menu.SetActive(false);
-        song_menu.GetComponent<SongMenu>().CreateMenu(cluster_meta, cluster_track);
+        song_menu.GetComponent<SongMenu>().CreateMenu(clusterID, cluster_meta, cluster_track);
     }
 
     public void stop_songMenu()

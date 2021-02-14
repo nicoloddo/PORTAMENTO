@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Cluster
   - SongButton
+  - EnterButton
   layers:
   - Default
   - TransparentFX
