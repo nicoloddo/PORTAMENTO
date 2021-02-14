@@ -12,6 +12,12 @@ public class PlayerController : MonoBehaviour
     // LINKS
     public GameObject camera;
     public GameManager gameManager;
+    private GameObject nearCluster;
+
+    // BOOLS
+    public bool is_near = false;
+    public bool can_move = true;
+    private bool song_menu_opened = false;
 
     // INPUTS
     private float inputUpward; // Per muoversi verso sù
@@ -55,52 +61,75 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKey("f") && is_near)
+        {
+            song_menu_run();
+        }
     }
 
 
     private void FixedUpdate()
     {
         // ******************* GESTIONE DEL MOVIMENTO
-        inputVertical = Input.GetAxis("Vertical");
-        inputHorizontal = Input.GetAxis("Horizontal"); 
-        inputUpward = Input.GetAxis("Jump");
-
-        animator.SetFloat("fly", inputVertical);
-
-        // Controller della rotazione, è fatto così per evitare la rotazione in z, che può avvenire per somma di rotazioni in x e y
-        totalXRot += Input.GetAxis("Mouse X") * rotateSpeedX;
-        totalYRot -= Input.GetAxis("Mouse Y") * rotateSpeedY;
-
-        transform.forward = camera.transform.forward;
-
-        if (inputVertical > 0)
+        if (can_move)
         {
-            camera.transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
-        }
-        else
-        {
-            camera.transform.rotation = transform.rotation;
-            transform.rotation = Quaternion.Euler(0f, totalXRot, 0f);
-            camera.transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
-        }
+            inputVertical = Input.GetAxis("Vertical");
+            inputHorizontal = Input.GetAxis("Horizontal");
+            inputUpward = Input.GetAxis("Jump");
 
-        // Movimento
-        characterController.Move(camera.transform.forward * inputVertical * forwardSpeed);
-        characterController.Move(camera.transform.right * inputHorizontal * forwardSpeed);
-        characterController.Move(camera.transform.up * inputUpward * upwardSpeed);
+            animator.SetFloat("fly", inputVertical);
 
-        // ******************* FINE GESTIONE MOVIMENTO
+            // Controller della rotazione, è fatto così per evitare la rotazione in z, che può avvenire per somma di rotazioni in x e y
+            totalXRot += Input.GetAxis("Mouse X") * rotateSpeedX;
+            totalYRot -= Input.GetAxis("Mouse Y") * rotateSpeedY;
+
+            transform.forward = camera.transform.forward;
+
+            if (inputVertical > 0)
+            {
+                camera.transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
+            }
+            else
+            {
+                camera.transform.rotation = transform.rotation;
+                transform.rotation = Quaternion.Euler(0f, totalXRot, 0f);
+                camera.transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
+            }
+
+            // Movimento
+            characterController.Move(camera.transform.forward * inputVertical * forwardSpeed);
+            characterController.Move(camera.transform.right * inputHorizontal * forwardSpeed);
+            characterController.Move(camera.transform.up * inputUpward * upwardSpeed);
+
+            // ******************* FINE GESTIONE MOVIMENTO
+        }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void song_menu_run()
     {
+        song_menu_opened = true;
 
+        // PREPROCESSING
+        can_move = false;
+
+        // ESECUZIONE
+        gameManager.start_songMenu(nearCluster);
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void song_menu_esc()
     {
-        
+        song_menu_opened = false;
+
+        gameManager.stop_songMenu();
+
+        //POSTPROCESSING
+        can_move = true;
+    }
+
+    public void set_nearCluster(GameObject cluster, bool near_bool)
+    {
+        nearCluster = cluster;
+        is_near = near_bool;
     }
 
     public void enterCluster(string cluster_id)

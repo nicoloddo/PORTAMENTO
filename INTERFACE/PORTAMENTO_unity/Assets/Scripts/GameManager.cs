@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     private static string PATH_CLUSTERS_INTERFACE_SCRIPT = @"\ide\PORTAMENTO\PORTAMENTO\clusters_interface.py";
 
     public GameObject cluster_prefab;
+    public GameObject main_menu;
+    private GameObject song_menu;
 
     private string current_path = System.IO.Directory.GetCurrentDirectory();
     public string root_path;
@@ -33,6 +35,9 @@ public class GameManager : MonoBehaviour
         paths = strings_csv_to_dict(last_path_file)[0];
         // OTTENGO LE INFORMAZIONI DI IMPOSTAZIONE
         settings.get_settings(paths["settings"]);   // Ottengo le settings
+
+        main_menu.GetComponent<Canvas>().enabled = false;
+        song_menu = main_menu.transform.GetChild(0).gameObject;
     }
 
     // Start is called before the first frame update
@@ -95,6 +100,18 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void start_songMenu(GameObject cluster)
+    {
+        List<Dictionary<string, string>> cluster_meta = cluster.GetComponent<Cluster>().meta;
+        main_menu.GetComponent<Canvas>().enabled = true;
+        song_menu.GetComponent<SongMenu>().CreateMenu(cluster_meta);
+    }
+
+    public void stop_songMenu()
+    {
+        main_menu.GetComponent<Canvas>().enabled = false;
     }
 
     private List<Dictionary<string, string>> strings_csv_to_dict(string path_csv)

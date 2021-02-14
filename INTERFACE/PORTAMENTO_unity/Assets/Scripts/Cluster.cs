@@ -5,13 +5,16 @@ using UnityEngine;
 public class Cluster : MonoBehaviour
 {
     string id;
-    private List<Dictionary<string, float>> track = new List<Dictionary<string, float>>();
-    private List<Dictionary<string, string>> meta = new List<Dictionary<string, string>>();
+    public List<Dictionary<string, float>> track = new List<Dictionary<string, float>>();
+    public List<Dictionary<string, string>> meta = new List<Dictionary<string, string>>();
     private string[] axis = new string[3];  // I nomi degli assi di riferimento (keys del dizionario delle caratteristiche track)
     int axis_multiplier = 100;
 
     public Dictionary<string, float> centroid = new Dictionary<string, float>();
     public bool is_leaf;
+    public bool player_near;
+
+    private GameObject player;
 
     // Start is called before the first frame update
     void Start()
@@ -22,7 +25,27 @@ public class Cluster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("Player"))
+        {
+            player_near = true;
+            player = other.gameObject;
+            player.GetComponent<PlayerController>().set_nearCluster(this.gameObject, player_near);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            player_near = false;
+            player = other.gameObject;
+            player.GetComponent<PlayerController>().set_nearCluster(this.gameObject, player_near);
+        }
     }
 
     public void set_id(string clust_id)

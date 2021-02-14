@@ -17,7 +17,7 @@ public class SongMenu : MonoBehaviour
         
     }
 
-    void CreateMenu(List<Dictionary<string, string>> songs_meta)
+    public void CreateMenu(List<Dictionary<string, string>> songs_meta)
     {
         int i = 0;
         foreach(var song in songs_meta)

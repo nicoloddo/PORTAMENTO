@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Cluster
+  - SongButton
   layers:
   - Default
   - TransparentFX
