@@ -52,8 +52,8 @@ def main(node_id, user = 'nic'):
     # TODO: POTREBBE CAPITARE CHE UNA CANZONE GIA' PRESENTE IN UN CLUSTER SIA ASSEGNATA IN UN PREDICT A UN CLUSTER DIVERSO.
     #       PER CUI, CONVIENE CERCARE CANZONI APPARTENENTI AL RADAR GIA' PRESENTI NEI CLUSTER E METTERE QUEL CLUSTER COME LABEL.
     radar_labels = predict_labels(radar.dataset['track'], clusterer, current_node)
-    radar_df['labels'] = radar_labels
-    radar_track = radar_df[TRACK_AUDIO_COLUMNS + TRACK_META_NUMERICAL_COLUMNS]   # separo le informazioni numeriche
+    radar_df['label'] = radar_labels
+    radar_track = radar_df[TRACK_AUDIO_COLUMNS + TRACK_META_NUMERICAL_COLUMNS + ['label']]   # separo le informazioni numeriche
     radar_meta = radar_df[TRACK_META_TEXTUAL_COLUMNS]  # separo le informazioni testuali
     
     # RESTITUISCO IL RADAR SALVANDOLO

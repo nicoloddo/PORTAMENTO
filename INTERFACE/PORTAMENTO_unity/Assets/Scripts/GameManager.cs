@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
     // UI LINKS
     public GameObject cluster_menu;
     public GameObject display_menu;
+    public GameObject map_menu;
+    public GameObject map;
     private GameObject song_menu;
 
     private string current_path = System.IO.Directory.GetCurrentDirectory();
@@ -48,7 +50,9 @@ public class GameManager : MonoBehaviour
     {
         List<Dictionary<string, float>> centroids;
         List<Dictionary<string, float>> track_data;
+        List<Dictionary<string, float>> track_radars;
         List<Dictionary<string, string>> meta_data;
+        List<Dictionary<string, string>> meta_radars;
         List<Dictionary<string, string>> axis_packs;
         Dictionary<string, string> axis;
         string clusters_path;
@@ -98,7 +102,15 @@ public class GameManager : MonoBehaviour
             cluster.GetComponent<Cluster>().set_centroid(centroids[i]);
             cluster.GetComponent<Cluster>().set_cluster_data(track_data, meta_data);
             cluster.GetComponent<Cluster>().set_axis(axis["axis1"], axis["axis2"], axis["axis3"]);
+            map.GetComponent<MapController>().append_cluster(cluster);
         }
+
+        track_radars = floats_csv_to_dict(clusters_path + @"\radar_track.csv");
+        meta_radars = strings_csv_to_dict(clusters_path + @"\radar_meta.csv");
+
+        map.GetComponent<MapController>().set_radars(track_radars, meta_radars);
+        map.GetComponent<MapController>().createMap(axis["axis1"], axis["axis2"]);
+        map_menu.GetComponent<Canvas>().enabled = false;
     }
 
     // Update is called once per frame
@@ -107,14 +119,27 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void view_map()
+    {
+        map_menu.GetComponent<Canvas>().enabled = true;
+        display_menu.SetActive(false);
+    }
+
+    public void close_map()
+    {
+        map_menu.GetComponent<Canvas>().enabled = false;
+        display_menu.SetActive(true);
+    }
+
     public void start_songMenu(GameObject cluster)
     {
         List<Dictionary<string, string>> cluster_meta = cluster.GetComponent<Cluster>().meta;
         List<Dictionary<string, float>> cluster_track = cluster.GetComponent<Cluster>().track;
         string clusterID = cluster.GetComponent<Cluster>().get_id();
+        bool is_leaf = cluster.GetComponent<Cluster>().is_leaf;
         cluster_menu.GetComponent<Canvas>().enabled = true;
         display_menu.SetActive(false);
-        song_menu.GetComponent<SongMenu>().CreateMenu(clusterID, cluster_meta, cluster_track);
+        song_menu.GetComponent<SongMenu>().CreateMenu(is_leaf, clusterID, cluster_meta, cluster_track);
     }
 
     public void stop_songMenu()

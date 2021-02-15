@@ -17,6 +17,9 @@ public class Cluster : MonoBehaviour
 
     private GameObject player;
 
+    public GameObject highlight_supernova;
+    public GameObject standard_supernova;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -82,4 +85,20 @@ public class Cluster : MonoBehaviour
         return id;
     }
 
+    public void create_clusterButton(ClusterButton clust)
+    {
+        clust.cluster = this;
+    }
+
+    public void highlight()
+    {
+        highlight_supernova.SetActive(true);
+        standard_supernova.SetActive(false);
+    }
+
+    public void unselect()
+    {
+        highlight_supernova.SetActive(false);
+        standard_supernova.SetActive(true);
+    }
 }

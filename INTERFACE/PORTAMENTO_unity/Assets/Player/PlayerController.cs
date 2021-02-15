@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     public bool is_near = false;
     public bool can_move = true;
     private bool song_menu_opened = false;
+    private bool map_opened = false;
 
     // INPUTS
     private float inputUpward; // Per muoversi verso sù
@@ -35,6 +36,7 @@ public class PlayerController : MonoBehaviour
 
     // NAVIGAZIONE
     public string current_cluster_id = "0";
+    private Transform selected_clust_transform;
 
     private void Awake()
     {
@@ -61,16 +63,35 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey("f") && is_near)
+        if (Input.GetKey("f") && is_near && !map_opened)
         {
             if(!song_menu_opened)
             {
                 song_menu_run();
+                animator.SetFloat("fly", 0);    // Lo faccio fermare
             }
             else
             {
                 song_menu_esc();
             }  
+        }
+
+        if (Input.GetKey("m") && !song_menu_opened)
+        {
+            if (!map_opened)
+            {
+                map_show();
+                animator.SetFloat("fly", 0);    // Lo faccio fermare
+            }
+            else
+            {
+                map_esc();
+            }
+        }
+
+        if (Input.GetKey("r") && !song_menu_opened)
+        {
+            transform.LookAt(selected_clust_transform);
         }
     }
 
@@ -112,14 +133,30 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void map_show()
+    {
+        map_opened = true;
+
+        can_move = false;
+
+        gameManager.view_map();
+    }
+
+    private void map_esc()
+    {
+        map_opened = false;
+
+        can_move = true;
+
+        gameManager.close_map();
+    }
+
     private void song_menu_run()
     {
         song_menu_opened = true;
 
-        // PREPROCESSING
         can_move = false;
 
-        // ESECUZIONE
         gameManager.start_songMenu(nearCluster);
     }
 
@@ -129,7 +166,6 @@ public class PlayerController : MonoBehaviour
 
         gameManager.stop_songMenu();
 
-        //POSTPROCESSING
         can_move = true;
     }
 
@@ -139,12 +175,25 @@ public class PlayerController : MonoBehaviour
         is_near = near_bool;
     }
 
-    public void enterCluster(string cluster_id)
+    public void enterCluster(string cluster_id, bool is_leaf)
     {
         current_cluster_id = current_cluster_id + cluster_id;   // Aggiorno il current_cluster_id, che è tenuto all'interno del player.
         PlayerPrefs.SetString("current_cluster_id", current_cluster_id);
         
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Ricarico la scena
+        if(!is_leaf)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Ricarico la scena
+        }
+        else
+        {
+            Debug.Log("Il cluster è un cluster foglia!");
+        }
+        
+    }
+
+    public void setSelectedCluster(Transform selected)
+    {
+        selected_clust_transform = selected;
     }
 
 

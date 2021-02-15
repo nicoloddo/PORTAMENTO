@@ -26,7 +26,7 @@ public class SongMenu : MonoBehaviour
         
     }
 
-    public void CreateMenu(string cluster_id, List<Dictionary<string, string>> songs_meta, List<Dictionary<string, float>> songs_track)
+    public void CreateMenu(bool is_leaf, string cluster_id, List<Dictionary<string, string>> songs_meta, List<Dictionary<string, float>> songs_track)
     {
         GameObject clustButton;  // Variabile temporanea in cui metto il button
         
@@ -49,7 +49,7 @@ public class SongMenu : MonoBehaviour
                 var background = button.gameObject.transform.GetChild(0).gameObject;
                 background.GetComponentInChildren<Text>().text = "Enter Cluster\n" + "[" + player.GetComponent<PlayerController>().current_cluster_id + cluster_id + "]";
 
-                button.onClick.AddListener(() => launch_button_enter(cluster_id));
+                button.onClick.AddListener(() => launch_button_enter(cluster_id, is_leaf));
             }
 
             if(clustButton.CompareTag("SongButton"))
@@ -172,8 +172,8 @@ public class SongMenu : MonoBehaviour
         Application.OpenURL(url);
     }
 
-    public void launch_button_enter(string cluster_id)
+    public void launch_button_enter(string cluster_id, bool is_leaf)
     {
-        player.GetComponent<PlayerController>().enterCluster(cluster_id);
+        player.GetComponent<PlayerController>().enterCluster(cluster_id, is_leaf);
     }
 }
