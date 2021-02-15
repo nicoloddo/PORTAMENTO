@@ -10,7 +10,9 @@ import sys
 import paths_info
 import datasets_utils as dt
 
-def main(bundle_name = "sounds_of_everything", radar_name = "default", NEW_RADAR = False, user = "nic", CMD_LINE = True):
+def main(bundle_name = "sounds_of_everything", radar_name = "default", NEW_RADAR = True, user = "nic", CMD_LINE = True):
+    '''!!!PRIMA DI UTILIZZARLO CONTROLLA IL NEW_RADAR!!! SE LO VUOI RISCARICARE DEVE ESSERE True, SE NO False.'''
+    
     '''
     QUESTO SCRIPT SERVE A CREARE IL RADAR NEL CASO SIA NUOVO E A SALVARE DATASET E RADAR NEL LAST_PATH.
     E' SOSTANZIALMENTE UNA PREPARAZIONE A cluster_interface.py CHE USA IL LAST_PATH PER FORNIRE I CLUSTER ALL'INTERFACCIA.
