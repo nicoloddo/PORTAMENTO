@@ -30,7 +30,9 @@ public class GameManager : MonoBehaviour
     public string root_path;
     public int n_clusters;
 
-    Dictionary<string, string> paths = new Dictionary<string, string>();
+    private Dictionary<string, string> paths = new Dictionary<string, string>();
+    public Dictionary<string, string> axis = new Dictionary<string, string>();
+    public Dictionary<string, float> starting_centroid = new Dictionary<string, float>();
 
     private void Awake()
     {
@@ -54,7 +56,6 @@ public class GameManager : MonoBehaviour
         List<Dictionary<string, string>> meta_data;
         List<Dictionary<string, string>> meta_radars;
         List<Dictionary<string, string>> axis_packs;
-        Dictionary<string, string> axis;
         string clusters_path;
 
         clusters_path = paths["track_clust"];
@@ -108,15 +109,17 @@ public class GameManager : MonoBehaviour
         track_radars = floats_csv_to_dict(clusters_path + @"\radar_track.csv");
         meta_radars = strings_csv_to_dict(clusters_path + @"\radar_meta.csv");
 
+        starting_centroid = centroids[(int)track_radars[0]["label"]];
         map.GetComponent<MapController>().set_radars(track_radars, meta_radars);
         map.GetComponent<MapController>().createMap(axis["axis1"], axis["axis2"]);
+        map.GetComponent<MapController>().launch_button_from_index((int)track_radars[0]["label"]);
         map_menu.GetComponent<Canvas>().enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public void view_map()

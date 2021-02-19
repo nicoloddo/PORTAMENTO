@@ -5,9 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
+    int axis_multiplier = 400; // Presente anche nella classe SongMenu, DisplayMenu e Cluster: serve a distanziare i cluster
+
     // ASSEGNAZIONI UTILI
     private Animator animator;
     private CharacterController characterController;
+    public Vector3 lookat_rotation;
 
     // LINKS
     public GameObject camera;
@@ -15,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private GameObject nearCluster;
 
     // BOOLS
+    private bool first_run = true;
     public bool is_near = false;
     public bool can_move = true;
     private bool song_menu_opened = false;
@@ -36,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
     // NAVIGAZIONE
     public string current_cluster_id = "0";
-    private Transform selected_clust_transform;
+    public Transform selected_clust_transform;
 
     private void Awake()
     {
@@ -63,6 +67,15 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (first_run)
+        {
+            // disattivo e riattivo il character controller perchè non mi permette il teletrasporto
+            gameObject.GetComponent<CharacterController>().enabled = false;
+            transform.position = get_start();
+            first_run = false;
+            gameObject.GetComponent<CharacterController>().enabled = true;
+        }
+
         if (Input.GetKey("f") && is_near && !map_opened)
         {
             if(!song_menu_opened)
@@ -92,7 +105,10 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey("r") && !song_menu_opened)
         {
             transform.LookAt(selected_clust_transform);
+            totalXRot = transform.rotation.eulerAngles.y;
+            totalYRot = transform.rotation.eulerAngles.x;
         }
+        
     }
 
 
@@ -194,6 +210,13 @@ public class PlayerController : MonoBehaviour
     public void setSelectedCluster(Transform selected)
     {
         selected_clust_transform = selected;
+    }
+
+    public Vector3 get_start()
+    {
+        Dictionary<string, string> a = gameManager.axis;
+        Dictionary<string, float> centroid = gameManager.starting_centroid;
+        return new Vector3(centroid[a["axis1"]] * axis_multiplier + 2, centroid[a["axis2"]] * axis_multiplier,centroid[a["axis3"]] * axis_multiplier);
     }
 
 

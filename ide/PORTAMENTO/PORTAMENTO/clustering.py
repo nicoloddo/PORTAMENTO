@@ -273,7 +273,7 @@ class Clusterer:
             if key not in self.audio_relevant_columns:
                 del self.weights['weights'][key]
                 
-    #******************************************************************************************************************************************************
+    #****************************************************************************************************************************************************** # TODO: CONTROLLA BENE MA MISSA' CHE QUESTA NON LA STO USANDO QUI MA IN clusters_dataset.py
     def predict(self, paths, model, algorithm = 'birch'):
         
         track = self.dataset['track']
