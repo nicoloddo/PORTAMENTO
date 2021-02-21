@@ -180,9 +180,9 @@ public class PlayerController : MonoBehaviour
     {
         song_menu_opened = false;
 
-        gameManager.stop_songMenu();
-
         can_move = true;
+
+        gameManager.stop_songMenu(nearCluster);
     }
 
     public void set_nearCluster(GameObject cluster, bool near_bool)

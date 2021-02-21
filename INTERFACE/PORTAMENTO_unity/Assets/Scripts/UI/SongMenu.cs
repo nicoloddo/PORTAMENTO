@@ -11,6 +11,7 @@ public class SongMenu : MonoBehaviour
     public GameObject FeaturesContainer;
     private Text featuresLabel;
     private GameObject player;
+    private string prev_clust;
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +34,9 @@ public class SongMenu : MonoBehaviour
         Transform[] children; // Variabile da cui accedo ai figli del menu, ossia tutti i song_button
         children = gameObject.GetComponentsInChildren<Transform>();
 
-        if(songs_meta.Count != songs_track.Count)
+        int n_songs = songs_meta.Count;
+
+        if (songs_meta.Count != songs_track.Count)
         {
             Debug.Log("In CreateMenu() songs_meta e songs_track sono di grandezze diverse!");
         }
@@ -68,14 +71,17 @@ public class SongMenu : MonoBehaviour
             {
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
-                int n_songs = songs_meta[j].Count;
                 button.onClick.AddListener(() => launch_button_cluster_info(centroid, n_songs));
             }
         }
-        
+
+        launch_button_cluster_info(centroid, n_songs);
+        featuresLabel.text = "\n\nULTIMO CLUSTER APERTO:\n";
+        featuresLabel.text += prev_clust;
+
     }
 
-    public void CancelMenu()
+    public void CancelMenu(Dictionary<string, float> last_centroid, int last_n_songs)
     {
         Transform[] children; // Variabile da cui accedo ai figli del menu, ossia tutti i song_button
         children = gameObject.GetComponentsInChildren<Transform>();
@@ -104,6 +110,9 @@ public class SongMenu : MonoBehaviour
                 button.onClick.RemoveAllListeners();
             }
         }
+
+        launch_button_cluster_info(last_centroid, last_n_songs);
+        prev_clust = featuresLabel.text;
     }
 
     public void launch_button_song(Dictionary<string, string> meta, Dictionary<string, float> track)
@@ -133,7 +142,7 @@ public class SongMenu : MonoBehaviour
                 // Metto cuori per una quantificazione visuale
                 if (key != "key" && key != "loudness" && key != "mode" && key != "tempo" && key != "time_signature" && key != "popularity")
                 {
-                    featuresLabel.text += key + " = " + track[key] * coord_multiplier + "\t\t";
+                    featuresLabel.text += key + " = " + (track[key] * coord_multiplier).ToString("0.00") + "\t\t";
                     for (float i = 0; i < track[key]; i += 1f/10f)
                     {
                         featuresLabel.text += "♪";
@@ -147,7 +156,7 @@ public class SongMenu : MonoBehaviour
                 {
                     if (key == "popularity")
                     {
-                        featuresLabel.text += key + " = " + track[key] + "\t\t";
+                        featuresLabel.text += key + " = " + track[key].ToString("0") + "\t\t";
                         for (float i = 0; i < track[key]; i += 100f / 10f)  // La popolarità va da 0 a 100
                         {
                             featuresLabel.text += "♥";
@@ -159,13 +168,13 @@ public class SongMenu : MonoBehaviour
                     }
                     else if (key == "tempo")
                     {
-                        featuresLabel.text += key + " = " + (track[key] * 250).ToString("0") + " BPM";   // Valore tramite il quale avevo normalizzato il tempo. Per il display è meglio esprimerlo in BPM
+                        featuresLabel.text += key + " = " + (track[key] * 250).ToString("0") + " BPM";   // Denormalizzo il tempo. Per il display è meglio esprimerlo in BPM
                     }
                     else if(key == "loudness")
                     {
-                        featuresLabel.text += key + " = " + track[key] + " dB";
+                        featuresLabel.text += key + " = " + track[key].ToString("0.00") + " dB";
                     }
-                    else if (key == "key" || key == "loudness" || key == "mode" || key == "time_signature")
+                    else if (key == "key" || key == "mode" || key == "time_signature")
                     {
                         featuresLabel.text += key + " = " + track[key];
                     }
@@ -186,11 +195,62 @@ public class SongMenu : MonoBehaviour
 
     public void launch_button_cluster_info(Dictionary<string, float> centroid, int n_songs)
     {
+        int loop_control;   // var ausiliaria per il blocco tempestivo di possibili loop infiniti
+
+        featuresLabel.text = "CARATTERISTICHE CLUSTER (DAL SUO CENTROIDE)\n\n";    // Cancello le features
+
         featuresLabel.text += "Numero di canzoni" + " : " + n_songs.ToString() + "\n";
 
         foreach (string key in centroid.Keys)
         {
-            featuresLabel.text += key + " : " + centroid[key] + "\n";   
+            loop_control = 0;
+
+            if (key != "duration_ms")
+            {
+
+                // Metto cuori per una quantificazione visuale
+                if (key != "key" && key != "loudness" && key != "mode" && key != "tempo" && key != "time_signature" && key != "popularity")
+                {
+                    featuresLabel.text += key + " = " + (centroid[key] * coord_multiplier).ToString("0.00") + "\t\t";
+                    for (float i = 0; i < centroid[key]; i += 1f / 10f)
+                    {
+                        featuresLabel.text += "♪";
+
+                        loop_control++;
+                        if (loop_control > 100)    // Per bloccare il loop nel caso in cui ci sia per sbaglio un loop infinito
+                            break;
+                    }
+                }
+                else
+                {
+                    if (key == "popularity")
+                    {
+                        featuresLabel.text += key + " = " + centroid[key] + "\t\t";
+                        for (float i = 0; i < centroid[key]; i += 100f / 10f)  // La popolarità va da 0 a 100
+                        {
+                            featuresLabel.text += "♥";
+
+                            loop_control++;
+                            if (loop_control > 100)    // Per bloccare il loop nel caso in cui ci sia per sbaglio un loop infinito
+                                break;
+                        }
+                    }
+                    else if (key == "tempo")
+                    {
+                        featuresLabel.text += key + " = " + (centroid[key] * 250).ToString("0") + " BPM";   // Valore tramite il quale avevo normalizzato il tempo. Per il display è meglio esprimerlo in BPM
+                    }
+                    else if (key == "loudness")
+                    {
+                        featuresLabel.text += key + " = " + centroid[key].ToString("0.00") + " dB";
+                    }
+                    else if (key == "key" || key == "mode" || key == "time_signature")
+                    {
+                        featuresLabel.text += key + " = " + centroid[key];
+                    }
+                }
+
+                featuresLabel.text += "\n";
+            }
         }
     }
 }

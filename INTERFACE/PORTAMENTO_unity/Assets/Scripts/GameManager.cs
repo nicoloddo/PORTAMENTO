@@ -146,11 +146,13 @@ public class GameManager : MonoBehaviour
         song_menu.GetComponent<SongMenu>().CreateMenu(is_leaf, clusterID, cluster_meta, cluster_track, centroid);
     }
 
-    public void stop_songMenu()
+    public void stop_songMenu(GameObject cluster)
     {
+        Dictionary<string, float> centroid = cluster.GetComponent<Cluster>().centroid;
+        int n_songs = cluster.GetComponent<Cluster>().meta.Count;
         cluster_menu.GetComponent<Canvas>().enabled = false;
         display_menu.SetActive(true);
-        song_menu.GetComponent<SongMenu>().CancelMenu();
+        song_menu.GetComponent<SongMenu>().CancelMenu(centroid, n_songs);
     }
 
     private List<Dictionary<string, string>> strings_csv_to_dict(string path_csv)
