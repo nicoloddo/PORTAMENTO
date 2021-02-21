@@ -138,11 +138,12 @@ public class GameManager : MonoBehaviour
     {
         List<Dictionary<string, string>> cluster_meta = cluster.GetComponent<Cluster>().meta;
         List<Dictionary<string, float>> cluster_track = cluster.GetComponent<Cluster>().track;
+        Dictionary<string, float> centroid = cluster.GetComponent<Cluster>().centroid;
         string clusterID = cluster.GetComponent<Cluster>().get_id();
         bool is_leaf = cluster.GetComponent<Cluster>().is_leaf;
         cluster_menu.GetComponent<Canvas>().enabled = true;
         display_menu.SetActive(false);
-        song_menu.GetComponent<SongMenu>().CreateMenu(is_leaf, clusterID, cluster_meta, cluster_track);
+        song_menu.GetComponent<SongMenu>().CreateMenu(is_leaf, clusterID, cluster_meta, cluster_track, centroid);
     }
 
     public void stop_songMenu()

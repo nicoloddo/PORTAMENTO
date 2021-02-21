@@ -26,7 +26,7 @@ public class SongMenu : MonoBehaviour
         
     }
 
-    public void CreateMenu(bool is_leaf, string cluster_id, List<Dictionary<string, string>> songs_meta, List<Dictionary<string, float>> songs_track)
+    public void CreateMenu(bool is_leaf, string cluster_id, List<Dictionary<string, string>> songs_meta, List<Dictionary<string, float>> songs_track, Dictionary<string, float> centroid)
     {
         GameObject clustButton;  // Variabile temporanea in cui metto il button
         
@@ -43,26 +43,33 @@ public class SongMenu : MonoBehaviour
         {
             clustButton = children[i].gameObject;
 
-            if(clustButton.CompareTag("EnterButton"))
-            {
+            if (clustButton.CompareTag("EnterButton"))
+            {   // var button SERVE DENTRO AGLI IF PERCHE' NON TUTTI I FIGLI DEL MENù HANNO UN BOTTONE
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
                 background.GetComponentInChildren<Text>().text = "Enter Cluster\n" + "[" + player.GetComponent<PlayerController>().current_cluster_id + cluster_id + "]";
-
                 button.onClick.AddListener(() => launch_button_enter(cluster_id, is_leaf));
             }
 
             if(clustButton.CompareTag("SongButton"))
             {
-                var song_m = songs_meta[j];
-                var song_t = songs_track[j];
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
+                var song_m = songs_meta[j];
+                var song_t = songs_track[j];
                 background.GetComponentInChildren<Text>().text = song_m["name"] + " - " + song_m["artist"];
 
                 button.onClick.AddListener(() => launch_button_song(song_m, song_t));
 
                 j++;
+            }
+
+            if(clustButton.CompareTag("ClusterInfoButton"))
+            {
+                var button = clustButton.GetComponent<Button>();
+                var background = button.gameObject.transform.GetChild(0).gameObject;
+                int n_songs = songs_meta[j].Count;
+                button.onClick.AddListener(() => launch_button_cluster_info(centroid, n_songs));
             }
         }
         
@@ -175,5 +182,15 @@ public class SongMenu : MonoBehaviour
     public void launch_button_enter(string cluster_id, bool is_leaf)
     {
         player.GetComponent<PlayerController>().enterCluster(cluster_id, is_leaf);
+    }
+
+    public void launch_button_cluster_info(Dictionary<string, float> centroid, int n_songs)
+    {
+        featuresLabel.text += "Numero di canzoni" + " : " + n_songs.ToString() + "\n";
+
+        foreach (string key in centroid.Keys)
+        {
+            featuresLabel.text += key + " : " + centroid[key] + "\n";   
+        }
     }
 }
