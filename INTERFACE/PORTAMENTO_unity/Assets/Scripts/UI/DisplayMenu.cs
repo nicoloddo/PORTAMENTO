@@ -40,8 +40,8 @@ public class DisplayMenu : MonoBehaviour
         }
             
         coordsLabel.text = axis_labels[0] + " = " + pos[0] + "\n" +
-                           axis_labels[1] + " = " + pos[1] + "\n" +
-                           axis_labels[2] + " = " + pos[2];
+                           axis_labels[2] + " = " + pos[2] + "\n" +
+                           axis_labels[1] + " = " + pos[1];
         clusterLabel.text = "Cluster ID: " + player.GetComponent<PlayerController>().current_cluster_id;
     }
 

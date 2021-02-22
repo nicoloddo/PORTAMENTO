@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
 
     // LINKS
     public GameObject camera;
-    public GameManager gameManager;
+    private GameManager gameManager;
     private GameObject nearCluster;
 
     // BOOLS
@@ -28,8 +28,8 @@ public class PlayerController : MonoBehaviour
     private float inputUpward; // Per muoversi verso sù
     private float inputVertical; //Tasti per muoversi in avanti
     private float inputHorizontal; //Tasti per ruotare (oltre al mouse)
-    private float totalXRot; //Rotazione in X totale
-    private float totalYRot; //Rotazione in Y totale
+    public float totalXRot; //Rotazione in X totale
+    public float totalYRot; //Rotazione in Y totale
 
     // PARAMETRI
     private float rotateSpeedX = 4f; //Velocita' di rotazione X
@@ -102,13 +102,45 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (Input.GetKey("r") && !song_menu_opened)
+        if (Input.GetKey("r") && !song_menu_opened && !map_opened)
         {
             transform.LookAt(selected_clust_transform);
             totalXRot = transform.rotation.eulerAngles.y;
             totalYRot = transform.rotation.eulerAngles.x;
         }
-        
+
+        if (Input.GetKey("z") && !song_menu_opened && !map_opened)
+        {
+            totalYRot = 0;
+        }
+
+        if (Input.GetKey("x") && !song_menu_opened && !map_opened)
+        {
+            if (!Input.GetKey(KeyCode.LeftControl))
+            {
+                totalXRot = 90;
+                totalYRot = 0;
+            }
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                totalXRot = -90;
+                totalYRot = 0;
+            }
+        }
+
+        if (Input.GetKey("c") && !song_menu_opened && !map_opened)
+        {
+            if (!Input.GetKey(KeyCode.LeftControl))
+            {
+                totalXRot = 0;
+                totalYRot = 0;
+            }
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                totalXRot = 180;
+                totalYRot = 0;
+            }
+        }
     }
 
 
@@ -182,7 +214,7 @@ public class PlayerController : MonoBehaviour
 
         can_move = true;
 
-        gameManager.stop_songMenu(nearCluster);
+        gameManager.stop_songMenu();
     }
 
     public void set_nearCluster(GameObject cluster, bool near_bool)

@@ -508,9 +508,9 @@ GameObject:
   - component: {fileID: 3024070128982206925}
   - component: {fileID: 1889659306661592050}
   - component: {fileID: 1889659306661592049}
-  - component: {fileID: 1889659306661592051}
+  - component: {fileID: 2544777272031242237}
   m_Layer: 0
-  m_Name: Fri 1
+  m_Name: Fri
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -570,7 +570,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1889659306661592051
+--- !u!114 &2544777272031242237
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -582,10 +582,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b95d26f07d70df4b87df5ed0d543b02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lookat_rotation: {x: 0, y: 0, z: 0}
   camera: {fileID: 9039368928107911166}
-  forwardSpeed: 0.5
-  lateralSpeed: 0.2
-  upwardSpeed: 0.3
+  is_near: 0
+  can_move: 1
+  totalXRot: 0
+  totalYRot: 0
+  forwardSpeed: 0.8
+  lateralSpeed: 0.5
+  upwardSpeed: 0.5
+  current_cluster_id: 0
+  selected_clust_transform: {fileID: 0}
 --- !u!1 &2749548740191233204
 GameObject:
   m_ObjectHideFlags: 0

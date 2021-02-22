@@ -11,7 +11,7 @@ public class SongMenu : MonoBehaviour
     public GameObject FeaturesContainer;
     private Text featuresLabel;
     private GameObject player;
-    private string prev_clust;
+    private string prev_clust = "";
 
     // Start is called before the first frame update
     void Start()
@@ -76,12 +76,10 @@ public class SongMenu : MonoBehaviour
         }
 
         launch_button_cluster_info(centroid, n_songs);
-        featuresLabel.text = "\n\nULTIMO CLUSTER APERTO:\n";
-        featuresLabel.text += prev_clust;
 
     }
 
-    public void CancelMenu(Dictionary<string, float> last_centroid, int last_n_songs)
+    public void CancelMenu()
     {
         Transform[] children; // Variabile da cui accedo ai figli del menu, ossia tutti i song_button
         children = gameObject.GetComponentsInChildren<Transform>();
@@ -110,9 +108,6 @@ public class SongMenu : MonoBehaviour
                 button.onClick.RemoveAllListeners();
             }
         }
-
-        launch_button_cluster_info(last_centroid, last_n_songs);
-        prev_clust = featuresLabel.text;
     }
 
     public void launch_button_song(Dictionary<string, string> meta, Dictionary<string, float> track)
@@ -197,7 +192,7 @@ public class SongMenu : MonoBehaviour
     {
         int loop_control;   // var ausiliaria per il blocco tempestivo di possibili loop infiniti
 
-        featuresLabel.text = "CARATTERISTICHE CLUSTER (DAL SUO CENTROIDE)\n\n";    // Cancello le features
+        featuresLabel.text = "";    // Cancello le features
 
         featuresLabel.text += "Numero di canzoni" + " : " + n_songs.ToString() + "\n";
 
@@ -252,5 +247,9 @@ public class SongMenu : MonoBehaviour
                 featuresLabel.text += "\n";
             }
         }
+        string current_clust = featuresLabel.text;
+        featuresLabel.text += "\n***********  ULTIMO CLUSTER APERTO:  ***********\n";
+        featuresLabel.text += prev_clust;
+        prev_clust = current_clust;
     }
 }
