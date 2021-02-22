@@ -12,6 +12,10 @@ public class PlayerController : MonoBehaviour
     private CharacterController characterController;
     public Vector3 lookat_rotation;
 
+    // JUST PRESSED
+    float just_pressed = 0; // Serve ad aspettare prima di ricevere un nuovo input. Per evitare che si richiuda subito un menù se premiamo leggermente troppo
+    float just_pressed_max = 0.1f;
+
     // LINKS
     public GameObject camera;
     private GameManager gameManager;
@@ -67,6 +71,9 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(just_pressed < just_pressed_max + 5)
+        just_pressed += Time.deltaTime;
+
         if (first_run)
         {
             // disattivo e riattivo il character controller perchè non mi permette il teletrasporto
@@ -76,29 +83,33 @@ public class PlayerController : MonoBehaviour
             gameObject.GetComponent<CharacterController>().enabled = true;
         }
 
-        if (Input.GetKey("f") && is_near && !map_opened)
+        if (Input.GetKey("f") && is_near && !map_opened && just_pressed > just_pressed_max)
         {
             if(!song_menu_opened)
             {
                 song_menu_run();
                 animator.SetFloat("fly", 0);    // Lo faccio fermare
+                just_pressed = 0;   // avvio il timer
             }
-            else
+            else if(just_pressed > 1)
             {
                 song_menu_esc();
+                just_pressed = 0;   // avvio il timer
             }  
         }
 
-        if (Input.GetKey("m") && !song_menu_opened)
+        if (Input.GetKey("m") && !song_menu_opened && just_pressed > just_pressed_max)
         {
             if (!map_opened)
             {
                 map_show();
                 animator.SetFloat("fly", 0);    // Lo faccio fermare
+                just_pressed = 0;   // avvio il timer
             }
-            else
+            else if (just_pressed > 1)
             {
                 map_esc();
+                just_pressed = 0;   // avvio il timer
             }
         }
 
