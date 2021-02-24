@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class MapController : MonoBehaviour
 {
+    List<string> axis = new List<string>();
+    int x = 0;
+    int y = 1;
+
     List<GameObject> cluster_list = new List<GameObject>();
     List<GameObject> cluster_button_list = new List<GameObject>();
     public GameObject cluster_button_prefab;
@@ -36,10 +40,62 @@ public class MapController : MonoBehaviour
         cluster_list.Add(cluster);
     }
 
-    public void createMap(string x_axis, string y_axis)
+    public void append_axis(string attribute)
     {
-        orizontal_label.text = x_axis;
-        vertical_label.text = y_axis;
+        axis.Add(attribute);
+    }
+
+    public void set_x(int i)
+    {
+        x = i;
+    }
+    public void set_y(int i)
+    {
+        y = i;
+    }
+    public void increment_x(int increment)
+    {
+        x += increment;
+        if(x >= axis.Count)     // Per gestire la rotazione dei valori tramite l'indice della lista
+        {
+            x = 0;
+        }
+        else if (x <= -1)
+        {
+            x = axis.Count - 1;
+        }
+
+        foreach (GameObject cluster_button in cluster_button_list)
+        {
+            cluster_button.GetComponent<ClusterButton>().set_axis(axis[x], axis[y]);
+            cluster_button.GetComponent<ClusterButton>().update_position();
+        }
+        orizontal_label.text = axis[x];
+    }
+    public void increment_y(int increment)
+    {
+        y += increment;
+        if (y >= axis.Count)    // Per gestire la rotazione dei valori tramite l'indice della lista
+        {
+            y = 0;
+        }
+        else if (y <= -1)
+        {
+            y = axis.Count - 1;
+        }
+
+        foreach (GameObject cluster_button in cluster_button_list)
+        {
+            cluster_button.GetComponent<ClusterButton>().set_axis(axis[x], axis[y]);
+            cluster_button.GetComponent<ClusterButton>().update_position();
+        }
+        vertical_label.text = axis[y];
+    }
+
+    public void createMap()
+    {
+        orizontal_label.text = axis[x];
+        vertical_label.text = axis[y];
 
         // CREO I PUNTI CLUSTER
         foreach(GameObject cluster in cluster_list)
@@ -48,7 +104,9 @@ public class MapController : MonoBehaviour
             cluster_button_list.Add(cluster_button);
             cluster_button.transform.SetParent(transform);   // Imposto il button cluster come figlio della mappa per controllarne bene il transform
             cluster.GetComponent<Cluster>().create_clusterButton(cluster_button.GetComponent<ClusterButton>());
-            cluster_button.GetComponent<ClusterButton>().initialize(x_axis, y_axis, cluster.GetComponent<Cluster>().get_id());
+            cluster_button.GetComponent<ClusterButton>().set_axis(axis[x], axis[y]);
+            cluster_button.GetComponent<ClusterButton>().set_number(cluster.GetComponent<Cluster>().get_id());
+            cluster_button.GetComponent<ClusterButton>().update_position();
 
             var button = cluster_button.GetComponent<Button>();
             button.onClick.AddListener(() => launch_button_clust(cluster_button, cluster));

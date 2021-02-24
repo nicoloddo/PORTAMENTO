@@ -10,7 +10,7 @@ import sys
 import paths_info
 import datasets_utils as dt
 
-def main(bundle_name = "sounds_of_everything", radar_name = "default", NEW_RADAR = True, user = "nic", CMD_LINE = True):
+def main(bundle_name = "sounds_of_everything", radar_name = "default", NEW_RADAR = False, user = "nic", CMD_LINE = True):
     '''!!!PRIMA DI UTILIZZARLO CONTROLLA IL NEW_RADAR!!! SE LO VUOI RISCARICARE DEVE ESSERE True, SE NO False.'''
     
     '''

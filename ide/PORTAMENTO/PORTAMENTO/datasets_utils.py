@@ -71,7 +71,7 @@ class Dataset:
                 
                 song_pack = playlist['tracks']
                 # OTTENGO LE FEATURES
-                features = load.get_features(song_pack, paths)  # qui il path serve per l'auth
+                features = load.get_features(song_pack, paths, 'first')  # qui il path serve per l'auth
                 features = self.format_features(features)
                 
                 # Creo effettivamente il dataset
@@ -85,6 +85,21 @@ class Dataset:
                                 
 
                 for song in song_pack:
+                    already_there = False
+                    one_time = False
+                    
+                    ''' CONTROLLO SE C'E' GIA' '''
+                    for track in dataset['track']:
+                        if song['id'] == track['id']:
+                            if not one_time:    # Una volta ci sarà sempre perchè l'abbiamo aggiunta noi
+                                one_time = True
+                            else:    # SE E' PRESENTE PIU' DI UNA VOLTA
+                                already_there = True
+                                break
+                               
+                    if already_there:
+                        del dataset['track'][count_sn] # Ossia cancello la riga che stavo componendo
+                        continue
                     
                     # Aggiungo nome playlist alla struttura della canzone
                     song['playlist'] = playlist['name']
@@ -107,9 +122,10 @@ class Dataset:
                         
                     # Aggiungo le nuove informazioni alla sezione track
                     dataset['track'][count_sn].update(song)
+
                     
                     # ANALISI AGGIUNTIVE E ACCURACIES:
-                    if(song_analysis_bool == True):
+                    if(song_analysis_bool == True and already_there == False):
                         song_id = song['id']
                         
                         print('\n' + str(count_sn + 1) + ': ')
@@ -136,7 +152,7 @@ class Dataset:
                         if self.save_dataset:
                             self.save_analysis(analysis, count_pl, count_sn, paths)
                     #-------------------------------------------------------------------- FINE DELL'IF
-                    
+                        
                     # Aggiorno l'iteratore delle canzoni
                     count_sn = count_sn + 1
                     # ------------------------------------...FINE FOR DELLE CANZONI
@@ -311,21 +327,27 @@ class Dataset:
         del playlist['primary_color']
     
         playlist['tracks'] = playlist['tracks']['items']
-    
+        
+        to_delete = []
         for i, item in enumerate(playlist['tracks']):
             item = item['track']
-            del item['available_markets']
-            del item['duration_ms']
-            del item['episode']
-            del item['external_ids']
-            del item['external_urls']
-            del item['explicit']
-            del item['type']
-            del item['href']
-            del item['track']
-            del item['is_local']
-            playlist['tracks'][i] = item
+            if item['id'] is None:
+                to_delete.append(i)
+            else:
+                del item['available_markets']
+                del item['duration_ms']
+                del item['episode']
+                del item['external_ids']
+                del item['external_urls']
+                del item['explicit']
+                del item['type']
+                del item['href']
+                del item['track']
+                del item['is_local']
+                playlist['tracks'][i] = item
         
+        for i in to_delete:
+            del playlist['tracks'][i]
         return playlist
             
     #---------------

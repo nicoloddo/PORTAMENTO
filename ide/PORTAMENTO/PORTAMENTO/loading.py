@@ -16,7 +16,10 @@ def get_playlist(playlist_id, paths):   # Gestisce la richiesta della playlist
     return request_playlist(playlist_id, paths)
 
 #-------------
-def get_features(songpack, paths, features = [], count = 0):   # Gestisce il limite di 100 id per richiesta e effettua la richiesta di features a gruppi
+def get_features(songpack, paths, features, count = 0):   # Gestisce il limite di 100 id per richiesta e effettua la richiesta di features a gruppi
+    
+    if features == 'first':    # Prima chiamata
+        features = []
         
     ids = "?ids="
     
@@ -95,14 +98,16 @@ def request_playlist(playlist_id, paths):
     playlist = response.json()
     
     num_songs = playlist['tracks']['total']
-    items = get_items(playlist_id, num_songs, paths)
+    items = get_items(playlist_id, num_songs, paths, 'first')
     playlist['tracks']['items'] = items
     return playlist
 
-def get_items(playlist_id, num_songs, paths, items = [], count = 0):
+def get_items(playlist_id, num_songs, paths, items, count = 0):
     
     # ATTENZIONE: IL MODO IN CUI HO OTTENUTO IL CICLO DI OFFSET E' BEN DIVERSO DA QUELLO USATO NEL get_features POICHE' AVEVO ESIGENZE DIVERSE.
-    # Creo il songpack di ids
+    if items == 'first':    # Prima chiamata
+        items = []
+    
     while count < num_songs:
         # richiedo e aggiorno la lista di items
         items.extend(request_items(playlist_id, paths, count))

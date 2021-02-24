@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
 
     // UI LINKS
     public GameObject cluster_menu;
+    private GameObject cluster_shown;
+    public int cluster_menu_page;
     public GameObject display_menu;
     public GameObject map_menu;
     public GameObject map;
@@ -111,7 +113,22 @@ public class GameManager : MonoBehaviour
 
         starting_centroid = centroids[(int)track_radars[0]["label"]];
         map.GetComponent<MapController>().set_radars(track_radars, meta_radars);
-        map.GetComponent<MapController>().createMap(axis["axis1"], axis["axis2"]);
+        
+        // DO I PARAMETRI DELLE CANZONI ALLA MAPPA
+        int j = 0;
+        foreach(string key in centroids[0].Keys)
+        {
+            map.GetComponent<MapController>().append_axis(key);
+
+            if (key == axis["axis1"])   // COME PREDEFINITO VOGLIAMO I PRIMI DUE ASSI DELLO SPAZIO
+                map.GetComponent<MapController>().set_x(j);
+            if (key == axis["axis2"])
+                map.GetComponent<MapController>().set_y(j);
+
+            j++;
+        }
+
+        map.GetComponent<MapController>().createMap();
         map.GetComponent<MapController>().launch_button_from_index((int)track_radars[0]["label"]);
         map_menu.GetComponent<Canvas>().enabled = false;
     }
@@ -119,7 +136,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void view_map()
@@ -136,6 +153,8 @@ public class GameManager : MonoBehaviour
 
     public void start_songMenu(GameObject cluster)
     {
+        cluster_menu_page = 0;
+        cluster_shown = cluster;
         List<Dictionary<string, string>> cluster_meta = cluster.GetComponent<Cluster>().meta;
         List<Dictionary<string, float>> cluster_track = cluster.GetComponent<Cluster>().track;
         Dictionary<string, float> centroid = cluster.GetComponent<Cluster>().centroid;
@@ -144,6 +163,20 @@ public class GameManager : MonoBehaviour
         cluster_menu.GetComponent<Canvas>().enabled = true;
         display_menu.SetActive(false);
         song_menu.GetComponent<SongMenu>().CreateMenu(is_leaf, clusterID, cluster_meta, cluster_track, centroid);
+    }
+
+    public void changepage_songMenu(int page)
+    {
+        cluster_menu_page = page;
+        GameObject cluster = cluster_shown;
+        List<Dictionary<string, string>> cluster_meta = cluster.GetComponent<Cluster>().meta;
+        List<Dictionary<string, float>> cluster_track = cluster.GetComponent<Cluster>().track;
+        Dictionary<string, float> centroid = cluster.GetComponent<Cluster>().centroid;
+        string clusterID = cluster.GetComponent<Cluster>().get_id();
+        bool is_leaf = cluster.GetComponent<Cluster>().is_leaf;
+        cluster_menu.GetComponent<Canvas>().enabled = true;
+        display_menu.SetActive(false);
+        song_menu.GetComponent<SongMenu>().CreateMenu(is_leaf, clusterID, cluster_meta, cluster_track, centroid, page);
     }
 
     public void stop_songMenu()

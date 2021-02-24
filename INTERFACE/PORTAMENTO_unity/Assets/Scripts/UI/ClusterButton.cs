@@ -25,13 +25,7 @@ public class ClusterButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        x_range = x_max - x_min;
-        y_range = y_max - y_min;
-
-        x = x_min + cluster.centroid[x_axis] * x_range;
-        y = y_min + cluster.centroid[y_axis] * y_range;
-
-        gameObject.GetComponent<RectTransform>().localPosition = new Vector3(x, y - 315, 0);    // Quel 315 è dovuto a un offset che si creava in game non so perchè
+        
     }
 
     // Update is called once per frame
@@ -40,10 +34,25 @@ public class ClusterButton : MonoBehaviour
         
     }
 
-    public void initialize(string orizontal, string vertical, string cluster_number)
+    public void update_position()
+    {
+        x_range = x_max - x_min;
+        y_range = y_max - y_min;
+
+        x = x_min + cluster.centroid[x_axis] * x_range;
+        y = y_min + cluster.centroid[y_axis] * y_range;
+
+        gameObject.GetComponent<RectTransform>().localPosition = new Vector3(x + 50, y - 315, 0);    // Quel 50 e quel 315 sono dovuti a offset che si creavano in game non so perchè
+    }
+
+    public void set_axis(string orizontal, string vertical)
     {
         x_axis = orizontal;
-        y_axis = vertical;
+        y_axis = vertical;  
+    }
+
+    public void set_number(string cluster_number)
+    {
         label.text = cluster_number;
     }
 

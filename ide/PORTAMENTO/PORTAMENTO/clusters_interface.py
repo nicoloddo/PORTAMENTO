@@ -22,7 +22,7 @@ from sklearn.utils.extmath import safe_sparse_dot, row_norms
 
 def main(node_id, user = 'nic'):
     '''
-    QUESTO SCRIPT SERVE A RESTITUIRE ALL'INTERFACCIA I CLUSTER DEL NODO IN CUI CI TROVIAMO
+    QUESTO SCRIPT SERVE A RESTITUIRE ALL'INTERFACCIA I CLUSTER DEL NODO IN CUI CI TROVIAMO. AVVIA PRIMA START_TRIP SE HAI CAMBIATO DATASET O RADARS
     '''
     root = r'D:\PROJECTS\PORTAMENTO'
     paths = paths_info.Path(user, root)

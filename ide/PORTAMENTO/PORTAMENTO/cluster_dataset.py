@@ -14,7 +14,7 @@ import datasets_utils as dt
 import clustering as cl
 
 #********************************* MAIN ******************************************************
-def main(bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = True, SAVE_FINAL_CLUSTERS = False, SONG_ANALYSIS_BOOL = False, CMD_LINE = True, user = r'nic'):    
+def main(bundle_name = "portamento", NEW_LOAD = False, SAVE_DATASET = True, SAVE_FINAL_CLUSTERS = False, SONG_ANALYSIS_BOOL = False, CMD_LINE = True, user = r'nic'):    
     
     '''   
     QUESTO SCRIPT SERVE A CLUSTERIZZARE UN DATASET QUALUNQUE CHE POI UTILIZZEREMO PER I CLUSTER DELL'INTERFACCIA.
@@ -32,7 +32,7 @@ def main(bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = 
     
     # PARAMETRI:   
     # parametri Birch
-    birch_threshold = 0.15
+    birch_threshold = 0.25
     branch_factor = 15
     
     
@@ -80,6 +80,7 @@ def main(bundle_name = "sounds_of_everything", NEW_LOAD = False, SAVE_DATASET = 
     
     # Creo il clusterer       
     clust = cl.Clusterer(data, weights, SAVE_FINAL_CLUSTERS)
+    clust_in_inspector = [clust]
     # Avvio il clustering
     params = True    # se usare i parametri inseriti dall'utente o i default
     if params == True:

@@ -7,6 +7,7 @@ public class SongMenu : MonoBehaviour
 {
     int axis_multiplier = 400;  // presente anche nella classe Cluster e DisplayMenu serve a distanziare i cluster
     int coord_multiplier = 100; // valore massimo delle coordinate durante il display, serve ad avere un metro di giudizio normale anzichè avere un numero float o un numero con valore massimo pari all'axis_multiplier
+    int songs_in_page = 11; // numero di canzoni in una pagina
 
     public GameObject FeaturesContainer;
     private Text featuresLabel;
@@ -27,7 +28,7 @@ public class SongMenu : MonoBehaviour
         
     }
 
-    public void CreateMenu(bool is_leaf, string cluster_id, List<Dictionary<string, string>> songs_meta, List<Dictionary<string, float>> songs_track, Dictionary<string, float> centroid)
+    public void CreateMenu(bool is_leaf, string cluster_id, List<Dictionary<string, string>> songs_meta, List<Dictionary<string, float>> songs_track, Dictionary<string, float> centroid, int page = 0)
     {
         GameObject clustButton;  // Variabile temporanea in cui metto il button
         
@@ -41,8 +42,8 @@ public class SongMenu : MonoBehaviour
             Debug.Log("In CreateMenu() songs_meta e songs_track sono di grandezze diverse!");
         }
 
-        int j = 0;
-        for(int i = 0; i < children.Length; i++)
+        int j = page * songs_in_page;
+        for(int i = 0; i < children.Length && j < songs_meta.Count; i++)
         {
             clustButton = children[i].gameObject;
 
@@ -119,7 +120,7 @@ public class SongMenu : MonoBehaviour
 
         foreach (string key in meta.Keys)
         {
-            if(key == "name" || key == "artist" || key == "album")
+            if(key == "name" || key == "artist" || key == "album" || key == "playlist")
             {
                 featuresLabel.text += key + " : " + meta[key] + "\n"; 
             }
