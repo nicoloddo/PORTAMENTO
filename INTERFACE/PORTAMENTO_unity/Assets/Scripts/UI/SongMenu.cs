@@ -43,7 +43,7 @@ public class SongMenu : MonoBehaviour
         }
 
         int j = page * songs_in_page;
-        for(int i = 0; i < children.Length && j < songs_meta.Count; i++)
+        for(int i = 0; i < children.Length; i++)
         {
             clustButton = children[i].gameObject;
 
@@ -60,12 +60,21 @@ public class SongMenu : MonoBehaviour
             {
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
-                var song_m = songs_meta[j];
-                var song_t = songs_track[j];
-                background.GetComponentInChildren<Text>().text = song_m["name"] + " - " + song_m["artist"];
 
                 button.onClick.RemoveAllListeners();
-                button.onClick.AddListener(() => launch_button_song(song_m, song_t));
+
+                if ( j < songs_meta.Count)
+                {
+                    var song_m = songs_meta[j];
+                    var song_t = songs_track[j];
+                    background.GetComponentInChildren<Text>().text = song_m["name"] + " - " + song_m["artist"];
+
+                    button.onClick.AddListener(() => launch_button_song(song_m, song_t));
+                }
+                else
+                {
+                    background.GetComponentInChildren<Text>().text = "";
+                }
 
                 j++;
             }

@@ -29,7 +29,7 @@ def main(bundle_name = "portamento", radar_name = "default", NEW_RADAR = True, u
     if(NEW_RADAR):
         if(CMD_LINE):
             print("Inserisci l'uri della playlist di radar nel file creato in radars/, poi clicca invio. \n")
-            input("Ricorda che non verranno visualizzate più di 10 canzoni come radar in ogni caso. \n")
+            input("Ricorda che non verranno visualizzate più di 12 canzoni come radar in ogni caso. \n")
         is_radar = True
         radar = dt.Dataset(paths, is_radar, NEW_RADAR)
         

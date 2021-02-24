@@ -32,8 +32,8 @@ def main(bundle_name = "portamento", NEW_LOAD = False, SAVE_DATASET = True, SAVE
     
     # PARAMETRI:   
     # parametri Birch
-    birch_threshold = 0.08
-    branch_factor = 15
+    birch_threshold = 0.2
+    branch_factor = 18
     
     
     # ************* INIZIO
@@ -110,7 +110,7 @@ def main(bundle_name = "portamento", NEW_LOAD = False, SAVE_DATASET = True, SAVE
     # segments_train(segm_min_confidence, percent_segm_clust, percent_sound_min, data['segments'], paths, percent_sound_acc)
     # dataset_sg = data['segments']
     
-    root_in_inspector = [clust.model.root_]
+    root_in_inspector = clust.model.root_.subclusters_
     return 0
 
 if __name__=="__main__":
