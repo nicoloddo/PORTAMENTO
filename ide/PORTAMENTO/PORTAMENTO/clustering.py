@@ -31,6 +31,12 @@ TRACK_DEFAULT_WHITELIST = ['danceability', 'tempo', 'energy']
 
 # MODALITA' DI ESTRAPOLAZIONE DELLE COLONNE RILEVANTI
 DEFAULT_AUDIO_COLUMNS_MODE = 'black'
+
+# RANGE DI NORMALIZZAZIONI
+tempo_range = {'min' : 0, 'max' : 250}
+
+# SCALA DEI WEIGHT
+WEIGHT_MAX = 10
         
 class Clusterer:
     
@@ -229,8 +235,8 @@ class Clusterer:
     
     def save_centroids(self, paths, centroids, audio):
         # Salvo i centroidi
-        centroids_df = pd.DataFrame(data = centroids, columns = audio.columns)
-
+        centroids_df = pd.DataFrame(data = centroids, columns = audio.columns)/WEIGHT_MAX
+        
         with open(paths.final_centroids, "w+"):
             export_csv = centroids_df.to_csv (paths.final_centroids, index = None, header=True)    # Esporto il dataset
             if str(export_csv) != 'None':
@@ -238,8 +244,6 @@ class Clusterer:
     
     #******************************************************
     def format_dataset(self, dataset):   # Funzione statica in cui decido cosa normalizzare
-        
-        tempo_range = {'min' : 0, 'max' : 250}
         
         if 'tempo' in self.audio_relevant_columns:
             self.normalize_column(dataset, tempo_range['min'], tempo_range['max'], 'tempo')

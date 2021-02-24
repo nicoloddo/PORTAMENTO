@@ -9,7 +9,7 @@ import sys
 
 import paths_info
 import datasets_utils as dt
-from clustering import TRACK_AUDIO_COLUMNS, TRACK_META_NUMERICAL_COLUMNS, TRACK_META_TEXTUAL_COLUMNS
+from clustering import TRACK_AUDIO_COLUMNS, TRACK_META_NUMERICAL_COLUMNS, TRACK_META_TEXTUAL_COLUMNS, tempo_range, WEIGHT_MAX
 
 import pandas as pd
 import numpy as np
@@ -38,7 +38,8 @@ def main(node_id, user = 'nic'):
         
     # ASSEGNAMENTI UTILI
     model = clusterer.model
-    track = clusterer.dataset['track']
+    track = clusterer.dataset['original_track']
+    normalize_column(track, tempo_range['min'], tempo_range['max'], 'tempo')
     radar_df = radar.dataset['track']
     data_track = track[TRACK_AUDIO_COLUMNS + TRACK_META_NUMERICAL_COLUMNS]   # separo le informazioni numeriche
     data_meta = track[TRACK_META_TEXTUAL_COLUMNS]  # separo le informazioni testuali
@@ -147,7 +148,7 @@ def return_clusters(node, data, columns, paths, scope):
     paths.delete_saved_clusters(paths.track_clust)
     
     # Salvo i centroidi
-    centroids_df = pd.DataFrame(data = node.centroids_, columns = columns)
+    centroids_df = pd.DataFrame(data = node.centroids_, columns = columns)/WEIGHT_MAX
     # SE IL NODO E' FOGLIA, I SUBCLUSTERS NON HANNO CHILD E NON POSSONO RIESEGUIRE QUESTO SCRIPT! POTREI AL LIMITE FAR NAVIGARE TRA LE CANZONI DEL CLUSTER
     centroids_df['is_leaf'] = [int(node.is_leaf)] * len(node.centroids_)    # Per cui mi segno se è un nodo foglia
     with open(paths.centroids, "w+"):
@@ -174,6 +175,12 @@ def return_clusters(node, data, columns, paths, scope):
                 print("Errore salvando la parte meta dei clusters")
         
       
+def normalize_column(dataframe, min_value, max_value, column):  # porto tutti gli elementi della colonna a variare tra [0, 1]
+        
+        for row in range(len(dataframe.index)):  #len con quell'argomento restituisce il numero di righe
+            trasla = dataframe.at[row, column] - min_value    # porto la scala ad avere 0 come minimo
+            normalized = trasla / (max_value - min_value)
+            dataframe.at[row, column] = normalized
 
 if __name__=="__main__":
     main(sys.argv[1], sys.argv[2])

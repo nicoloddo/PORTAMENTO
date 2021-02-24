@@ -1,3 +1,5 @@
+import copy
+
 # IMPORTO LE UTILITA' PER LE CANZONI
 import loading as load
 
@@ -184,6 +186,7 @@ class Dataset:
             self.save_n_playlists(count_pl, paths)
         
         self.dataset['track'] = pd.DataFrame(dataset['track'])
+        self.dataset['original_track'] = copy.deepcopy(self.dataset['track'])   # La sezione track verrà modificata nel clustering
         self.dataset['albums'] = pd.DataFrame(dataset['albums'])
         self.dataset['artists'] = pd.DataFrame(dataset['artists'])
         

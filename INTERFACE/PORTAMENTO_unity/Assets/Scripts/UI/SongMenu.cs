@@ -52,6 +52,7 @@ public class SongMenu : MonoBehaviour
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
                 background.GetComponentInChildren<Text>().text = "Enter Cluster\n" + "[" + player.GetComponent<PlayerController>().current_cluster_id + cluster_id + "]";
+                button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() => launch_button_enter(cluster_id, is_leaf));
             }
 
@@ -63,6 +64,7 @@ public class SongMenu : MonoBehaviour
                 var song_t = songs_track[j];
                 background.GetComponentInChildren<Text>().text = song_m["name"] + " - " + song_m["artist"];
 
+                button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() => launch_button_song(song_m, song_t));
 
                 j++;
@@ -72,6 +74,7 @@ public class SongMenu : MonoBehaviour
             {
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
+                button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() => launch_button_cluster_info(centroid, n_songs));
             }
         }
