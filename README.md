@@ -1,4 +1,28 @@
 # PORTAMENTO 
+CAUTION: THE PROJECT IS NOT YET UTILIZABLE WITHOUT MODIFYING THE CODE: THERE ARE SOME STATIC PATHS THAT WORK ONLY ON MY COMPUTERS. THESE ARE IN THE GameManager CLASS AND IN THE PYTHON SCRIPTS.
+
+Portamento is a music cataloguing software that uses a selfmade mod of the BIRCH algorithm to cluster a database of tracks. The parameters of each song are withdrawn from Spotify's audio analysis databases. The interface is done using the Unity Engine with an approach similar to videogames that obtains an interactive exploration of the clustering tree hierarchy.
+The backend is written in Python, while the frontend is written in C#.
+
+[![Watch the video](https://i.imgur.com/vKb2F1B.png)](https://youtu.be/vt5fpE0bzSY)
+
+Database reference:
+1. **[Spotify](https://developer.spotify.com/documentation/web-api/reference/)**.
+2. **[MusicBrainz](https://musicbrainz.org/)**, future developments.
+
+
+### Frontend
+The frontend is written in C# and makes use of the Unity Engine.
+The interface plays a very big role in the project as it follows one of the main ideas behind it by trying to highlight the actual impossibility to reduce music to a discreet number of clusters inferior to the number of the songs. It provides in fact a way to interactively explore a tree structure of clusters in which the root consist of the entire database, while the leaves are actually every sample (in that case song) of the database: as image of the fact that at the highest level of detail, every song constitute a genre by itself. Moreover, the clustering parameters and weights are highly tweakable by the user to satisfy every user-specific need of categorization.
+
+The user will be able to move inside a 3D space in which every cluster is located at specific 3 coordinates chosen from all its parameters. These 3 parameters are in fact the meaning given to the 3 axis of the space and can be modified by the user. It is also possible to go inside a cluster, thus going down in the tree hierarchy. By entering a cluster the user will see a totally similar scene but with the clusters that belongs to the new node of the hierarchy in which the user is now located.
+
+### Backend
+The heart of the software consists in the scripts written in Python, runned from the interface. These provide the data retrieval methods  Spotify's API and the actual clusterization of the database.
+
+
+******************************************************************************************************************
+# PORTAMENTO 
 ATTENZIONE: NEL CODICE VI SONO UN PO' DI PATHS CHE SAREBBERO DA CAMBIARE PER IL FUNZIONAMENTO IN COMPUTER DIVERSI.
 Sono presenti nel GameManager e poi negli script python col main. 
 
