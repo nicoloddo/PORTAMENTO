@@ -1,48 +1,34 @@
 # PORTAMENTO 
-CAUTION: THE PROJECT IS NOT YET UTILIZABLE WITHOUT MODIFYING THE CODE: THERE ARE SOME STATIC PATHS THAT WORK ONLY ON MY COMPUTERS. THESE ARE IN THE GameManager CLASS AND IN THE PYTHON SCRIPTS.
+> CAUTION: THE PROJECT IS NOT YET UTILIZABLE WITHOUT MODIFYING THE CODE: THERE ARE SOME STATIC PATHS THAT WORK ONLY ON MY COMPUTERS. THESE ARE IN THE GameManager CLASS AND IN THE PYTHON SCRIPTS.
 
 Portamento is a music cataloguing software that uses a selfmade mod of the BIRCH algorithm to cluster a database of tracks. The parameters of each song are withdrawn from Spotify's audio analysis databases. The interface is done using the Unity Engine with an approach similar to videogames that obtains an interactive exploration of the clustering tree hierarchy.
 The backend is written in Python, while the frontend is written in C#.
 
 [![Watch the video](https://i.imgur.com/vKb2F1B.png)](https://youtu.be/vt5fpE0bzSY)
+This video shows the functioning of the Beta version.
 
 Database reference:
-1. **[Spotify](https://developer.spotify.com/documentation/web-api/reference/)**.
-2. **[MusicBrainz](https://musicbrainz.org/)**, future developments.
+1. **[Spotify](https://developer.spotify.com/documentation/web-api/reference/)**, from which I get the tracks' metadata and analysis.
+2. **[MusicBrainz](https://musicbrainz.org/)**, additional informations about the tracks (*to be implemented in future developments*).
 
 
 ### Frontend
-The frontend is written in C# and makes use of the Unity Engine.
-The interface plays a very big role in the project as it follows one of the main ideas behind it by trying to highlight the actual impossibility to reduce music to a discreet number of clusters inferior to the number of the songs. It provides in fact a way to interactively explore a tree structure of clusters in which the root consist of the entire database, while the leaves are actually every sample (in that case song) of the database: as image of the fact that at the highest level of detail, every song constitute a genre by itself. Moreover, the clustering parameters and weights are highly tweakable by the user to satisfy every user-specific need of categorization.
+Written in C# on the **Unity Engine**, the interface plays a very big role in the project as it follows one of the main ideas behind it by trying to highlight the actual impossibility to reduce music to a discreet number of clusters inferior to the number of the songs. It provides in fact a way to interactively explore a tree structure of clusters in which the root consist of the entire database, while the leaves are actually every sample (in that case song) of the database. This is as image of the idea that, at the highest level of detail, every song constitute a genre by itself. Moreover, the clustering parameters and weights are highly tweakable by the user to satisfy every user-specific need of categorization.
 
-The user will be able to move inside a 3D space in which every cluster is located at specific 3 coordinates chosen from all its parameters. These 3 parameters are in fact the meaning given to the 3 axis of the space and can be modified by the user. It is also possible to go inside a cluster, thus going down in the tree hierarchy. By entering a cluster the user will see a totally similar scene but with the clusters that belongs to the new node of the hierarchy in which the user is now located.
+The user will be able to move inside a 3D space in which every cluster is located at specific 3 coordinates chosen from all its parameters. These 3 parameters are in fact the meaning given to the 3 axis of the space and can be modified by the user itself. It is also possible to go inside a cluster, thus going down in the tree hierarchy. By entering a cluster the user will see a totally similar scene but with the clusters that belongs to the new node of the hierarchy in which the user is now located.
 
 ### Backend
-The heart of the software consists in the scripts written in Python, runned from the interface. These provide the data retrieval methods  Spotify's API and the actual clusterization of the database.
+The heart of the software consists in the scripts written in Python, runned from the interface. These provide the data retrieval methods Spotify's API and the actual clusterization of the database.
 
+(https://imgur.com/a/6cbg7IJ)
+
+
+## Wanted functioning of the future 1.0 version
+...
 
 ******************************************************************************************************************
-# PORTAMENTO 
-ATTENZIONE: NEL CODICE VI SONO UN PO' DI PATHS CHE SAREBBERO DA CAMBIARE PER IL FUNZIONAMENTO IN COMPUTER DIVERSI.
-Sono presenti nel GameManager e poi negli script python col main. 
 
-Portamento parte da una riscrittura del progetto "**SpotiWorld**" per la catalogazione di musica tramite analisi della traccia.
-Il cuore del software è scritto in Python, l'interfaccia invece è scritta in C# e sfrutta l'editor Unity e il suo 3D Engine.
-
-I database utilizzati per questo progetto sono:
-1. **[Spotify](https://developer.spotify.com/documentation/web-api/reference/)**, da cui prelevo metadati delle canzoni, ma anche l'analisi musicale delle tracce.
-2. **[MusicBrainz](https://musicbrainz.org/)**, da cui prelevo informazioni aggiuntive come la lingua della canzone o la città d'origine.
-
-
-> **Disclaimer - sono solo un sognatore:**
->> Tutto ciò scritto qui sotto è solo per ora un'idea di implementazione non ancora realizzata nel codice. Questo è anche il mio progetto di tesi e mi rendo assolutamente conto che l'intera idea non possa essere implementata entro le scadenze della stessa.
-### Cenni riguardanti l'interfaccia
-L'interfaccia è parte costituente della filosofia del software, che punta a evidenziare l'effettiva impossibilità di ridurre la musica a un numero discreto di cluster e le sfumature che derivano da qualunque tipo di catalogazione musicale: ogni cluster è un raggruppamento completamente arbitrario, basato sulla scelta soggettiva dei pesi delle features; inoltre, al livello più basso di specializzazione, ogni cluster è effettivamente una sola canzone, a immagine del fatto che in realtà, alla base, ogni canzone definisce un suo genere unico. 
-
-L'utente si può spostare in un mondo 3D in cui ogni cluster è associato a un preciso punto. Può inoltre entrare dentro a un cluster per scendere di livello di specializzazione, entrando dunque in un nuovo mondo di nuovi clusters. 
-Il movimento è attuato su 3 assi definiti dall'utente tra tutti i parametri di descrizione della traccia.
-
-## Funzionamento
+## Funzionamento voluto per la versione 1.0 (in italiano)
 All'avvio del programma, vi sarà una schermata di inizio in cui scegliere se cambiare **impostazioni** o se iniziare un **viaggio**.
 
 ### Impostazioni
