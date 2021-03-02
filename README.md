@@ -1,5 +1,6 @@
 # PORTAMENTO 
-> CAUTION: THE PROJECT IS NOT YET UTILIZABLE WITHOUT MODIFYING THE CODE: THERE ARE SOME STATIC PATHS THAT WORK ONLY ON MY COMPUTERS. THESE ARE IN THE GameManager CLASS AND IN THE PYTHON SCRIPTS.
+> CAUTION: THE PROJECT IS NOT YET UTILIZABLE WITHOUT MODIFYING THE CODE: THERE ARE SOME STATIC PATHS THAT WORK ONLY ON MY COMPUTERS. 
+>> These are present in the GameManager Class and in the Python scripts.
 
 Portamento is a music cataloguing software that uses a selfmade mod of the BIRCH algorithm to cluster a database of tracks. The parameters of each song are withdrawn from Spotify's audio analysis databases. The interface is done using the Unity Engine with an approach similar to videogames that obtains an interactive exploration of the clustering tree hierarchy.
 The backend is written in Python, while the frontend is written in C#.
@@ -20,7 +21,7 @@ The user will be able to move inside a 3D space in which every cluster is locate
 ### Backend
 The heart of the software consists in the scripts written in Python, runned from the interface. These provide the data retrieval methods Spotify's API and the actual clusterization of the database.
 
-[(https://imgur.com/a/6cbg7IJ)]
+![Software structure](https://imgur.com/a/6cbg7IJ)
 
 
 ## Wanted functioning of the future 1.0 version
