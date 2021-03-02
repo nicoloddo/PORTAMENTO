@@ -20,11 +20,14 @@ The user will be able to move inside a 3D space in which every cluster is locate
 ### Backend
 The heart of the software consists in the scripts written in Python, runned from the interface. These provide the data retrieval methods Spotify's API and the actual clusterization of the database.
 
-(https://imgur.com/a/6cbg7IJ)
+[(https://imgur.com/a/6cbg7IJ)]
 
 
 ## Wanted functioning of the future 1.0 version
 ...
+
+
+
 
 ******************************************************************************************************************
 
