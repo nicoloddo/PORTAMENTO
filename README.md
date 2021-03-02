@@ -8,7 +8,7 @@ The backend is written in Python, while the frontend is written in C#.
 [![Watch the video](https://i.imgur.com/wOLEDrZ.jpg)](https://youtu.be/aSUIdFPvFPQ)
 This video shows the functioning of the Beta version.
 
-Database reference:
+Database references:
 1. **[Spotify](https://developer.spotify.com/documentation/web-api/reference/)**, from which I get the tracks' metadata and analysis.
 2. **[MusicBrainz](https://musicbrainz.org/)**, additional informations about the tracks (*to be implemented in future developments*).
 
