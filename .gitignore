@@ -67,6 +67,7 @@ clust/
 track_clust/
 oauth.txt
 prove_ausiliarie.py
+secrets.py
 # altri aggiuntivi
 Temp/
 Artifacts/

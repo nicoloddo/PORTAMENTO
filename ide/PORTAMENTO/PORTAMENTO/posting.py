@@ -34,7 +34,7 @@ def post_thing(request_string, body, paths, params = {}, PARAMS = False):
         return post_thing(request_string, body, paths, params, PARAMS)   # Richiamo la funzione
     return response
 
-def create_playlist(name, timestamp, paths):
+def create_playlist(name, timestamp, uris, paths):
     
     user_id = load.get_user_id(paths)
     request_string = get_url_request(r'users/' + user_id + r'/playlists', '')
