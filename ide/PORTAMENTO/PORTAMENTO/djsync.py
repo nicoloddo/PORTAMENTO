@@ -64,20 +64,25 @@ def main(bundle_name = "DJSYNC", FIRST_TIME = False, SAVE_DATASET = True, SAVE_F
     for playlist_id in set(to_add['playlist_id']):
         to_add_playlists.append(to_add.loc[to_add['playlist_id'] == playlist_id])
         
-    for playlist_id in set(new_tracks['playlist_id']):
-        to_add_playlists.append(new_tracks.loc[new_tracks['playlist_id'] == playlist_id])
+    to_delete_playlists = []
+    for playlist_id in set(to_delete['playlist_id']):
+        to_delete_playlists.append(to_delete.loc[to_delete['playlist_id'] == playlist_id])
     
     # Creo una playlist per le canzoni da aggiungere a ciascuna playlist
     now = datetime.now() # current date and time
     timestamp = now.strftime("%m/%d/%Y, %H:%M:%S")
     for playlist in to_add_playlists:
-        uris = ""
+        uris = "["
         for uri in playlist['uri']:
-            uris = uris + uri + ','
+            uris = uris + '"' + uri + '"' + ','
+        uris = uris[:-1] + ']'
         post.create_playlist('to_add_' + playlist['playlist'][0], timestamp, uris, paths)
         
         
-    print("Ciao!")
+    print("Canzoni da eliminare:\n\n")
+    for playlist in to_delete_playlists:
+        print(playlist['playlist'][0] + ":\n\n")
+        print(playlist[['name', 'artist', 'album']])
     
 if __name__=="__main__":
     #main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], False)
