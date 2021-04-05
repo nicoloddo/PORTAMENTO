@@ -43,8 +43,13 @@ def main(bundle_name = "DJSYNC", FIRST_TIME = False, SAVE_DATASET = True, SAVE_F
         old = dt.Dataset(paths, is_radar, new_load, SAVE_DATASET, SONG_ANALYSIS_BOOL, get_features_bool)
         old_tracks = old.dataset['track']
         
+        print("\nPlaylist attualmente in sync:\n")
+        for playlist_name in set(old_tracks['playlist']):
+            print(playlist_name)
+        
+        
     if CMD_LINE:
-        input("Aggiorna gli uri delle playlist nel file in bundles/" + bundle_name + ", poi clicca invio. \n")
+        input("\nPuoi aggiornare gli uri delle playlist nel file in bundles/" + bundle_name + ", poi clicca invio. \n")
     
     # Poi lo riscarico
     new_load = True
@@ -71,18 +76,24 @@ def main(bundle_name = "DJSYNC", FIRST_TIME = False, SAVE_DATASET = True, SAVE_F
     # Creo una playlist per le canzoni da aggiungere a ciascuna playlist
     now = datetime.now() # current date and time
     timestamp = now.strftime("%m/%d/%Y, %H:%M:%S")
+    print("\n")
+    print("\nHo trovato canzoni da aggiungere in " + str(len(to_add_playlists)) + " playlist:\n\n")
     for playlist in to_add_playlists:
         uris = "["
+        count_sn = 0
         for uri in playlist['uri']:
             uris = uris + '"' + uri + '"' + ','
+            count_sn = count_sn + 1
         uris = uris[:-1] + ']'
         post.create_playlist('to_add_' + playlist['playlist'][0], timestamp, uris, paths)
+        print(str(count_sn) + "tracce da aggiungere a " + playlist['playlist'][0] + ";\n")
         
-        
-    print("Canzoni da eliminare:\n\n")
+    print("\nHo trovato canzoni da eliminare in " + str(len(to_delete_playlists)) + " playlist:\n\n")
     for playlist in to_delete_playlists:
         print(playlist['playlist'][0] + ":\n\n")
         print(playlist[['name', 'artist', 'album']])
+	
+    input("Buon DJing!")
     
 if __name__=="__main__":
     #main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], False)

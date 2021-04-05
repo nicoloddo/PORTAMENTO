@@ -11,7 +11,7 @@ import json
 
 import paths_info
 
-import secrets
+from my_secrets import client_secret
 
 CONFIRMATION_CODE = 200 # Risposta di conferma affermativa dall'api spotify
 redirect_uri = 'http://linktr.ee/PERRERAHH'
@@ -55,7 +55,7 @@ def request_auth():
 def request_tokens(auth):
     
     request_string = "https://accounts.spotify.com/api/token"
-    body = {'grant_type' : 'authorization_code', 'code' : auth, 'redirect_uri' : redirect_uri, 'client_id' : 'e6971699b1de430f8161d4093d1d0d09', 'client_secret' : secrets.client_secret}
+    body = {'grant_type' : 'authorization_code', 'code' : auth, 'redirect_uri' : redirect_uri, 'client_id' : 'e6971699b1de430f8161d4093d1d0d09', 'client_secret' : client_secret}
     
     response = requests.post(request_string, data = body)
     
@@ -67,7 +67,7 @@ def refresh_access_token(paths):
     refresh_token = carica.read()
     
     request_string = "https://accounts.spotify.com/api/token"
-    body = {'grant_type' : 'refresh_token', 'refresh_token' : refresh_token, 'client_id' : 'e6971699b1de430f8161d4093d1d0d09', 'client_secret' : secrets.client_secret}
+    body = {'grant_type' : 'refresh_token', 'refresh_token' : refresh_token, 'client_id' : 'e6971699b1de430f8161d4093d1d0d09', 'client_secret' : client_secret}
     
     response = requests.post(request_string, data = body)
     

@@ -3,6 +3,7 @@
 >> These are present in the GameManager Class and in the Python scripts.
 
 
+*Portamento: Machine Learning for music cataloguing and a three-dimensional interface to highlight its inherent nuances.*
 Read the thesis (in italian): [thesis](https://github.com/nicoloddo/PORTAMENTO/blob/master/THESIS.pdf)
 
 
