@@ -1,0 +1,79 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Apr  4 22:53:04 2021
+
+@author: nicol
+"""
+
+# IMPORTO I PATHS
+import paths_info
+
+# IMPORTO DATASET UTILITIES
+import datasets_utils as dt
+
+# IMPORTO LE UTILITA' PER LE CANZONI
+import posting as post
+
+from datetime import datetime
+
+def main(bundle_name = "DJSYNC", FIRST_TIME = False, SAVE_DATASET = True, SAVE_FINAL_CLUSTERS = False, SONG_ANALYSIS_BOOL = False, CMD_LINE = True, user = r'nic'):
+    
+    # ************* INIZIO
+    root = r'D:\PROJECTS\PORTAMENTO'
+    paths = paths_info.Path(user, root)    # COLLEGO I PATH ALLE MIE STRUTTURE
+    is_radar = False
+    get_features_bool = False
+    
+    paths.link_database(bundle_name)
+    
+    DEFAULT_ENABLED = True    # Bool per decidere se usare il valore di default FIRST_TIME
+    if CMD_LINE and not DEFAULT_ENABLED:
+        first_time = input("Nuovo caricamento? [(0)/1] - ")
+
+        if first_time == '1':
+            new_load = True
+        else:
+            first_time = False
+    else: 
+        first_time = FIRST_TIME
+    
+    # Carico il vecchio dataset
+    if not first_time:
+        new_load = False
+        old = dt.Dataset(paths, is_radar, new_load, SAVE_DATASET, SONG_ANALYSIS_BOOL, get_features_bool)
+        old_tracks = old.dataset['track']
+        
+    if CMD_LINE:
+        input("Aggiorna gli uri delle playlist nel file in bundles/" + bundle_name + ", poi clicca invio. \n")
+    
+    # Poi lo riscarico
+    new_load = True
+    new = dt.Dataset(paths, is_radar, new_load, SAVE_DATASET, SONG_ANALYSIS_BOOL, get_features_bool)
+    new_tracks = new.dataset['track']
+    
+    # Controllo le differenze tramite gli indici presenti
+    old_tracks = old_tracks.set_index('id')
+    new_tracks = new_tracks.set_index('id')
+    to_add = new_tracks[~new_tracks.index.isin(old_tracks.index)]
+    to_delete = old_tracks[~old_tracks.index.isin(new_tracks.index)]
+    
+    paths.save_history(to_add, 'to_add')
+    paths.save_history(to_delete, 'to_delete')
+    
+    to_add_playlists = []
+    for playlist_id in set(to_add['playlist_id']):
+        to_add_playlists.append(to_add.loc[to_add['playlist_id'] == playlist_id])
+        
+    for playlist_id in set(new_tracks['playlist_id']):
+        to_add_playlists.append(new_tracks.loc[new_tracks['playlist_id'] == playlist_id])
+    
+    now = datetime.now() # current date and time
+    timestamp = now.strftime("%m/%d/%Y, %H:%M:%S")
+    for playlist in to_add_playlists:
+        post.create_playlist('to_add_' + playlist['playlist'][0], timestamp, paths)
+        
+    print("Ciao!")
+    
+if __name__=="__main__":
+    #main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], False)
+    main()    # Per avvio dall'ide

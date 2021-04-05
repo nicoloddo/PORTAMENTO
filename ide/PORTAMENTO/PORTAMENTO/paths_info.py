@@ -133,7 +133,8 @@ class Path:
         
         
         # COLLEGO I PATH DEI FILE DI DEFAULT
-        self.oauth = os.path.join(self.base, r'oauth' + CONTROL_EXT)    # Costruisco il path del file dell'oauth token         
+        self.oauth = os.path.join(self.base, r'oauth' + CONTROL_EXT)    # Costruisco il path del file dell'oauth token
+        self.refresh_token = os.path.join(self.base, r'refresh_token' + CONTROL_EXT)    # Costruisco il path del file del refresh token         
             
         self.settings = os.path.join(self.base, r'settings' + CONTROL_EXT)
         self.weights_table = os.path.join(self.tables, r'weights_table' +  DATAFRAME_EXT)
@@ -143,6 +144,7 @@ class Path:
         # CREO I FILE SE NON E' STATA AVVIATA L'INSTALLAZIONE
         # OAUTH
         self.txt_if_not(self.oauth, "")
+        self.txt_if_not(self.refresh_token, "")
         
         # SETTINGS
         self.json_if_not(self.settings, DEFAULT_SETTINGS)
@@ -156,6 +158,7 @@ class Path:
         
         # OAUTH
         self.txt_install(self.oauth, "")
+        self.txt_install(self.refresh_token, "")
         
         # SETTINGS
         self.json_install(self.settings, DEFAULT_SETTINGS)
@@ -264,9 +267,25 @@ class Path:
             self.mkdir_if_not(path)
         
         self.songpack[-1]['n_songs'] = os.path.join(playlist_path, r'n_songs')     # Costruisco il path del songpack del file songpack (il -1 è per aggiungere al dizionario appena messo nella lista)
-        
     
-    #*************************************************************************************************************************************    
+    #************************************************************************************************************************************
+    def changes_history_path(self):
+        
+        playlists_changes_history = os.path.join(self.bundle, r'playlists_changes_history')  # Il path del nuovo dataset
+        self.mkdir_if_not(playlists_changes_history)
+        return playlists_changes_history
+    
+    def save_history(self, data, to_what):
+        path = os.path.join(self.changes_history_path(), to_what)
+        count = 0
+        while True:
+            temp = path + str(count)
+            if self.csv_if_not(temp, data) is True:
+                break
+            else:
+                count = count + 1
+                
+    #************************************************************************************************************************************
     def mkdir_if_not(self, path):     # controlla se la cartella esiste, se non esiste la crea
         if(not os.path.isdir(path)):
             os.mkdir(path)
@@ -275,9 +294,9 @@ class Path:
         crea = open(path, "w+")
         crea.write(default_data)
         crea.close()
-    def txt_if_not(self, path, default_data):
+    def txt_if_not(self, path, data):
         if(not os.path.isfile(path)):
-            self.txt_install(path, default_data)
+            self.txt_install(path, data)
     
     def csv_install(self, path, default_data):  # default_data qui deve essere un dataframe!
         salva = open(path, "w+")
@@ -285,9 +304,12 @@ class Path:
         if str(export_csv) != 'None':
             print("Errore salvando una table di default. Path: " + path)
         salva.close()
-    def csv_if_not(self, path, default_data):   
+    def csv_if_not(self, path, data):   
         if(not os.path.isfile(path)):
-            self.csv_install(path, default_data)
+            self.csv_install(path, data)
+            return True
+        else:
+            return False
     
     
     def json_install(self, path, default_data):

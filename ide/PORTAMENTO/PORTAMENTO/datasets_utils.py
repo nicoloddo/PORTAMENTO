@@ -22,7 +22,7 @@ DATASET_EXT = ".csv"
 class Dataset:
     
     #*************************************** INIT
-    def __init__(self, paths, is_radar = False, new_load = True, save_dataset = False, song_analysis_bool = False):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
+    def __init__(self, paths, is_radar = False, new_load = True, save_dataset = False, song_analysis_bool = False, get_features_bool = True):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
         
         self.dataset = {}
         self.is_radar = is_radar
@@ -34,7 +34,7 @@ class Dataset:
             dump_path = paths.dataset_dump
         
         if(new_load):   # SE NON E' MAI STATO CREATO, LO CREIAMO DA ZERO E LO SALVIAMO
-            self.get_and_save_dataset(paths, song_analysis_bool)
+            self.get_and_save_dataset(paths, song_analysis_bool, get_features_bool)
             
             # NE FACCIO UN DUMP PER I PROSSIMI CARICAMENTI            
             with open(dump_path, "wb+") as salva:
@@ -45,7 +45,7 @@ class Dataset:
                 self.dataset = pickle.load(file)
 
     #---------------------------
-    def get_and_save_dataset(self, paths, song_analysis_bool = False):  # Crea il dataset, e lo salva, creando i path di salvataggio
+    def get_and_save_dataset(self, paths, song_analysis_bool = False, get_features_bool = True):  # Crea il dataset, e lo salva, creando i path di salvataggio
         
         dataset = {'track':[], 'track_confidences':[], 'sections':[], 'sections_confidences':[], 'segments':[], 'segments_confidences':[], 'artists':{}, 'albums':{}}
         
@@ -73,14 +73,15 @@ class Dataset:
                 
                 song_pack = playlist['tracks']
                 # OTTENGO LE FEATURES
-                features = load.get_features(song_pack, paths, 'first')  # qui il path serve per l'auth
-                features = self.format_features(features)
+                if get_features_bool:
+                    features = load.get_features(song_pack, paths, 'first')  # qui il path serve per l'auth
+                    features = self.format_features(features)
                 
-                # Creo effettivamente il dataset
-                # dataset['track'] sarà una lista di dizionari ognuno con le coordinate di una canzone. Da una lista del genere è facile costruire un dataset.
-                dataset['track'].extend(features)
-                # sections e segments non son più solo un dizionario: son liste di dizionari. L'approccio deve essere differente: space['sections'] sarà infatti una lista di liste di dizionari.
-                # Posso costruire il dataset su ogni singola canzone: questo dataset conterrà i segmenti/sezioni della canzone.
+                    # Creo effettivamente il dataset
+                    # dataset['track'] sarà una lista di dizionari ognuno con le coordinate di una canzone. Da una lista del genere è facile costruire un dataset.
+                    dataset['track'].extend(features)
+                    # sections e segments non son più solo un dizionario: son liste di dizionari. L'approccio deve essere differente: space['sections'] sarà infatti una lista di liste di dizionari.
+                    # Posso costruire il dataset su ogni singola canzone: questo dataset conterrà i segmenti/sezioni della canzone.
                 
 
                 print(playlist['name'] + '\n')
@@ -105,6 +106,7 @@ class Dataset:
                     
                     # Aggiungo nome playlist alla struttura della canzone
                     song['playlist'] = playlist['name']
+                    song['playlist_id'] = playlist_id
                     song['artist'] = song['artists'][0]['name']
                     song['artists_id'] = []
                     # Aggiungo gli artisti alla sezione del dataset e salvo solo gli id
@@ -123,7 +125,10 @@ class Dataset:
                     song['album'] = song['album']['name']
                         
                     # Aggiungo le nuove informazioni alla sezione track
-                    dataset['track'][count_sn].update(song)
+                    if get_features_bool:
+                        dataset['track'][count_sn].update(song)
+                    else:
+                        dataset['track'].append(song)
 
                     
                     # ANALISI AGGIUNTIVE E ACCURACIES:

@@ -1,6 +1,10 @@
 # PER RICEVERE I DATI SULLE CANZONI
 import requests
 
+import webbrowser
+
+import authorization as au
+
 CONFIRMATION_CODE = 200 # Risposta di conferma affermativa dall'api spotify
 MAX_IDS_PER_REQUEST = 100 # Massimo numero di ids per feature request (imposto da spotify)
 MAX_IDS_PLAYLIST_REQUEST = 100 # Massimo numero di items forniti dalla richiesta di una playlist
@@ -45,10 +49,18 @@ def get_features(songpack, paths, features, count = 0):   # Gestisce il limite d
 #************************************************************************************************************************************
 def get_oauth(paths):
     
-    oauth = oauth = open(paths.oauth, "r")  # Leggo il token di autenticazione  # Leggo il token di autenticazione
+    oauth = open(paths.oauth, "r")  # Leggo il token di autenticazione  # Leggo il token di autenticazione
     auth = oauth.read()
     oauth.close()
     return auth
+
+#************************************************************************************************************************************
+def get_user_id(paths):
+    
+    url_request = get_url_request('me', '')
+    response = request_thing(url_request, paths)
+    user_id = response.json()['id']
+    return user_id
 
 #************************************************************************************************************************************
 def get_url_request(req_type, req_id):
@@ -71,15 +83,12 @@ def request_thing(request_string, paths, offset = 100, PARAMS = False):
         response = requests.get(request_string, headers = request_headers)
         
     if response.status_code != CONFIRMATION_CODE:   # Spesso questo problema c'è per l'oauth token scaduto
-        print("C'è stato un problema con la richiesta (CODE: " + str(response.status_code) + "):\n" + response.text + "\nProva a vedere questo link per ottenere l'OAUTH token: \nhttps://developer.spotify.com/console/get-audio-analysis-track")
-        auth = input("Inserisci l'OAUTH token: (scrivi stop se vuoi fermare qui l'esecuzione) ") # Rinnovo l'oauth token
-        if auth == "stop" or auth == "STOP":
-            raise ValueError("Oauth aveva il valore di stop del loop")
-        oauth = open(paths.oauth, "w")        
-        oauth.write(auth)
-        oauth.close()
-        print('\n')
-        return request_thing(request_string, paths)   # Richiamo la funzione
+        print("C'è stato un problema con la richiesta (CODE: " + str(response.status_code) + "):\n" + response.text + "\nProvo a ripristinare l'OAUTH token? [0/(1)] ")
+        risposta = input()
+        if risposta == '0':
+            raise ValueError("Interruione manuale in seguito ad errore in una richiesta.")
+        au.refresh_access_token(paths)
+        return request_thing(request_string, paths, offset, PARAMS)   # Richiamo la funzione
     return response
     
 #-------------    
