@@ -22,7 +22,7 @@ DATASET_EXT = ".csv"
 class Dataset:
     
     #*************************************** INIT
-    def __init__(self, paths, is_radar = False, new_load = True, save_dataset = False, song_analysis_bool = False, get_features_bool = True):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
+    def __init__(self, paths, is_radar = False, new_load = True, save_dataset = False, song_analysis_bool = False, get_features_bool = True, no_to_cross_playlist_duplicates = True):  # Costruisce un dizionario con all'interno i tre scope delle canzoni: vi son le coordinate per ogni canzone. Inoltre salvo in un file il numero di canzoni
         
         self.dataset = {}
         self.is_radar = is_radar
@@ -34,7 +34,7 @@ class Dataset:
             dump_path = paths.dataset_dump
         
         if(new_load):   # SE NON E' MAI STATO CREATO, LO CREIAMO DA ZERO E LO SALVIAMO
-            self.get_and_save_dataset(paths, song_analysis_bool, get_features_bool)
+            self.get_and_save_dataset(paths, song_analysis_bool, get_features_bool, no_to_cross_playlist_duplicates)
             
             # NE FACCIO UN DUMP PER I PROSSIMI CARICAMENTI            
             with open(dump_path, "wb+") as salva:
@@ -45,12 +45,11 @@ class Dataset:
                 self.dataset = pickle.load(file)
 
     #---------------------------
-    def get_and_save_dataset(self, paths, song_analysis_bool = False, get_features_bool = True):  # Crea il dataset, e lo salva, creando i path di salvataggio
+    def get_and_save_dataset(self, paths, song_analysis_bool = False, get_features_bool = True, no_to_cross_playlist_duplicates = True):  # Crea il dataset, e lo salva, creando i path di salvataggio
         
         dataset = {'track':[], 'track_confidences':[], 'sections':[], 'sections_confidences':[], 'segments':[], 'segments_confidences':[], 'artists':{}, 'albums':{}}
         
         count_pl = 0    #counter che si segna il numero di playlist
-        count_sn = 0    #counter che si segna il numero di canzone
         total_songs = 0 #counter per tutte le canzoni del dataset
         
         if self.is_radar:
@@ -61,6 +60,8 @@ class Dataset:
             
         with open(playlistpack_path, "r") as playlist_pack:
             for uri_pl in playlist_pack:
+                count_sn = 0    #counter che si segna il numero di canzone
+                
                 uri_pl = uri_pl[:URI_LENGHT]  # Questo serve a togliere il carattere in più (ossia '\n')
                 playlist_id = uri_pl[URI_PORTION:] # Taglio la porzione che ci serve, ossia l'ID
                 
@@ -91,9 +92,15 @@ class Dataset:
                     already_there = False
                     one_time = False
                     
+                    # Aggiungo l'informazione di playlist_id
+                    song['playlist_id'] = playlist_id
+                    
+                    if not get_features_bool:   # se avevamo le features l'abbiamo già aggiunta in bulk!
+                        dataset['track'].append(song)
+                    
                     ''' CONTROLLO SE C'E' GIA' '''
-                    for track in dataset['track']:
-                        if song['id'] == track['id']:
+                    for track in dataset['track']:  # Due condizioni: una in cui non vogliamo i duplicati provenienti da playlist diverse, l'altra in cui li accettiamo ma eliminiamo comunque quelli nella stessa playlist.
+                        if (no_to_cross_playlist_duplicates and song['id'] == track['id']) or (not no_to_cross_playlist_duplicates and song['id'] == track['id'] and playlist_id == track['playlist_id']):
                             if not one_time:    # Una volta ci sarà sempre perchè l'abbiamo aggiunta noi
                                 one_time = True
                             else:    # SE E' PRESENTE PIU' DI UNA VOLTA
@@ -101,12 +108,12 @@ class Dataset:
                                 break
                                
                     if already_there:
-                        del dataset['track'][count_sn] # Ossia cancello la riga che stavo componendo
-                        continue
+                        if get_features_bool:   # Se non volevo le features, la canzone non è stata ancora aggiunta in ogni caso quindi non serve cancellarla
+                            del dataset['track'][total_songs + count_sn] # Ossia cancello la riga che stavo componendo
+                        continue    # salto questa iterazione ossia questa canzone
                     
                     # Aggiungo nome playlist alla struttura della canzone
                     song['playlist'] = playlist['name']
-                    song['playlist_id'] = playlist_id
                     song['artist'] = song['artists'][0]['name']
                     song['artists_id'] = []
                     # Aggiungo gli artisti alla sezione del dataset e salvo solo gli id
@@ -125,11 +132,7 @@ class Dataset:
                     song['album'] = song['album']['name']
                         
                     # Aggiungo le nuove informazioni alla sezione track
-                    if get_features_bool:
-                        dataset['track'][count_sn].update(song)
-                    else:
-                        dataset['track'].append(song)
-
+                    dataset['track'][total_songs + count_sn].update(song)
                     
                     # ANALISI AGGIUNTIVE E ACCURACIES:
                     if(song_analysis_bool == True and already_there == False):
@@ -172,6 +175,7 @@ class Dataset:
                 # Salvo il numero delle canzoni della playlist
                 if self.save_dataset:
                     self.save_n_songs(count_pl, count_sn, paths)
+                    paths.save_playlist_name(count_pl, playlist['name'], "https://open.spotify.com/playlist/" + playlist_id)
                 
                 
                 

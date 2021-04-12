@@ -266,8 +266,12 @@ class Path:
         for key, path in self.songpack[-1].items():  # creo le cartelle dell'ultimo songpack creato
             self.mkdir_if_not(path)
         
+        self.songpack[-1]['path'] = playlist_path
         self.songpack[-1]['n_songs'] = os.path.join(playlist_path, r'n_songs')     # Costruisco il path del songpack del file songpack (il -1 è per aggiungere al dizionario appena messo nella lista)
     
+    def save_playlist_name(self, count_pl, name, link):
+        self.txt_if_not(os.path.join(self.songpack[count_pl]['path'], name) + CONTROL_EXT, link)
+        
     #************************************************************************************************************************************
     def changes_history_path(self):
         
@@ -279,7 +283,7 @@ class Path:
         path = os.path.join(self.changes_history_path(), to_what)
         count = 0
         while True:
-            temp = path + str(count)
+            temp = path + str(count) + DATAFRAME_EXT
             if self.csv_if_not(temp, data) is True:
                 break
             else:
