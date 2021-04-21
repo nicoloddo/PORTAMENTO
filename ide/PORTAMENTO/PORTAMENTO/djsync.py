@@ -16,6 +16,9 @@ import pandas as pd
 import posting as post
 
 from datetime import datetime
+import webbrowser
+
+PLAYLIST_BASE_URL = "https://open.spotify.com/playlist/"
 
 def main(bundle_name = "DJSYNC", FIRST_TIME = False, SAVE_DATASET = True, SAVE_FINAL_CLUSTERS = False, SONG_ANALYSIS_BOOL = False, CMD_LINE = True, user = r'nic'):
     
@@ -25,6 +28,7 @@ def main(bundle_name = "DJSYNC", FIRST_TIME = False, SAVE_DATASET = True, SAVE_F
     is_radar = False
     get_features_bool = False
     no_to_cross_playlist_duplicates = False
+    PLAYLIST_PREFIX = ""
     
     paths.link_database(bundle_name)
     
@@ -75,7 +79,7 @@ def main(bundle_name = "DJSYNC", FIRST_TIME = False, SAVE_DATASET = True, SAVE_F
         for playlist_id in set(to_add['playlist_id']):
             if old_tracks.empty:
                 new_playlists.append(to_add.loc[to_add['playlist_id'] == playlist_id])
-            elif playlist_id not in old_tracks['playlist_id']:
+            elif playlist_id not in set(old_tracks['playlist_id']):
                 new_playlists.append(to_add.loc[to_add['playlist_id'] == playlist_id])
             else:
                 to_add_playlists.append(to_add.loc[to_add['playlist_id'] == playlist_id])
@@ -91,6 +95,7 @@ def main(bundle_name = "DJSYNC", FIRST_TIME = False, SAVE_DATASET = True, SAVE_F
     timestamp = now.strftime("%m/%d/%Y, %H:%M:%S")
     print("\n")
     print("\nHo trovato canzoni da aggiungere in " + str(len(to_add_playlists)) + " playlist:\n\n")
+    urls = ""
     for playlist in to_add_playlists:
         uris = "["
         count_sn = 0
@@ -98,21 +103,28 @@ def main(bundle_name = "DJSYNC", FIRST_TIME = False, SAVE_DATASET = True, SAVE_F
             uris = uris + '"' + uri + '"' + ','
             count_sn = count_sn + 1
         uris = uris[:-1] + ']'
-        post.create_playlist('to_add_' + playlist['playlist'][0], timestamp, uris, paths)
+        new_playlist_id = post.create_playlist(PLAYLIST_PREFIX + playlist['playlist'][0], timestamp, uris, paths)
+        playlist_url = PLAYLIST_BASE_URL + new_playlist_id
+        webbrowser.open(playlist_url)
+        urls = urls + playlist_url + "\n"
         print(str(count_sn) + " tracce da aggiungere a " + playlist['playlist'][0] + ";\n")
     
     print("--------------------------------")    
     print("\nHo trovato canzoni da eliminare in " + str(len(to_delete_playlists)) + " playlist:\n\n")
     for playlist in to_delete_playlists:
-        print(playlist['playlist'][0] + ":\n\n")
+        print("\n" + playlist['playlist'][0] + ":\n")
         print(playlist[['name', 'artist', 'album']])
     
     print("--------------------------------")
     print("\nHo aggiunto al database le seguenti " + str(len(new_playlists)) + " playlist:\n\n")
     for playlist in new_playlists:
         print(playlist['playlist'][0] + "\n")
+        playlist_url = PLAYLIST_BASE_URL + playlist['playlist_id'][0]
+        urls = urls + playlist_url + "\n"
 	
     print("--------------------------------")
+    pd.DataFrame([urls]).to_clipboard(index = False, header = False)    # Li copio in clipboard
+    print("Gli url delle playlist da scaricare sono stati copiati nella clipboard\n")
     input("Buon DJing!")
     
 if __name__=="__main__":

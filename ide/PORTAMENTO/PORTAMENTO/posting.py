@@ -51,7 +51,7 @@ def create_playlist(name, timestamp, uris, paths):
     body = "{\"uris\":" + uris + "}"
     response = post_thing(request_string, body, paths)
     
-    webbrowser.open("https://open.spotify.com/playlist/" + playlist_id)
+    return playlist_id
 
 def get_url_request(req_type, req_id):
     
