@@ -1,0 +1,3 @@
+id,name,treshold,branch_factor
+,sounds_of_everything,0.15,15
+,portamento,0.2,18
