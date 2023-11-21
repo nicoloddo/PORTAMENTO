@@ -1,9 +1,4 @@
 # PORTAMENTO 
-> THE PROJECT IS NOT YET UTILIZABLE WITHOUT MODIFYING THE CODE: THERE ARE SOME STATIC PATHS THAT CAN ONLY WORK ON MY COMPUTERS. 
->> These are present in the GameManager Class and in the Python scripts.\
-
-> Note also that the program is best suited for wide screen monitors and the window opened when starting it respects that ratio.
-
 
 *Portamento: Machine Learning for music cataloguing and a three-dimensional interface to highlight its inherent nuances.*
 Read the thesis (in italian): [thesis](https://github.com/nicoloddo/PORTAMENTO/blob/master/THESIS.pdf)
