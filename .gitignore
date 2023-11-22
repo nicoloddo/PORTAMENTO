@@ -85,6 +85,7 @@ oauth.txt
 refresh_token.txt
 secrets.py
 my_secrets.py
+*.env
 
 # Other too big or not necessary to backup files
 docs/
