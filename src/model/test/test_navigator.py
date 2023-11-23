@@ -35,10 +35,13 @@ current_node_id = "0"
 while True:
     try:
         current_node = navigator.get_node(current_node_id)
-        if current_node.is_leaf:
+        
+        # Print Node information and collect input from user on the next node to navigate to
+        if current_node.is_leaf: # Node is leaf, only print the songs of the node
             print("This node is a leaf node and has no further children.")
             print("These are its songs:")
             test_utils.print_songs(current_node.samples, dataset)
+            
             # Get user input for what to do
             user_input = input("Enter '-' to go to the parent node (or enter 'exit' to quit): ") 
         
@@ -61,17 +64,20 @@ while True:
             # Get user input for the next node to navigate
             user_input = input("Enter the index of the next children to navigate to, or enter '-' to go to the parent node (enter 'exit' to quit): ") 
         
+        # Conditionals that act on what to do given the user input
         if user_input.lower() == 'exit':
+            # User said exit
             break
         elif user_input.lower() == '-': 
-            # visit parent node: we just delete the last char of the node_id
-            if len(current_node_id)>1:
+            # User said visit parent node: we just delete the last char of the node_id
+            if len(current_node_id)>1: # But only if we are not at the root
                 current_node_id = current_node_id[:-1]
             else:
                 print()
                 print('---------------------------------------')
                 print("! You are already at the root node, there is no parent to navigate to.")
-        else:
+        elif user_input.isdigit(): 
+            # User gave a number, we visit the following node
             if not current_node.is_leaf:
                 # Update the node_id and continue
                 current_node_id += user_input
