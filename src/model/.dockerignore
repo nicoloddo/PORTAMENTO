@@ -1,0 +1,17 @@
+**/__pycache__
+*.env
+*.pyc
+*.pyo
+*.pyd
+*.pickle
+*.csv
+.git
+.gitignore
+.dockerignore
+.cache
+.spyproject
+
+# Ignore the results of the tests so that the docker image can be tested from scratch
+test/results/*
+test_container.ps1
+build_container.ps1

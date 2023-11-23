@@ -5,27 +5,41 @@ Created on Wed Nov 22 16:35:32 2023
 @author: nicol
 
 This file defines the classes to fetch songs from the Spotify API
-Example usage: at the end of the file.
+Example usage:
+    
+def local_pickle_save(songs, filename):
+    save_path = f'./mosiselecta/{filename}'
+    with open(save_path, "wb+") as f:
+            pickle.dump(songs, f)
+        
+playlists_path = './mosiselecta.txt'
+fetcher = SpotifyDataFetcher(local_pickle_save)
+fetcher.fetch_from_playlists(playlists_path)
 """
 
-from utils import spotify_uri_to_id, MAX_IDS_PER_REQUEST
+from common.utils import spotify_uri_to_id, MAX_IDS_PER_REQUEST
 
 import pandas as pd
-import pickle
-from dotenv import load_dotenv
-load_dotenv('spotify_auth.env')
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-import spotify_api_responses_navigator as api_nav
+import api.spotify_api_responses_navigator as api_nav
     
 class SpotifyDataFetcher:
-    def __init__(self, batch_size = MAX_IDS_PER_REQUEST):
+    def __init__(self, save_callback = (lambda songs, filename: None), batch_size = MAX_IDS_PER_REQUEST):
         """
-        Initialize the SpotifyDataFetcher instance.
+        Initialize the SpotifyDataFetcher instance. This class can be used in Desktop deployments, or to test.
+        This class uses the SpotifyBatchDataFetcher class, described below, which handles the fetching in batches of playlists.
+        The Batch fetcher will be used in Cloud deployment services which have timeout limits, with a handler that directly uses
+        that class, like this one does. For this reason, this class can be used for testing purposes since its mechanic
+        is equivalent to the one of cloud handlers.        
         
-        :param batch_size: Number of songs to process in each batch
+        :param save_callback(): Function used for the saving process. 
+        It needs the songs to save and the filename as input.
+        The default process does not save anything.
+        
+        :param batch_size: Number of songs to process in each batch. Default: defined in utils.py
         
         Attributes:
         - self.sp: The Spotify access point, using the Spotipy library.
@@ -34,6 +48,7 @@ class SpotifyDataFetcher:
         self.sp = spotipy.Spotify(auth_manager=auth_manager)
         
         self.batch_size = batch_size
+        self.save_callback = save_callback
 
 
     def fetch_from_playlists(self, playlist_file_path):
@@ -61,9 +76,8 @@ class SpotifyDataFetcher:
         songs = playlist_fetcher.fetch_batch_from_playlist(start_index,  (lambda track_id: False))
 
         # Save the fetched songs
-        save_path = f'../test/mosiselecta/{spotify_uri_to_id(playlist_uri)}_{start_index}.pickle'
-        with open(save_path, "wb+") as f:
-                pickle.dump(songs, f)
+        filename = f'{spotify_uri_to_id(playlist_uri)}_{start_index}.pickle'
+        self.save_callback(songs, filename)
 
         # Check if there are more songs to fetch and enqueue the next batch
         total_songs = playlist_fetcher.total_songs_in_playlist()  # Implement this method in SpotifyDataFetcher
@@ -274,10 +288,3 @@ class SpotifyBatchDataFetcher:
             confidence = {key: value for key, value in item.items() if 'confidence' in key}
             confidences.append(confidence)
         return confidences
-
-
-#Example usage:
-    
-playlists_path = '../../../data/users/nic/bundles/mosiselecta/mosiselecta.txt'
-fetcher = SpotifyDataFetcher()
-dataset = fetcher.fetch_from_playlists(playlists_path)

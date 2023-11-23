@@ -15,3 +15,6 @@ def save_to_s3(data, bucket_name, file_name):
 
 def check_s3():
     pass
+
+def read_file_from_s3():
+    pass
