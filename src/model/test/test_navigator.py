@@ -39,7 +39,8 @@ while True:
             print("This node is a leaf node and has no further children.")
             print("These are its songs:")
             test_utils.print_songs(current_node.samples, dataset)
-            break
+            # Get user input for what to do
+            user_input = input("Enter '-' to go to the parent node (or enter 'exit' to quit): ") 
         
         else: # Node is not leaf, let's print its children
             print()
@@ -57,13 +58,24 @@ while True:
                 print(f"With {child['n_samples']} songs, among which:")
                 test_utils.print_songs(child['samples'], dataset)
 
-        # Get user input for the next node to navigate
-        user_input = input("Enter the index of the next children to navigate to (or 'exit' to quit): ")
+            # Get user input for the next node to navigate
+            user_input = input("Enter the index of the next children to navigate to, or enter '-' to go to the parent node (enter 'exit' to quit): ") 
+        
         if user_input.lower() == 'exit':
             break
-
-        # Update the node_id and continue
-        current_node_id += user_input
+        elif user_input.lower() == '-': 
+            # visit parent node: we just delete the last char of the node_id
+            if len(current_node_id)>1:
+                current_node_id = current_node_id[:-1]
+            else:
+                print()
+                print('---------------------------------------')
+                print("! You are already at the root node, there is no parent to navigate to.")
+        else:
+            if not current_node.is_leaf:
+                # Update the node_id and continue
+                current_node_id += user_input
+            
     except Exception as e:
         print(f"An error occurred: {e}")
         break
