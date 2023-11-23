@@ -7,7 +7,7 @@ Created on Thu Nov 23 17:19:45 2023
 
 import pandas as pd
 from sklearn.cluster import AgglomerativeClustering
-from core.birch_mod import Birch
+from clustering_models.birch_portamento import Birch
 import pickle
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D

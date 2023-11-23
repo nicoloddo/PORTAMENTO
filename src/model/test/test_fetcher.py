@@ -5,7 +5,7 @@ Created on Thu Nov 23 11:48:30 2023
 @author: nicol
 """
 
-from api.spotify_data_fetcher import SpotifyDataFetcher
+from core.spotify_data_fetcher import SpotifyDataFetcher
 import pickle
 
 import test_utils

@@ -24,7 +24,7 @@ import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-import api.spotify_api_responses_navigator as api_nav
+import common.spotify_responses_navigator as api_nav
     
 class SpotifyDataFetcher:
     def __init__(self, save_callback = (lambda songs, filename: None), batch_size = MAX_IDS_PER_REQUEST):
