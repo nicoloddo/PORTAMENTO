@@ -22,6 +22,6 @@ def local_pickle_save(songs, filename):
     with open(save_path, "wb+") as f:
             pickle.dump(songs, f)
     
-playlists_path = f'{tests_path}/{TEST_NAME}.txt'
+playlists_path = f'{tests_path}/tests/{TEST_NAME}.txt'
 fetcher = SpotifyDataFetcher(local_pickle_save)
 fetcher.fetch_from_playlists(playlists_path)

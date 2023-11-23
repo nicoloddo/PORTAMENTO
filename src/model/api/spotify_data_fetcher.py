@@ -99,7 +99,7 @@ class SpotifyDataFetcher:
         return playlists
 
 
-class SpotifyBatchDataFetcher:
+class SpotifyBatchDataFetcher: 
     def __init__(self, sp, playlist_uri, batch_size):
         """
         Initialize the SpotifyBatchDataFetcher instance. The class has the task of fetching a batch of songs
@@ -132,7 +132,8 @@ class SpotifyBatchDataFetcher:
         self.playlist = self._get_playlist(self.playlist_uri)
         self.n_songs_playlist = api_nav.playlist_total_tracks(self.playlist)
     
-    def fetch_batch_from_playlist(self, start_index, filter_callback):
+    def fetch_batch_from_playlist(self, start_index, filter_callback): 
+        #TODO: Introduce an appropriate filter_callback that filters out already fetched songs.
         """
         Fetch a batch of songs from Spotify playlists uris and return a pandas DataFrame with desired columns.
         

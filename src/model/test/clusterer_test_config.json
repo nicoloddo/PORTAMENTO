@@ -1,0 +1,25 @@
+{
+    "algorithm": "birch",
+    "birch_threshold": 0.2,
+    "branch_factor": 5,
+    "save_results": true,
+    "model_path": "./results/model.pickle",
+    "tempo_range": {
+        "min": 0,
+        "max": 250
+    },
+    "weights": {
+        "acousticness"        :4, 
+        "danceability"        :5,
+        "energy"              :8,
+        "instrumentalness"    :4,
+        "key"                 :3.5,
+        "liveness"            :2,
+        "loudness"            :5,
+        "mode"                :5,
+        "speechiness"         :10,
+        "tempo"               :5,
+        "time_signature"      :8,
+        "valence"             :5
+    }
+}
