@@ -79,8 +79,9 @@ PlayerDataCache/
 # Ignore IDE files
 .spyproject
 
-# Results of the modeling are too big and can be recomputed easily
+# Test results are too big and can be recomputed easily
 *.pickle
+**/test/results/*
 
 # Do not upload secrets
 *.env
