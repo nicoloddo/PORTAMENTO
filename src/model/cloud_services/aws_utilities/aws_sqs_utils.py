@@ -7,9 +7,10 @@ Created on Wed Nov 22 18:49:16 2023
 
 import boto3
 import json
-from common.utils import MAX_IDS_PER_REQUEST
 
-QUEUE_URL = 'YOUR_SQS_QUEUE_URL'  # Replace with your SQS queue URL
+from common.utils import load_env_var, MAX_IDS_PER_REQUEST
+
+QUEUE_URL = load_env_var('QUEUE_URL')
 
 def enqueue_next_batch(playlist_uri, next_start_index, next_batch_size=MAX_IDS_PER_REQUEST, queue_url=QUEUE_URL):
     _enqueue_fetch(playlist_uri, next_start_index, next_batch_size)

@@ -29,3 +29,22 @@ def load_df_from_local_pickles(datapath):
     # Concatenate all DataFrames
     merged_df = pd.concat(dfs, ignore_index=True)
     return merged_df
+
+def running_in_docker():
+    """Check if running in a Docker container."""
+    try:
+        with open('/proc/1/cgroup', 'rt') as ifh:
+            return 'docker' in ifh.read()
+    except Exception:
+        return False
+    
+def load_env_var(name):
+    var = os.getenv(name)
+    if var is None:
+        raise EnvironmentError(f"{var} environment variable is not set.")
+    
+    
+# If not in Docker, load the .env file, if running in Docker, the environment variables are set in the os.
+if not running_in_docker():
+    from dotenv import load_dotenv
+    load_dotenv()
