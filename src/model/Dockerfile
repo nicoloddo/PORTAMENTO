@@ -19,5 +19,6 @@ COPY . .
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run the application when the container launches
-# CMD ["python", "cloud_services/aws_lambda_handler/playlist_processor_handler.py"] # When deploying on Lambda
+# Comment BOTH following lines if you want to test the container with scripts inside the test folder
+# CMD ["python", "cloud_services/aws_lambda_handler/playlist_processor_handler.py"] # When deploying the playlist enqueuer on Lambda
+# CMD ["python", "cloud_services/aws_lambda_handler/song_fetcher_handler.py"] # When deploying the song fetcher on Lambda
