@@ -1,0 +1,8 @@
+The process in which these tests can be executed is:
+
+1. test_fetcher: Fetches the songs from the given test list of playlists using Spotify's API
+2. test_merge: Merges the pickle files in a pandas dataframe. The dataframe is then saved as .csv. You can check if the fetched pickles actually represent the data you were retrieving.
+3. test_clusterer: Clusters the data with the chosen hierarchical tree clustering algorithm, which can be set in the clusterer_test_config.json file. For now, the only available algorithm is the Portamento BIRCH.
+4. test_navigator: Navigates the structure of the hierarchical tree built by our clusterer
+
+test_utils is a utility library for the tests.
