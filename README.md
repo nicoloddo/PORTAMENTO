@@ -1,5 +1,7 @@
 # PORTAMENTO 
 
+This is a complete rewrite of my old project Portamento, designed for my Software Engineering bachelor's thesis project in 2021.
+
 *Portamento: Machine Learning for music cataloguing and a three-dimensional interface to highlight its inherent nuances.*
 Read the thesis (in italian): [thesis](https://github.com/nicoloddo/PORTAMENTO/blob/master/THESIS.pdf)
 
