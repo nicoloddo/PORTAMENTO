@@ -13,6 +13,7 @@ It will read these URIs and enqueue tasks in an SQS queue to process each playli
 import boto3
 import json
 from aws_utilities.aws_s3_utils import read_file_from_s3
+from aws_utilities.aws_sqs_utils import enqueue_playlist
 
 def lambda_handler(event, context):
     # Extract bucket name and file key from the S3 event
@@ -20,22 +21,11 @@ def lambda_handler(event, context):
     key = event['Records'][0]['s3']['object']['key']
 
     # Read the playlist file from S3
-    playlist_uris = read_file_from_s3(bucket, key)
-
-    # Initialize SQS client
-    sqs = boto3.client('sqs')
-    queue_url = 'YOUR_SQS_QUEUE_URL'  # Replace with your SQS queue URL
+    playlist_uris = read_file_from_s3(bucket, key)    
 
     # Iterate over playlist URIs and send messages to SQS queue
     for uri in playlist_uris:
-        message = {
-            'playlist_uri': uri,
-            'start_index': 0  # Starting index for the first batch
-        }
-        sqs.send_message(
-            QueueUrl=queue_url,
-            MessageBody=json.dumps(message)
-        )
+        enqueue_playlist(uri)
 
     return {
         'statusCode': 200,

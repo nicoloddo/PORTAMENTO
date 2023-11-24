@@ -10,16 +10,14 @@ each representing a batch of songs to fetch from a Spotify playlist.
 The handler will utilize the SpotifyDataFetcher to fetch the songs and then enqueue the next batch if needed.
 """
 
-from utils import spotify_uri_to_id
+from common.utils import spotify_uri_to_id
 
 import json
-import boto3
-from spotify_data_fetcher import SpotifyBatchDataFetcher
-from aws_utilities.aws_s3_utils import save_to_s3, check_s3
+from core.spotify_data_fetcher import SpotifyBatchDataFetcher
+from aws_utilities.aws_s3_utils import save_to_s3
 from aws_utilities.aws_sqs_utils import enqueue_next_batch
 
 def lambda_handler(event, context):
-
     # Process each message in the SQS event
     for record in event['Records']:
         message = json.loads(record['body'])
@@ -28,10 +26,10 @@ def lambda_handler(event, context):
         batch_size = message['batch_size']
 
         # Initialize the SpotifyDataFetcher
-        playlist_fetcher = SpotifyBatchDataFetcher(access_token, playlist_uri, batch_size)  # Define your batch size
+        playlist_fetcher = SpotifyBatchDataFetcher(playlist_uri, batch_size)  # Define your batch size
         playlist_fetcher.fetch_playlist()
         # Fetch songs from the playlist
-        songs = playlist_fetcher.fetch_batch_from_playlist(start_index, check_s3, batch_size)
+        songs = playlist_fetcher.fetch_batch_from_playlist(start_index)
 
         # Save the fetched songs
         save_to_s3(songs, 'your-s3-bucket-name', f'{spotify_uri_to_id(playlist_uri)}_{start_index}.pickle')
