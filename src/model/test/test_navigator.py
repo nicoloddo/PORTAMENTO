@@ -5,13 +5,13 @@ Created on Thu Nov 23 18:22:47 2023
 @author: nicol
 """
 
+import test_utils
+
 import json
 import pickle
 
 from common.utils import load_df_from_local_pickles
 from core.birch_tree_navigator import BirchTreeNavigator
-
-import test_utils
 
 tests_path = test_utils.TESTS_PATH
 TEST_NAME = 'mosiselecta'

@@ -5,10 +5,10 @@ Created on Thu Nov 23 11:48:30 2023
 @author: nicol
 """
 
+import test_utils
+
 from core.spotify_data_fetcher import SpotifyDataFetcher
 import pickle
-
-import test_utils
 
 tests_path = test_utils.TESTS_PATH
 TEST_NAME = 'mosiselecta'

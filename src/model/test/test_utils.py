@@ -30,7 +30,8 @@ def print_songs(samples, dataset):
             break
         else: names += ', '
     print(names)
-    
+
+#****************************************************************************
 if running_in_docker():
     # If running in Docker, use the environment variable
     TESTS_PATH = os.getenv('TESTS_PATH')
@@ -39,5 +40,5 @@ if running_in_docker():
 else:
     # If not in Docker, load from .env file
     from dotenv import load_dotenv
-    load_dotenv()
+    load_dotenv('../.env')
     TESTS_PATH = './'

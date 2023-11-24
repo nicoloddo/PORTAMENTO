@@ -5,11 +5,12 @@ Created on Thu Nov 23 15:48:37 2023
 @author: nicol
 """
 
+import test_utils
+
 import pandas as pd
 import os
 
 from common.utils import load_df_from_local_pickles
-import test_utils
 
 tests_path = test_utils.TESTS_PATH
 TEST_NAME = 'mosiselecta'

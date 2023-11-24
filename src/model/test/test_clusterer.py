@@ -5,12 +5,12 @@ Created on Thu Nov 23 17:25:56 2023
 @author: nicol
 """
 
+import test_utils
+
 import json
 
 from common.utils import load_df_from_local_pickles
 from core.clusterer import Clusterer
-
-import test_utils
 
 tests_path = test_utils.TESTS_PATH
 TEST_NAME = 'mosiselecta'
