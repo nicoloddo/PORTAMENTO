@@ -39,7 +39,7 @@ while True:
         # Print Node information and collect input from user on the next node to navigate to
         if current_node.is_leaf: # Node is leaf, only print the songs of the node
             print("This node is a leaf node and has no further children.")
-            print("These are its songs:")
+            print(f"These are its {len(current_node.samples)} songs (max 5 are displayed):")
             test_utils.print_songs(current_node.samples, dataset)
             
             # Get user input for what to do
