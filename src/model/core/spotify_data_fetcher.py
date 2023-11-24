@@ -147,7 +147,7 @@ class SpotifyBatchDataFetcher:
         either duplicates in this playlist or songs that were present in other playlists/users. Not filtering anything 
         optimizes the amount of read operations to the database, useful for example when paying for each read operation 
         (like in Cloud Computing on S3). Though, when not filtering anything, we are doing more API requests to Spotify. 
-        The returned DataFrame deletes the duplicates anyway, but the filtering would allow to minimize the API requests.
+        The returned Batch has its duplicates deleted, but duplicates can happen across batches.
         
         :return: Pandas DataFrame with Spotify songs data. The songs are filtered, processed and duplicates are deleted.
         """
@@ -162,7 +162,7 @@ class SpotifyBatchDataFetcher:
         self.batch_tracks.extend(final_tracks)
         # Transform in DataFrame
         dataset = pd.DataFrame(self.batch_tracks)
-        # Removing duplicates based on the 'id' field
+        # Removing duplicates based on the 'id' field (Note: this is deleting duplicates in the same batch only)
         dataset = dataset.drop_duplicates(subset='id')
         
         return dataset
