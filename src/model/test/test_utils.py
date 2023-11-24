@@ -6,8 +6,17 @@ Created on Thu Nov 23 15:44:49 2023
 """
 
 import os
+import json
 from common.utils import running_in_docker, load_env_var
 
+TEST_NAME = 'mosiselecta'
+
+def load_test_config():
+    with open(f'{TESTS_PATH}/clusterer_test_config.json', 'r') as file:
+        config = json.load(file)
+    config['model_path'] = f'{TESTS_PATH}/results/{TEST_NAME}/model.pkl'
+    return config
+    
 def make_test_results_folder(folder_path):
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)

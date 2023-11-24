@@ -3,7 +3,7 @@
     "birch_threshold": 0.2,
     "branch_factor": 5,
     "save_results": true,
-    "model_path": "./results/model.pickle",
+    "model_path": "This is the test config, this path is substituted in the test scripts.",
     "tempo_range": {
         "min": 0,
         "max": 250

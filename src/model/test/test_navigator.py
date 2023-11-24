@@ -7,23 +7,21 @@ Created on Thu Nov 23 18:22:47 2023
 
 import test_utils
 
-import json
 import pickle
 
 from common.utils import load_df_from_local_pickles
 from core.birch_tree_navigator import BirchTreeNavigator
 
 tests_path = test_utils.TESTS_PATH
-TEST_NAME = 'mosiselecta'
+test_name = test_utils.TEST_NAME
 
-folder_path = f'{tests_path}/results/{TEST_NAME}'
+folder_path = f'{tests_path}/results/{test_name}'
 test_utils.make_test_results_folder(folder_path)
 
 # Load the dataset
 dataset = load_df_from_local_pickles(folder_path)
 # Load the configuration
-with open('clusterer_test_config.json', 'r') as file:
-    config = json.load(file)
+config = test_utils.load_test_config()
     
 with open(config['model_path'], 'rb') as file:
     loaded_model = pickle.load(file)
@@ -62,6 +60,7 @@ while True:
                 test_utils.print_songs(child['samples'], dataset)
 
             # Get user input for the next node to navigate
+            print()
             user_input = input("Enter the index of the next children to navigate to, or enter '-' to go to the parent node (enter 'exit' to quit): ") 
         
         # Conditionals that act on what to do given the user input
