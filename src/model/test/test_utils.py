@@ -42,3 +42,4 @@ else:
     from dotenv import load_dotenv
     load_dotenv('../.env')
     TESTS_PATH = './'
+    make_test_results_folder("./results")
