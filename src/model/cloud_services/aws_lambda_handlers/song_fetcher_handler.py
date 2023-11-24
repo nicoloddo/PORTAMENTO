@@ -32,7 +32,7 @@ def lambda_handler(event, context):
         songs = playlist_fetcher.fetch_batch_from_playlist(start_index)
 
         # Save the fetched songs
-        save_to_s3(songs, 'your-s3-bucket-name', f'{spotify_uri_to_id(playlist_uri)}_{start_index}.pickle')
+        save_to_s3(songs, f'{spotify_uri_to_id(playlist_uri)}_{start_index}.pickle')
 
         # Check if there are more songs to fetch and enqueue the next batch
         total_songs = playlist_fetcher.total_songs_in_playlist()

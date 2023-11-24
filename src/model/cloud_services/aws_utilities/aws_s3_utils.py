@@ -8,7 +8,11 @@ Created on Wed Nov 22 18:48:58 2023
 import boto3
 import json
 
-def save_to_s3(data, bucket_name, file_name):
+from common.utils import load_env_var
+
+S3_BUCKET_NAME = load_env_var('S3_BUCKET_NAME')
+
+def save_to_s3(data, file_name, bucket_name=S3_BUCKET_NAME):
     s3 = boto3.resource('s3')
     s3_object = s3.Object(bucket_name, file_name)
     s3_object.put(Body=json.dumps(data))
