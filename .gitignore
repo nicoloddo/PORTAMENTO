@@ -81,6 +81,7 @@ PlayerDataCache/
 
 # Test results are too big and can be recomputed easily
 *.pickle
+*.pkl
 **/test/results/*
 
 # Do not upload secrets

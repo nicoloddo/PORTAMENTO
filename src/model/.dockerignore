@@ -4,6 +4,7 @@
 *.pyo
 *.pyd
 *.pickle
+*.pkl
 *.csv
 .git
 .gitignore
