@@ -42,6 +42,7 @@ def load_env_var(name):
     var = os.getenv(name)
     if var is None:
         raise EnvironmentError(f"{var} environment variable is not set.")
+    else: return var
     
     
 # If not in Docker, load the .env file, if running in Docker, the environment variables are set in the os.

@@ -27,7 +27,7 @@ def print_songs(samples, dataset):
 #****************************************************************************
 if running_in_docker():
     # If running in Docker, use the environment variable
-    load_env_var('TESTS_PATH')
+    TESTS_PATH = load_env_var('TESTS_PATH')
 else: # Not running in Docker, use static paths
     TESTS_PATH = './'
     make_test_results_folder("./results")
