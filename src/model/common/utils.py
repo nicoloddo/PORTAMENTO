@@ -16,8 +16,10 @@ def spotify_uri_to_id(uri):
     return uri[URI_PORTION:URI_LENGTH]
 
 def load_df_from_local_pickles(datapath):
-    # List all pickle files in the folder
-    pickle_files = [f for f in os.listdir(datapath) if f.endswith('.pickle')]
+    # List all pickle files in the folder and sort them by filename to keep consistency across OS. 
+    # On Linux os.listdir returns a list ordered by file creation. On windows it is ordered by filename.
+    # By adding sorted() we make sure both return the same array.
+    pickle_files = sorted([f for f in os.listdir(datapath) if f.endswith('.pickle')])
 
     # Load and concatenate all DataFrames from the pickle files
     dfs = []
