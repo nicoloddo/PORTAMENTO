@@ -44,7 +44,7 @@ class SpotifyDataFetcher:
         Attributes:
         - self.sp: The Spotify access point, using the Spotipy library.
         """
-        auth_manager = SpotifyClientCredentials()
+        auth_manager = SpotifyClientCredentials() # It uses environment variables to get the keys
         self.sp = spotipy.Spotify(auth_manager=auth_manager)
         
         self.batch_size = batch_size
@@ -67,13 +67,14 @@ class SpotifyDataFetcher:
     
     def fetch_handler(self, playlist_uri, start_index, batch_size):
         """
-        Basic copy of the lamda handler for AWS
+        This function is called for every batch, it retrieves the batch and saves it using the save_callback function.
+        Its working dynamic replicates the one of serverless computing, triggering a retrieval function (e.g. AWS Lambda) per batch.
         """
         # Initialize the SpotifyDataFetcher
-        playlist_fetcher = SpotifyBatchDataFetcher(self.sp, playlist_uri, batch_size)
+        playlist_fetcher = SpotifyBatchDataFetcher(playlist_uri, batch_size, self.sp)
         playlist_fetcher.fetch_playlist()
-        # Fetch songs from the playlist
-        songs = playlist_fetcher.fetch_batch_from_playlist(start_index,  (lambda track_id: False))
+        # Fetch songs from the playlist.
+        songs = playlist_fetcher.fetch_batch_from_playlist(start_index)
 
         # Save the fetched songs
         filename = f'{spotify_uri_to_id(playlist_uri)}_{start_index}.pickle'
@@ -84,7 +85,7 @@ class SpotifyDataFetcher:
         if start_index + batch_size < total_songs:
             next_start_index = start_index + batch_size
             next_batch_size = batch_size # You can manipulate this to only use the remaining amount of songs for the last batch
-            self.fetch_handler(playlist_uri, next_start_index, next_batch_size)
+            self.fetch_handler(playlist_uri, next_start_index, next_batch_size) # Recursion
         
         print({'statusCode': 200, 'body': 'Batch processed'})
 
@@ -100,14 +101,14 @@ class SpotifyDataFetcher:
 
 
 class SpotifyBatchDataFetcher: 
-    def __init__(self, sp, playlist_uri, batch_size):
+    def __init__(self, playlist_uri, batch_size, sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials())):
         """
         Initialize the SpotifyBatchDataFetcher instance. The class has the task of fetching a batch of songs
         from a given playlist.
         
-        :param sp: The Spotify access point, using the Spotipy library.
         :param playlist_uri: The uri of the playlist from which to retrieve the batch.
         :param batch_size: Number of songs to process in each batch.
+        :param sp: The Spotify access point, using the Spotipy library.
 
         Attributes:
         - self.sp: The Spotify access point, using the Spotipy library.
@@ -118,7 +119,7 @@ class SpotifyBatchDataFetcher:
         - self.playlist: The playlist from which we are retrieving the batch.
         - self.n_songs_playlist: The number of songs in the playlist from which we are retrieving the batch.
         """
-        self.sp = sp
+        self.sp = sp # By default it uses environment variables to get the keys
         
         self.batch_tracks = [] # Stores information of each track in case it is used as a batch fetcher
         self.playlist_uri = playlist_uri
@@ -132,21 +133,38 @@ class SpotifyBatchDataFetcher:
         self.playlist = self._get_playlist(self.playlist_uri)
         self.n_songs_playlist = api_nav.playlist_total_tracks(self.playlist)
     
-    def fetch_batch_from_playlist(self, start_index, filter_callback): 
-        #TODO: Introduce an appropriate filter_callback that filters out already fetched songs.
+    def fetch_batch_from_playlist(self, start_index, filter_callback=(lambda track_id: False)): 
+        #TODO: Introduce an appropriate filter_callback that filters out already fetched songs without using many reads to the database?
         """
         Fetch a batch of songs from Spotify playlists uris and return a pandas DataFrame with desired columns.
         
         :param start_index: The index of the song in the playlist from which the batch to retrieve starts.
         :param filter_callback: Function to filter tracks (e.g. check if a track was already retrieved in the current dataset.)
-        :return: Pandas DataFrame with Spotify track data.
+        The filter_callback function has to answer the question "Should I filter this track?"
+        The default behaviour of the filter_callback does not filter any track by returning False regardless of the input.
+        
+        An example behaviour of the filtering would be to avoid the features-fetch of already fetched songs, which are
+        either duplicates in this playlist or songs that were present in other playlists/users. Not filtering anything 
+        optimizes the amount of read operations to the database, useful for example when paying for each read operation 
+        (like in Cloud Computing on S3). Though, when not filtering anything, we are doing more API requests to Spotify. 
+        The returned DataFrame deletes the duplicates anyway, but the filtering would allow to minimize the API requests.
+        
+        :return: Pandas DataFrame with Spotify songs data. The songs are filtered, processed and duplicates are deleted.
         """
+        # Retrieve songs
         playlist_items = self.sp.playlist_items(self.playlist_uri, offset = start_index)
         playlist_tracks = api_nav.playlist_items_tracks(playlist_items)
+        # Process them
         processed_playlist_tracks = self._process_playlist_tracks(playlist_tracks, filter_callback)
+        # Add the features
         final_tracks = self._get_tracks_features(processed_playlist_tracks)
+        # Add them to the self object
         self.batch_tracks.extend(final_tracks)
+        # Transform in DataFrame
         dataset = pd.DataFrame(self.batch_tracks)
+        # Removing duplicates based on the 'id' field
+        dataset = dataset.drop_duplicates(subset='id')
+        
         return dataset
     
     def total_songs_in_playlist(self):
