@@ -1,1 +1,1 @@
-docker run --env-file .env -it portamento_model bash
+docker run --env-file .env -it portamento_test_model bash
