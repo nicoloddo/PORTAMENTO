@@ -1,1 +1,0 @@
-docker run --env-file ../model/env -it portamento_test_model bash
