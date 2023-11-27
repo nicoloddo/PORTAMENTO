@@ -14,8 +14,8 @@ from common.utils import spotify_uri_to_id
 
 import json
 from core.spotify_data_fetcher import SpotifyBatchDataFetcher
-from aws_utilities.aws_s3_utils import save_to_s3
-from aws_utilities.aws_sqs_utils import enqueue_next_batch
+from cloud_services.aws_utilities.aws_s3_utils import save_to_s3
+from cloud_services.aws_utilities.aws_sqs_utils import enqueue_next_batch
 
 def lambda_handler(event, context):
     # Process each message in the SQS event

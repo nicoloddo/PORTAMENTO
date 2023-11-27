@@ -10,8 +10,8 @@ This handler will be triggered by an S3 event when a .txt file containing playli
 It will read these URIs and enqueue tasks in an SQS queue to process each playlist sequentially.
 """
 
-from aws_utilities.aws_s3_utils import read_file_from_s3
-from aws_utilities.aws_sqs_utils import enqueue_playlist
+from cloud_services.aws_utilities.aws_s3_utils import read_file_from_s3
+from cloud_services.aws_utilities.aws_sqs_utils import enqueue_playlist
 
 def lambda_handler(event, context):
     # Extract bucket name and file key from the S3 event
