@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: A template for two Lambda functions deployed via Docker images.
+
+Resources:
+  PortamentoPlaylistProcessor:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: portamento_playlist_processor
+      Role: arn:aws:iam::000000000000:role/lambda-ex
+      PackageType: Image
+      ImageUri: portamento_playlist_processor
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket: !Ref S3Bucket
+            Events: s3:ObjectCreated:*
+
+  PortamentoSongFetcher:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: portamento_song_fetcher
+      Role: arn:aws:iam::000000000000:role/lambda-ex
+      PackageType: Image
+      ImageUri: portamento_song_fetcher
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SQSQueue.Arn
+            BatchSize: 10
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: portamento-bucket
+
+  SQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: portamento-queue
