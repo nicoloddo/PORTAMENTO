@@ -40,11 +40,18 @@ def running_in_docker():
     except Exception:
         return False
     
-def load_env_var(name):
+def load_env_var(name, required=True):
+    """
+    Loads an environment variable. If the variable is required and not set, raises an error.
+    
+    :param name: The name of the environment variable.
+    :param required: Boolean indicating whether the variable is required. Defaults to True.
+    :return: The value of the environment variable or None if it's optional and not set.
+    """
     var = os.getenv(name)
-    if var is None:
+    if var is None and required:
         raise EnvironmentError(f"{name} environment variable is not set.")
-    else: return var
+    return var
     
     
 # If not in Docker, load the .env file, if running in Docker, the environment variables are set in the os.
