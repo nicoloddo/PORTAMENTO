@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
-Description: A template for two Lambda functions deployed via Docker images.
+Description: Template for Portamento. One SQS, one S3. Lambda that sends messages to the SQS for every playlist. Lambda that fetches every playlist. The batch size of the song fetcher needs to be 1 (i.e. it will parse one single batch), because of timeout reasons in handling the fetch.
 
 Resources:
   PortamentoPlaylistProcessor:
@@ -10,6 +10,7 @@ Resources:
       Role: arn:aws:iam::000000000000:role/lambda-ex
       PackageType: Image
       ImageUri: portamento_playlist_processor
+      Timeout: 10
       Events:
         S3Event:
           Type: S3
@@ -24,12 +25,13 @@ Resources:
       Role: arn:aws:iam::000000000000:role/lambda-ex
       PackageType: Image
       ImageUri: portamento_song_fetcher
+      Timeout: 10
       Events:
         SQSEvent:
           Type: SQS
           Properties:
             Queue: !GetAtt SQSQueue.Arn
-            BatchSize: 10
+            BatchSize: 1
 
   S3Bucket:
     Type: AWS::S3::Bucket
