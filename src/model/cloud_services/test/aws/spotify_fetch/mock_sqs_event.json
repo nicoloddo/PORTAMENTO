@@ -1,0 +1,44 @@
+{
+  "Records": [
+    {
+      "messageId": "message1",
+      "receiptHandle": "handle1",
+      "body": "{\"playlist_uri\": \"spotify:playlist:5T54YmcS3PsSghWrqivfms\", \"start_index\": 0, \"batch_size\": 100}",
+      "attributes": {},
+      "md5OfBody": "",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:your-region:123456789012:your-queue",
+      "awsRegion": "eu-west-3"
+    },
+    {
+      "messageId": "message2",
+      "receiptHandle": "handle2",
+      "body": "{\"playlist_uri\": \"spotify:playlist:7460eJSzkWMB3VQ2xzACiV\", \"start_index\": 0, \"batch_size\": 100}",
+      "attributes": {},
+      "md5OfBody": "",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:your-region:123456789012:your-queue",
+      "awsRegion": "eu-west-3"
+    },
+    {
+      "messageId": "message3",
+      "receiptHandle": "handle3",
+      "body": "{\"playlist_uri\": \"spotify:playlist:2HF1k7XYrLeooG2EYzIYwk\", \"start_index\": 0, \"batch_size\": 100}",
+      "attributes": {},
+      "md5OfBody": "",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:your-region:123456789012:your-queue",
+      "awsRegion": "eu-west-3"
+    },
+    {
+      "messageId": "message4",
+      "receiptHandle": "handle4",
+      "body": "{\"playlist_uri\": \"spotify:playlist:7rldaIGrPgeiOVcfeQ5ZjR\", \"start_index\": 0, \"batch_size\": 100}",
+      "attributes": {},
+      "md5OfBody": "",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:your-region:123456789012:your-queue",
+      "awsRegion": "eu-west-3"
+    }
+  ]
+}
