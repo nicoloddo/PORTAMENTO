@@ -6,6 +6,7 @@ Created on Wed Nov 22 18:49:16 2023
 """
 
 import boto3
+from botocore.exceptions import BotoCoreError, ClientError
 import json
 
 from common.utils import load_env_var, MAX_IDS_PER_REQUEST

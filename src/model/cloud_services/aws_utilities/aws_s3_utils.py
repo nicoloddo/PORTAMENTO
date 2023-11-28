@@ -6,7 +6,7 @@ Created on Wed Nov 22 18:48:58 2023
 """
 
 import boto3
-from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import BotoCoreError, ClientError
 import json
 
 from common.utils import load_env_var
