@@ -19,7 +19,7 @@ def lambda_handler(event, context):
     key = event['Records'][0]['s3']['object']['key']
 
     # Read the playlist file from S3
-    playlist_uris = read_file_from_s3(bucket, key).split('\n')    
+    playlist_uris = read_file_from_s3(bucket, key).split('\r\n')    
 
     # Iterate over playlist URIs and send messages to SQS queue
     for uri in playlist_uris:
