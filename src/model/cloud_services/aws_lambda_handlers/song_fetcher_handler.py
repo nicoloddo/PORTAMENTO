@@ -31,11 +31,11 @@ def lambda_handler(event, context):
         # Fetch songs from the playlist
         songs = playlist_fetcher.fetch_batch_from_playlist(start_index)
         # Convert to csv file (bytes)
-        csv_string = df.to_csv(index=False)
+        csv_string = songs.to_csv(index=False)
         csv_bytes = csv_string.encode()
 
         # Save the fetched songs
-        save_to_s3(songs, f'{spotify_uri_to_id(playlist_uri)}_{start_index}.csv')
+        save_to_s3(csv_bytes, f'{spotify_uri_to_id(playlist_uri)}_{start_index}.csv')
 
         # Check if there are more songs to fetch and enqueue the next batch
         total_songs = playlist_fetcher.total_songs_in_playlist()
