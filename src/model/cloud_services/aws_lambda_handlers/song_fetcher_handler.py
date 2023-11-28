@@ -38,7 +38,7 @@ def lambda_handler(event, context):
         save_to_s3(csv_bytes, f'{spotify_uri_to_id(playlist_uri)}_{start_index}.csv')
 
         # Check if there are more songs to fetch and enqueue the next batch
-        total_songs = playlist_fetcher.total_songs_in_playlist()
+        total_songs = playlist_fetcher.total_songs_in_playlist() # Get the total number of songs in the playlist
         if start_index + batch_size < total_songs: # The playlist is not finished
             next_start_index = start_index + batch_size
             next_batch_size = batch_size # You can manipulate this to only use the remaining amount of songs for the last batch
