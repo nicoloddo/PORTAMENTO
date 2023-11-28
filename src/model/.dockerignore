@@ -17,3 +17,6 @@ test/results/*
 
 # Ignore powershell files
 *.ps1
+
+# Ignore .yml templates of test because they contain .env information
+**/cloud_services/test/**/template.yml
