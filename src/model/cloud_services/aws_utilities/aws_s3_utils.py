@@ -66,8 +66,8 @@ def read_file_from_s3(bucket, key, endpoint_url=ENDPOINT_URL):
         
         # Read and return the content of the file
         return response['Body'].read().decode('utf-8')
-    except NoCredentialsError:
-        print("Credentials not available")
+    except (BotoCoreError, ClientError) as e:
+        print(f"An error occurred: {e}")
         return None
 
 def check_s3():
