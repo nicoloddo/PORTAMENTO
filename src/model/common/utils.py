@@ -43,7 +43,7 @@ def running_in_docker():
 def load_env_var(name):
     var = os.getenv(name)
     if var is None:
-        raise EnvironmentError(f"{var} environment variable is not set.")
+        raise EnvironmentError(f"{name} environment variable is not set.")
     else: return var
     
     
