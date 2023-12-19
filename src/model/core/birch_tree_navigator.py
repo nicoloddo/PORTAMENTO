@@ -18,6 +18,7 @@ class BirchTreeNavigator:
         """
         self.birch_clusterer = birch_clusterer
         self.model = birch_clusterer.model
+        self.lookup = birch_clusterer.lookup
 
     def select_node(self, node_id):
         """
@@ -58,7 +59,7 @@ class BirchTreeNavigator:
         :return: BirchTreeNavigatorNode representing the node.
         """
         node = self.select_node(node_id)
-        return BirchTreeNavigatorNode(node)
+        return BirchTreeNavigatorNode(node, self.lookup)
     
     
 class BirchTreeNavigatorNode:
@@ -66,16 +67,22 @@ class BirchTreeNavigatorNode:
     Represents a node in the BIRCH tree, encapsulating relevant information and functionalities.
     """
 
-    def __init__(self, node):
+    def __init__(self, node, lookup):
         """
         Initializes the BirchTreeNavigatorNode with a node from the BIRCH tree.
 
         :param node: The node from the BIRCH tree.
+        :param lookup: The lookup table to link the sample index to basic song information.
         """
         self.node = node
+        self.lookup = lookup
         self.is_leaf = node.is_leaf
         self.samples = set()
-        self.children = self._get_children_info(node)
+        
+        self._samples_ordinal_ids = set()
+        self._children = self._get_children_info(node)
+        
+        self.n_children = len(self._children)
 
     def _get_children_info(self, node):
         """
@@ -96,8 +103,32 @@ class BirchTreeNavigatorNode:
                 }
                 children_info.append(child_info)
                 
-            self.samples.update(subcluster.samples) # Collect the samples from the child            
-                
+            self._samples_ordinal_ids.update(subcluster.samples) # Collect the samples from the child
+            samples_true_ids = self.ordinal_ids_to_true_ids(subcluster.samples)
+            self.samples.update(samples_true_ids)
+
         return children_info
+    
+    def get_child_samples(self, child):
+        """
+        Returns the samples (spotify ids) of the given child of the node.
+    
+        :param child: Ordinal index of the child inside the children array of the node
+        :return: List of dictionaries, each representing a child node with its centroid and samples.
+        """
+        return self.ordinal_ids_to_true_ids(self._children[child]['samples'])
+        
+    def get_child_n_samples(self, child):
+        return self._children[child]['n_samples']
+        
+    def get_child_is_leaf(self, child):
+        return self._children[child]['is_leaf']
+        
+    
+    def ordinal_ids_to_true_ids(self, ordinal_ids):
+        """ 
+        Transforms a list of ordinal ids into the true spotify ids
+        """
+        return [self.lookup[index] for index in ordinal_ids]
 
 
