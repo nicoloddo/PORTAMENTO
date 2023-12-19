@@ -39,7 +39,9 @@ COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 ENTRYPOINT [ "/usr/local/bin/python", "-m", "awslambdaric" ]
 
 # Pass the name of the function handler as an argument to the runtime
-#CMD ["cloud_services.aws_lambda_handlers.playlist_processor_handler.lambda_handler"]
+# playlist_processor
+CMD ["cloud_services.aws_lambda_handlers.playlist_processor_handler.lambda_handler"]
+# song_fetcher
+#CMD ["cloud_services.aws_lambda_handlers.song_fetcher_handler.lambda_handler"]
 
-# Uncomment when deploying the song fetcher on Lambda
-CMD ["cloud_services.aws_lambda_handlers.song_fetcher_handler.lambda_handler"]
+# Comment all the last CMD instructions when building an interactive test container
