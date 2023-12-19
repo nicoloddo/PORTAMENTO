@@ -38,7 +38,7 @@ while True:
         if current_node.is_leaf: # Node is leaf, only print the songs of the node
             print("This node is a leaf node and has no further children.")
             print(f"These are its {len(current_node.samples)} songs (max 5 are displayed):")
-            test_utils.print_songs(current_node.samples, dataset)
+            test_utils.print_songs_from_idlist(current_node.samples, dataset)
             
             # Get user input for what to do
             user_input = input("Enter '-' to go to the parent node (or enter 'exit' to quit): ") 
@@ -57,7 +57,7 @@ while True:
                 
                 # And let's print the songs of each children
                 print(f"With {current_node.get_child_n_samples(i)} songs, among which:")
-                test_utils.print_songs(current_node.get_child_samples(i), dataset)
+                test_utils.print_songs_from_idlist(current_node.get_child_samples(i), dataset)
 
             # Get user input for the next node to navigate
             print()
