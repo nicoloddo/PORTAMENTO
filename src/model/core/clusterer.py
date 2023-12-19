@@ -130,6 +130,7 @@ class BirchClusterer:
         """
         self.config = config
         self.model = Birch(threshold=self.config['birch_threshold'], branching_factor=self.config['branch_factor'])
+        self.lookup = {} # Dictionary containing the original ids of the songs and their ordinal index, because the birch saves them by ordinal index in the tree
 
     def cluster(self, data):
         """
@@ -137,6 +138,7 @@ class BirchClusterer:
 
         :param data: Data to be clustered.
         """
+        self.lookup = {sample: song_id for sample, song_id in enumerate(data.index)}
         self.model.fit(data)
         self.labels = self.model.labels_
         self.centroids = self.model.subcluster_centers_
