@@ -47,17 +47,17 @@ while True:
             print()
             print('---------------------------------------')
             print(f"Current node ID is '{current_node_id}'. These are its children and their songs:")
-            for i, child in enumerate(current_node.children):
+            for i in range(current_node.n_children):
                 
                 print()
-                if child['is_leaf']:
+                if current_node.get_child_is_leaf(i):
                     print(f"{i}: Child {i} (leaf)")
                 else:
                     print(f"{i}: Child {i}")
                 
                 # And let's print the songs of each children
-                print(f"With {child['n_samples']} songs, among which:")
-                test_utils.print_songs(child['samples'], dataset)
+                print(f"With {current_node.get_child_n_samples(i)} songs, among which:")
+                test_utils.print_songs(current_node.get_child_samples(i), dataset)
 
             # Get user input for the next node to navigate
             print()

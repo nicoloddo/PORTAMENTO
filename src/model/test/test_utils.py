@@ -24,7 +24,7 @@ def make_test_results_folder(folder_path):
 def print_songs(samples, dataset):
     names = ""
     for i, sample in enumerate(samples):
-        names += dataset.iloc[sample]['name']
+        names += dataset.loc[sample]['name']
         if i == len(samples) -1: # We reached the last sample, let's not add any punctuation
             break
         if i >= 5:
