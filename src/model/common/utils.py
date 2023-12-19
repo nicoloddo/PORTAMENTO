@@ -30,6 +30,13 @@ def load_df_from_local_pickles(datapath):
 
     # Concatenate all DataFrames
     merged_df = pd.concat(dfs, ignore_index=True)
+    
+    # Remove duplicates based on 'id' column
+    merged_df = merged_df.drop_duplicates(subset='id')
+    
+    # Set the 'id' column as the index
+    merged_df = merged_df.set_index('id')
+
     return merged_df
 
 def running_in_docker():
