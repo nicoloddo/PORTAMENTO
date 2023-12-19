@@ -1,0 +1,13 @@
+{
+  "httpMethod": "POST",
+  "body": "spotify:playlist:5T54YmcS3PsSghWrqivfms\n\rspotify:playlist:7460eJSzkWMB3VQ2xzACiV\n\rspotify:playlist:2HF1k7XYrLeooG2EYzIYwk\n\rspotify:playlist:7rldaIGrPgeiOVcfeQ5ZjR",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "path": "/playlist",
+  "queryStringParameters": {},
+  "pathParameters": {},
+  "stageVariables": {},
+  "requestContext": {},
+  "isBase64Encoded": false
+}
