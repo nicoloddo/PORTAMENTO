@@ -8,9 +8,23 @@ Created on Wed Nov 22 21:46:17 2023
 import os
 import pandas as pd
 
+import uuid
+import time
+
 URI_LENGTH = 39
 URI_PORTION = 17
 MAX_IDS_PER_REQUEST = 100  # Maximum number of IDs per Spotify feature request
+
+def generate_unique_request_code():
+    # Create a UUID
+    unique_id = uuid.uuid4()
+
+    # Get the current timestamp
+    timestamp = int(time.time())
+
+    # Combine them to form the request code
+    request_code = f"{unique_id}-{timestamp}"
+    return request_code
 
 def spotify_uri_to_id(uri):
     return uri[URI_PORTION:URI_LENGTH]

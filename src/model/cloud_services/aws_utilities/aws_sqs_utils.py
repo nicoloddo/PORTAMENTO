@@ -14,13 +14,13 @@ from common.utils import load_env_var, MAX_IDS_PER_REQUEST
 QUEUE_URL = load_env_var('QUEUE_URL')
 ENDPOINT_URL = load_env_var('ENDPOINT_URL', required=False)
 
-def enqueue_next_batch(playlist_uri, next_start_index, next_batch_size=MAX_IDS_PER_REQUEST, queue_url=QUEUE_URL, endpoint_url=ENDPOINT_URL):
+def enqueue_next_batch(playlist_uri, request_id, next_start_index, next_batch_size=MAX_IDS_PER_REQUEST, queue_url=QUEUE_URL, endpoint_url=ENDPOINT_URL):
     _enqueue_fetch(playlist_uri, next_start_index, next_batch_size, queue_url, endpoint_url)
 
-def enqueue_playlist(playlist_uri, batch_size=MAX_IDS_PER_REQUEST, queue_url=QUEUE_URL, endpoint_url=ENDPOINT_URL):
+def enqueue_playlist(playlist_uri, request_id, batch_size=MAX_IDS_PER_REQUEST, queue_url=QUEUE_URL, endpoint_url=ENDPOINT_URL):
     _enqueue_fetch(playlist_uri, 0, batch_size, queue_url, endpoint_url)
     
-def _enqueue_fetch(playlist_uri, start_index, batch_size, queue_url, endpoint_url):
+def _enqueue_fetch(playlist_uri, request_id, start_index, batch_size, queue_url, endpoint_url):
     try:
         # Create an S3 client
         if endpoint_url:
@@ -31,6 +31,7 @@ def _enqueue_fetch(playlist_uri, start_index, batch_size, queue_url, endpoint_ur
             sqs = boto3.client('sqs')
 
         message = {
+            'request_id': request_id,
             'playlist_uri': playlist_uri,
             'start_index': start_index,
             'batch_size': batch_size

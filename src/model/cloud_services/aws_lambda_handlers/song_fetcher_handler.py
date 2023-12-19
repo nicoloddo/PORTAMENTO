@@ -21,6 +21,7 @@ def lambda_handler(event, context):
     # Process each message in the SQS event
     for record in event['Records']:
         message = json.loads(record['body'])
+        request_id = message['request_id']
         playlist_uri = message['playlist_uri']
         start_index = message['start_index']
         batch_size = message['batch_size']
@@ -35,14 +36,14 @@ def lambda_handler(event, context):
         csv_bytes = csv_string.encode()
 
         # Save the fetched songs
-        save_to_s3(csv_bytes, f'{spotify_uri_to_id(playlist_uri)}_{start_index}.csv')
+        save_to_s3(csv_bytes, f'{request_id/spotify_uri_to_id(playlist_uri)}_{start_index}.csv')
 
         # Check if there are more songs to fetch and enqueue the next batch
         total_songs = playlist_fetcher.total_songs_in_playlist() # Get the total number of songs in the playlist
         if start_index + batch_size < total_songs: # The playlist is not finished
             next_start_index = start_index + batch_size
             next_batch_size = batch_size # You can manipulate this to only use the remaining amount of songs for the last batch
-            enqueue_next_batch(playlist_uri, next_start_index, next_batch_size)
+            enqueue_next_batch(playlist_uri, request_id, next_start_index, next_batch_size)
         else: # The playlist is finished
             return {'statusCode': 200, 'body': 'Playlist processed'}
 

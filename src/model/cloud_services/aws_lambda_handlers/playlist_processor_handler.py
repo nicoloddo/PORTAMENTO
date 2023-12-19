@@ -10,10 +10,14 @@ This handler will be triggered by an S3 event when a .txt file containing playli
 It will read these URIs and enqueue tasks in an SQS queue to process each playlist sequentially.
 """
 
+from common.utils import generate_unique_request_code
+
 from cloud_services.aws_utilities.aws_s3_utils import read_file_from_s3
 from cloud_services.aws_utilities.aws_sqs_utils import enqueue_playlist
 
 def lambda_handler(event, context):
+    request_id = generate_unique_request_code()
+    
     # Extract bucket name and file key from the S3 event
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = event['Records'][0]['s3']['object']['key']
@@ -23,7 +27,7 @@ def lambda_handler(event, context):
 
     # Iterate over playlist URIs and send messages to SQS queue
     for uri in playlist_uris:
-        enqueue_playlist(uri)
+        enqueue_playlist(uri, request_id)
 
     return {
         'statusCode': 200,
