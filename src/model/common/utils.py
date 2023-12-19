@@ -39,6 +39,18 @@ def load_df_from_local_pickles(datapath):
 
     return merged_df
 
+def ordinal_ids_to_true_ids(ordinal_ids, lookup_table):
+    """ 
+    Transforms a list of ordinal ids into the true Spotify ids from a dictionary of ordinal_ids mapped to Spotify ids
+    """
+    return [lookup_table[ordinal_id] for ordinal_id in ordinal_ids]
+
+def dataset_select(dataset, rows, columns = []):
+    if len(columns) > 0:
+        return dataset.loc[rows, columns]
+    else:
+        return dataset.loc[rows]
+
 def running_in_docker():
     """Check if running in a Docker container."""
     try:
