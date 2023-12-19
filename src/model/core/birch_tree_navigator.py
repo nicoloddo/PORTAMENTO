@@ -4,6 +4,8 @@ Created on Thu Nov 23 18:19:03 2023
 
 @author: nicol
 """
+from common.utils import ordinal_ids_to_true_ids, dataset_select
+import json
 
 class BirchTreeNavigator:
     """
@@ -18,7 +20,7 @@ class BirchTreeNavigator:
         """
         self.birch_clusterer = birch_clusterer
         self.model = birch_clusterer.model
-        self.lookup = birch_clusterer.lookup
+        self._lookup = birch_clusterer.lookup
 
     def select_node(self, node_id):
         """
@@ -59,7 +61,7 @@ class BirchTreeNavigator:
         :return: BirchTreeNavigatorNode representing the node.
         """
         node = self.select_node(node_id)
-        return BirchTreeNavigatorNode(node, self.lookup)
+        return BirchTreeNavigatorNode(node, node_id, self._lookup)
     
     
 class BirchTreeNavigatorNode:
@@ -67,20 +69,23 @@ class BirchTreeNavigatorNode:
     Represents a node in the BIRCH tree, encapsulating relevant information and functionalities.
     """
 
-    def __init__(self, node, lookup):
+    def __init__(self, node, node_id, lookup):
         """
         Initializes the BirchTreeNavigatorNode with a node from the BIRCH tree.
 
         :param node: The node from the BIRCH tree.
+        :param node_id: The id of the node as a string of numerical values (the ordinal ids starting from the root)
         :param lookup: The lookup table to link the sample index to basic song information.
         """
-        self.node = node
-        self.lookup = lookup
+        self.node_id = node_id
+        self._node = node
+        self._lookup = lookup
+        
         self.is_leaf = node.is_leaf
         self.samples = set()
         
         self._samples_ordinal_ids = set()
-        self._children = self._get_children_info(node)
+        self._children = self._get_children_info(self._node)
         
         self.n_children = len(self._children)
 
@@ -104,7 +109,7 @@ class BirchTreeNavigatorNode:
                 children_info.append(child_info)
                 
             self._samples_ordinal_ids.update(subcluster.samples) # Collect the samples from the child
-            samples_true_ids = self.ordinal_ids_to_true_ids(subcluster.samples)
+            samples_true_ids = ordinal_ids_to_true_ids(subcluster.samples, self._lookup)
             self.samples.update(samples_true_ids)
 
         return children_info
@@ -116,19 +121,53 @@ class BirchTreeNavigatorNode:
         :param child: Ordinal index of the child inside the children array of the node
         :return: List of dictionaries, each representing a child node with its centroid and samples.
         """
-        return self.ordinal_ids_to_true_ids(self._children[child]['samples'])
+        return ordinal_ids_to_true_ids(self._children[child]['samples'], self._lookup)
         
     def get_child_n_samples(self, child):
         return self._children[child]['n_samples']
         
     def get_child_is_leaf(self, child):
         return self._children[child]['is_leaf']
-        
     
-    def ordinal_ids_to_true_ids(self, ordinal_ids):
-        """ 
-        Transforms a list of ordinal ids into the true spotify ids
+    def to_json(self, dataset, columns_blacklist=[]):
         """
-        return [self.lookup[index] for index in ordinal_ids]
+        Converts the node and its children's data into a JSON string. This includes information
+        such as the node's ID, if it's a leaf, the samples associated with the node and its children,
+        and the number of children nodes.
+    
+        The method filters the dataset's columns to exclude those specified in the columns_blacklist.
+        Each node's samples are then converted into a dictionary indexed by their row indices in the dataset.
+    
+        :param dataset: The pandas DataFrame containing the data.
+        :param columns_blacklist: List of column names to be excluded from the final JSON.
+        :return: A JSON string representation of the node and its children's data.
+        """
+    
+        # Filter the dataset columns based on the blacklist
+        columns_to_select = [col for col in dataset.columns if col not in columns_blacklist]
+    
+        # Convert the current node's samples to a dictionary
+        node_samples = dataset_select(dataset, self.samples, columns_to_select).to_dict(orient='index')
+        
+        children_info = []
+        # Iterate over the children to get their samples
+        for i in range(self.n_children):
+            unique_child_samples = set(self.get_child_samples(i))
+            # Convert each child's samples to a dictionary
+            child_samples = dataset_select(dataset, unique_child_samples).to_dict(orient='index')
+            children_info.append({"is_leaf": self.get_child_is_leaf(i), "samples": child_samples})
+        
+        # Compile the node's data into a dictionary
+        data = {
+            "node_id": self.node_id,
+            "is_leaf": self.is_leaf,
+            "samples": node_samples,
+            "n_children": self.n_children,
+            "children": children_info
+        }
+        
+        # Convert the dictionary to a JSON string with indentation for readability
+        return json.dumps(data, indent=4)
+
 
 
