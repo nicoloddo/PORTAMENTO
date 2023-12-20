@@ -21,7 +21,7 @@ def lambda_handler(event, context):
     record = event['Records'][0]
     message = json.loads(record['body'])
     request_id = message['request_id']
-    n_playlists = message['n_playlists']
+    req_n_playlists = message['req_n_playlists']
     
     # Step 1: Read the main database file
     database_content = get_database_from_s3()
@@ -37,7 +37,7 @@ def lambda_handler(event, context):
     
     # Check if request has finished
     count_processed_playlists = len([file for file in files if file.endswith(f"{LASTBATCH_LABEL}.csv")])
-    if count_processed_playlists != n_playlists:
+    if count_processed_playlists != req_n_playlists:
         return {'statusCode': 500, 'body': 'Merge aborted: waiting to finish fetching all playlists in the request.'}
         
     for file_key in files:
