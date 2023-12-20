@@ -9,7 +9,7 @@ It checks if all playlists in the request have been fetched
 and then merges the new fetched songs with the existing database.
 """
 
-from cloud_services.aws_utilities.aws_s3_utils import get_database_from_s3, read_file_from_s3, save_to_s3, list_folder_files_s3, delete_folder
+from cloud_services.aws_utilities.aws_s3_utils import get_database_from_s3, read_file_from_s3, save_to_s3, list_folder_files_s3, delete_folder_s3
 
 import pandas as pd
 from io import StringIO
@@ -53,6 +53,6 @@ def lambda_handler(event, context):
     save_to_s3(csv_buffer.getvalue().encode(), 'database.csv')
 
     # Step 5: Delete the request_id/ folder
-    delete_folder(f'{request_id}/')
+    delete_folder_s3(f'{request_id}/')
 
     return {'statusCode': 200, 'body': 'Database updated and request_id folder deleted successfully'}

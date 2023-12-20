@@ -95,7 +95,7 @@ def list_folder_files_s3(prefix, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKE
         print(f"An error occurred while listing files: {e}")
         return {'Contents': []}  # Return an empty list in case of an error
     
-def delete_folder(prefix, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME):
+def delete_folder_s3(prefix, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME):
     """
     Deletes a folder (and its contents) in an S3 bucket. This function removes all 
     objects under the specified prefix.
@@ -118,7 +118,7 @@ def delete_folder(prefix, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME)
     except (BotoCoreError, ClientError) as e:
         print(f"An error occurred while deleting folder: {e}")
 
-def get_database(database_key="database.csv", bucket_name=S3_BUCKET_NAME):
+def get_database_from_s3(database_key="database.csv", bucket_name=S3_BUCKET_NAME):
     """
     Retrieves the CSV file in the given S3 bucket that contains the main database.
 
