@@ -43,5 +43,7 @@ ENTRYPOINT [ "/usr/local/bin/python", "-m", "awslambdaric" ]
 CMD ["cloud_services.aws_lambda_handlers.playlist_processor_handler.lambda_handler"]
 # song_fetcher
 #CMD ["cloud_services.aws_lambda_handlers.song_fetcher_handler.lambda_handler"]
+# database_merger
+#CMD ["cloud_services.aws_lambda_handlers.database_merger_handler.lambda_handler"]
 
 # Comment all the last CMD instructions when building an interactive test container
