@@ -27,8 +27,9 @@ def lambda_handler(event, context):
         }  
 
     # Iterate over playlist URIs and send messages to SQS queue
+    req_n_playlists = len(playlist_uris)
     for uri in playlist_uris:
-        enqueue_playlist(uri, request_id)
+        enqueue_playlist(uri, request_id, req_n_playlists)
 
     return {
         'statusCode': 200,
