@@ -16,10 +16,10 @@ MERGE_QUEUE_URL = load_env_var('MERGE_QUEUE_URL')
 ENDPOINT_URL = load_env_var('ENDPOINT_URL', required=False)
 
 def enqueue_next_batch(playlist_uri, request_id, req_n_playlists, next_start_index, next_batch_size=MAX_IDS_PER_REQUEST, queue_url=FETCH_QUEUE_URL, endpoint_url=ENDPOINT_URL):
-    _enqueue_fetch(playlist_uri, next_start_index, next_batch_size, queue_url, endpoint_url)
+    _enqueue_fetch(playlist_uri, request_id, req_n_playlists, next_start_index, next_batch_size, queue_url, endpoint_url)
 
 def enqueue_playlist(playlist_uri, request_id, req_n_playlists, batch_size=MAX_IDS_PER_REQUEST, queue_url=FETCH_QUEUE_URL, endpoint_url=ENDPOINT_URL):
-    _enqueue_fetch(playlist_uri, 0, batch_size, queue_url, endpoint_url)
+    _enqueue_fetch(playlist_uri, request_id, req_n_playlists, 0, batch_size, queue_url, endpoint_url)
     
 def _enqueue_fetch(playlist_uri, request_id, req_n_playlists, start_index, batch_size, queue_url=FETCH_QUEUE_URL, endpoint_url=ENDPOINT_URL):
     """
