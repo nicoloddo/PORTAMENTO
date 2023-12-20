@@ -42,7 +42,7 @@ def lambda_handler(event, context):
     total_songs = playlist_fetcher.total_songs_in_playlist() # Get the total number of songs in the playlist
     if start_index + batch_size < total_songs: # The playlist is not finished
         # Save the fetched songs
-        save_to_s3(csv_bytes, f'{request_id/spotify_uri_to_id(playlist_uri)}_{start_index}.csv')
+        save_to_s3(csv_bytes, f'{request_id}/{spotify_uri_to_id(playlist_uri)}_{start_index}.csv')
     
         # Compute the next start_index and batch_size
         next_start_index = start_index + batch_size
@@ -53,7 +53,7 @@ def lambda_handler(event, context):
         
     else: # The playlist is finished
         # Save batch as last batch
-        save_to_s3(csv_bytes, f'{request_id/spotify_uri_to_id(playlist_uri)}_{LASTBATCH_LABEL}.csv')
+        save_to_s3(csv_bytes, f'{request_id}/{spotify_uri_to_id(playlist_uri)}_{LASTBATCH_LABEL}.csv')
         enqueue_database_merge(request_id, req_n_playlists)
         return {'statusCode': 200, 'body': 'Playlist processed'}
 
