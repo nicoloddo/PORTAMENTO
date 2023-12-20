@@ -59,7 +59,7 @@ def _enqueue_fetch(playlist_uri, request_id, req_n_playlists, start_index, batch
         print(f"An error occurred while enqueuing the message: {e}")
         return {'statusCode': 500, 'body': f"Failed to enqueue message: {e}"}
 
-def enqueue_database_merge(request_id, queue_url=MERGE_QUEUE_URL, endpoint_url=ENDPOINT_URL):
+def enqueue_database_merge(request_id, req_n_playlists, queue_url=MERGE_QUEUE_URL, endpoint_url=ENDPOINT_URL):
     """
     Enqueues a message to an SQS queue to trigger a database merge operation.
 
@@ -78,7 +78,10 @@ def enqueue_database_merge(request_id, queue_url=MERGE_QUEUE_URL, endpoint_url=E
             sqs = boto3.client('sqs')
 
         # Prepare the message
-        message = {'request_id': request_id}
+        message = {
+            'request_id': request_id,
+            'req_n_playlists': req_n_playlists
+            }
 
         # Send the message
         response = sqs.send_message(QueueUrl=queue_url, MessageBody=json.dumps(message))
