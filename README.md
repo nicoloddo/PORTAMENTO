@@ -38,9 +38,9 @@ The user will be able to move inside a 3D space in which every cluster is locate
 ## Backend
 The heart of the software consists in the scripts written in Python, runned from the interface. These provide the data retrieval methods Spotify's API and the actual clusterization of the database.
 
-![Software structure](https://i.imgur.com/JtsOI7Pl.png)
-
 ## Scheme
+
+### Nomenclature
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202%20_2.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature.png)
