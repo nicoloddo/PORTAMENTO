@@ -41,14 +41,14 @@ The heart of the software consists in the scripts written in Python, runned from
 ![Software structure](https://i.imgur.com/JtsOI7Pl.png)
 
 ## Scheme
-![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202%20(2%29.png)
+![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202%20_2.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature.png)
 
 ### 1.0
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Portamento%201.0.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Dataset%201.0.png)
-![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Dataset%201.0%20(2%29.png)
+![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Dataset%201.0%20_2.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Backend%201.0.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Structure%201.0%20-%20Database%20Fetch.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Structure%201.0%20-%20Tree%20Navigator.png)
