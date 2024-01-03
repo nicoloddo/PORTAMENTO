@@ -1,12 +1,12 @@
 # PORTAMENTO 
 
-This is a complete rewrite of my old project Portamento, designed for my Software Engineering bachelor's thesis project in 2021.
+This is a complete rewrite of my old project Portamento, designed for my Software Engineering bachelor's thesis project in 2021. The goal of the rewrite is to make it available online on my website, while running the backend on AWS as a serverless architecture.
 
 *Portamento: Machine Learning for music cataloguing and a three-dimensional interface to highlight its inherent nuances.*
 Read the thesis (in italian): [thesis](https://github.com/nicoloddo/PORTAMENTO/blob/master/THESIS.pdf)
 
 
-Portamento is a music cataloguing software that uses a selfmade mod of the BIRCH algorithm to cluster a database of tracks. The parameters of each song are withdrawn from Spotify's audio analysis databases. The interface is done using the Unity Engine with an approach similar to videogames that obtains an interactive exploration of the clustering tree hierarchy.
+Portamento is a music cataloguing software that uses a selfmade mod of the BIRCH algorithm to cluster a database of tracks. The interface is developed using the Unity Engine with an approach similar to videogames, obtaining an interactive exploration of the clustering tree hierarchy.
 The backend is written in Python, while the frontend is written in C#.
 
 [![Watch the video](https://i.imgur.com/wOLEDrZ.jpg)](https://youtu.be/aSUIdFPvFPQ)
@@ -30,13 +30,11 @@ Mouse: Orientation
 "c": Look towards y axis - "left-ctrl + c": look towards negative y axis"\
 "z": Adjust orientation to be parallel to ground
 
-## Frontend
-Written in C# on the **Unity Engine**, the interface plays a very big role in the project as it follows one of the main ideas behind it by trying to highlight the actual impossibility to reduce music to a discreet number of clusters inferior to the number of the songs. It provides in fact a way to interactively explore a tree structure of clusters in which the root consist of the entire database, while the leaves are actually every sample (in that case song) of the database. This is as image of the idea that, at the highest level of detail, every song constitute a genre by itself. Moreover, the clustering parameters and weights are highly tweakable by the user to satisfy every user-specific need of categorization.
-
-The user will be able to move inside a 3D space in which every cluster is located at specific 3 coordinates chosen from all its parameters. These 3 parameters are in fact the meaning given to the 3 axis of the space and can be modified by the user itself. It is also possible to go inside a cluster, thus going down in the tree hierarchy. By entering a cluster the user will see a totally similar scene but with the clusters that belongs to the new node of the hierarchy in which the user is now located.
-
 ## Backend
-The heart of the software consists in the scripts written in Python, runned from the interface. These provide the data retrieval methods Spotify's API and the actual clusterization of the database.
+The backend is written in Python and runs on AWS on a serverless architecture based on Lambdas, S3 and API Gateway. The backend handles the data retrieval from Spotify's API, the clusterization of the database and the navigation inside its structure.
+
+## Frontend
+Written in C# on the **Unity Engine**, the interface lets users explore the clusters inside a 3D universe, where they can move along 3 chosen attributes of the song (e.g. danceability, valence, energy) and enter the clusters to achieve more specificity.
 
 ## Scheme
 
