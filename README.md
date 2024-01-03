@@ -41,9 +41,9 @@ The heart of the software consists in the scripts written in Python, runned from
 ## Scheme
 
 ### Nomenclature
-![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202_2.png)
-![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature.png)
+![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202.png)
+![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202_2.png)
 
 ### 1.0
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Portamento%201.0.png)
