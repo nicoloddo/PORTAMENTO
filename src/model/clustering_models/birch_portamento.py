@@ -408,6 +408,9 @@ class Birch(BaseEstimator, TransformerMixin, ClusterMixin):
         Array of labels assigned to the input data.
         if partial_fit is used instead of fit, they are assigned to the
         last batch of data.
+    
+    base_index_: int
+        The index from which to count the new samples after a previous partial fit.
 
     Examples
     --------
@@ -453,6 +456,7 @@ class Birch(BaseEstimator, TransformerMixin, ClusterMixin):
         self.n_clusters = n_clusters
         self.compute_labels = compute_labels
         self.copy = copy
+        self.base_index_ = 0
 
     def fit(self, X, y=None):
         """
@@ -501,7 +505,12 @@ class Birch(BaseEstimator, TransformerMixin, ClusterMixin):
             iter_func = _iterate_sparse_X
 
         for index, sample in enumerate(iter_func(X)):
-            subcluster = _CFSubcluster(index, linear_sum=sample)
+            if partial_fit:
+                sample_label = self.base_index_ + index
+            else:
+                sample_label = index
+                
+            subcluster = _CFSubcluster(sample_label, linear_sum=sample)
             split = self.root_.insert_cf_subcluster(subcluster)
 
             if split:
@@ -519,6 +528,9 @@ class Birch(BaseEstimator, TransformerMixin, ClusterMixin):
         self.subcluster_centers_ = centroids
 
         self._global_clustering(X)
+        
+        if partial_fit:
+            self.base_index_ += X.shape[0] # add to the base index the amount of processed items
         return self
 
     def _get_leaves(self):

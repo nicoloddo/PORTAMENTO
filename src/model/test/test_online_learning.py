@@ -4,7 +4,6 @@ Created on Thu Nov 23 17:25:56 2023
 
 @author: nicol
 """
-
 import test_utils
 
 from common.utils import load_df_from_local_pickles
@@ -21,6 +20,17 @@ dataset = load_df_from_local_pickles(folder_path)
 # Load the configuration
 config = test_utils.load_test_config()
 
+# Calculate the midpoint of the DataFrame
+midpoint = len(dataset) // 2
+
+# Split the DataFrame into two halves
+first_half = dataset.iloc[:midpoint]
+second_half = dataset.iloc[midpoint:]
+
+
 # Initialize and use the Clusterer
 clusterer = Clusterer(config)
-clusterer.cluster_tracks(dataset)
+clusterer.partial_cluster_tracks(first_half)
+
+clusterer = Clusterer(config, clusterer.model)
+clusterer.partial_cluster_tracks(second_half)

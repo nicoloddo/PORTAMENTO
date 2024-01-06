@@ -16,24 +16,38 @@ class Clusterer:
     Only the columns for which a weight has been specified in the config are kept and used for the clustering.
     """
 
-    def __init__(self, dataset, config):
+    def __init__(self, config, model = None):
         """
         Initializes the Clusterer with a dataset and configuration settings.
 
-        :param dataset: Input dataset for clustering.
         :param config: Configuration settings for the clustering process.
+        :param model: Input dataset for clustering.
         """
-        self.dataset = dataset
         self.config = config
+        # Remove keys with value 0 from the weights dictionary: filter the blacklisted columns
+        self.config['weights'] = {key: value for key, value in self.config['weights'].items() if value != 0}
+        
         self.preprocessor = DataPreprocessor(config)
+        
+        if model:
+            self.model = model
+        else:
+            self.model = self._select_clustering_model()
 
-    def cluster_tracks(self):
+    def cluster_tracks(self, dataset):
         """
         Performs clustering on the track dataset.
         """
-        preprocessed_data = self.preprocessor.preprocess_data(self.dataset)
-        self.model = self._select_clustering_model()
+        preprocessed_data = self.preprocessor.preprocess_data(dataset)
         self.model.cluster(preprocessed_data)
+        self._save_results()
+    
+    def partial_cluster_tracks(self, dataset):
+        """
+        Performs online learning with the provided new tracks.
+        """
+        preprocessed_data = self.preprocessor.preprocess_data(dataset)
+        self.model.partial_cluster(preprocessed_data)
         self._save_results()
 
     def _select_clustering_model(self):
@@ -84,27 +98,39 @@ class DataPreprocessor:
         :return: Preprocessed data ready for clustering, with 'id' as the index.
         """
         # Check if 'id' column is present for identifier purposes
-        if 'id' not in data.columns:
-            raise ValueError("Data must contain an 'id' column for identifiers.")
+        if 'id' not in data.columns and data.index.name != 'id':
+            raise ValueError("Data must contain an 'id' column or index for identifiers.")
 
         # Set 'id' as the DataFrame index
-        data = data.set_index('id')
-
-        # Filter columns based on weights keys
+        if data.index.name != 'id':
+            data = data.set_index('id')
+            
+        # Take the columns relevant for clustering
         relevant_columns = [col for col in data.columns if col in self.config['weights']]
-        data = data[relevant_columns]
+        data = data[relevant_columns].copy() # I do the copy to not operate on a slice of the dataset, remove the .copy() if it is heavy on memory
         
         # Normalize tempo if included in relevant columns
         if 'tempo' in data.columns:
             data['tempo'] = self.normalize_column(data['tempo'], self.config['tempo_range']['min'], self.config['tempo_range']['max'])
 
         # Apply weights to features
-        if 'weights' in self.config:
-            weights_series = pd.Series(self.config['weights'])
-            data = data.mul(weights_series, axis=1)
+        weights_series = pd.Series(self.config['weights'])
+        data = data.mul(weights_series, axis=1)
         
         return data
+    
+    def deweight_data(self, data):
+        """
+        Restores the data to the value before the application of weights. 
+        The normalization procedures are not reestored by this application.
+        
+        :param data: The data to be preprocessed.
 
+        :return: The data restored from the weights
+        """
+        weights_series = pd.Series(self.config['weights'])
+        return data.mul(1/weights_series, axis=1)
+        
     def normalize_column(self, column, min_value, max_value):
         """
         Normalizes a column to a range between 0 and 1.
@@ -140,6 +166,21 @@ class BirchClusterer:
         """
         self.lookup = {sample: song_id for sample, song_id in enumerate(data.index)}
         self.model.fit(data)
+        self.labels = self.model.labels_
+        self.centroids = self.model.subcluster_centers_
+        
+    def partial_cluster(self, data):
+        """
+        Performs partial clustering (online learning) on the provided data using the BIRCH algorithm.
+
+        :param data: Data to be clustered.
+        """
+        
+        additional_lookup = {self.model.base_index_ + sample: song_id for sample, song_id in enumerate(data.index)}
+        self.lookup.update(additional_lookup)
+        
+        self.model.partial_fit(data)
+        
         self.labels = self.model.labels_
         self.centroids = self.model.subcluster_centers_
 
