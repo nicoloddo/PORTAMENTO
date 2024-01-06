@@ -47,12 +47,12 @@ def lambda_handler(event, context):
             # Step 3: Merge with the main database
             database_df = pd.concat([database_df, file_df]).drop_duplicates(subset='id')
 
-    # Step 4: Save the updated database
+    # Step 4: Delete the request_id/ folder
+    delete_folder_s3(f'{request_id}/')
+    
+    # Step 5: Save the merged database
     csv_buffer = StringIO()
     database_df.to_csv(csv_buffer, index=False)
-    save_to_s3(csv_buffer.getvalue().encode(), 'database.csv')
+    save_to_s3(csv_buffer.getvalue().encode(), f'{request_id}/data.csv')
 
-    # Step 5: Delete the request_id/ folder
-    delete_folder_s3(f'{request_id}/')
-
-    return {'statusCode': 200, 'body': 'Database updated and request_id folder deleted successfully'}
+    return {'statusCode': 200, 'body': 'Request database merged!'}
