@@ -99,4 +99,5 @@ Artifacts/
 deployment/windows/
 
 # Ignore .yml templates of test because they contain .env information
-**/cloud_services/test/**/template.yml
+template.yml
+template.yaml
