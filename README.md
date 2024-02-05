@@ -38,18 +38,13 @@ Written in C# on the **Unity Engine**, the interface lets users explore the clus
 
 ## Scheme
 
-### Nomenclature
-![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature.png)
-![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202.png)
-![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202_2.png)
-
 ### 1.0
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Portamento%201.0.png)
-![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Dataset%201.0.png)
-![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Dataset%201.0_2.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Backend%201.0.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Structure%201.0%20-%20Database%20Fetch.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Structure%201.0%20-%20Tree%20Navigator.png)
+![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Dataset%201.0.png)
+![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Dataset%201.0_2.png)
 
 ### 1.1
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Portamento%201.1.png)
@@ -57,5 +52,10 @@ Written in C# on the **Unity Engine**, the interface lets users explore the clus
 
 ### 2.0
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Portamento%202.0.png)
-![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Dataset%202.0.png)
 ![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Backend%202.0.png)
+![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Dataset%202.0.png)
+
+### Nomenclature
+![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature.png)
+![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202.png)
+![-](https://raw.githubusercontent.com/nicoloddo/PORTAMENTO/main/slides/Nomenclature%202_2.png)
