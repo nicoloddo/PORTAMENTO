@@ -49,7 +49,7 @@ def print_songs_from_df(samples, max_print = 5):
 #****************************************************************************
 if running_in_docker():
     # If running in Docker, use the environment variable
-    TESTS_PATH = load_env_var('TESTS_PATH')
+    TESTS_PATH = load_env_var('PYTHON_TESTS_PATH')
 else: # Not running in Docker, use static paths
     TESTS_PATH = './'
     make_test_results_folder("./results")
