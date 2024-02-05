@@ -1,0 +1,1 @@
+docker run --env-file ../../.env -it --entrypoint /bin/bash portamento_song_fetcher
