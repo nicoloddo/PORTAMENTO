@@ -1,0 +1,1 @@
+sam local invoke "PortamentoPlaylistProcessor" --event mock_api_event.json -t $TEMPLATE_PATH
