@@ -36,7 +36,7 @@ def _enqueue_fetch(playlist_uri, request_id, req_n_playlists, start_index, batch
     try:
         # Create an SQS client
         if endpoint_url:
-            # Use the specified endpoint URL
+            # Use the specified endpoint URL (e.g. LocalStack)
             sqs = boto3.client('sqs', endpoint_url=endpoint_url)
         else:
             # Default to AWS SQS
@@ -71,7 +71,7 @@ def enqueue_database_merge(request_id, req_n_playlists, queue_url=MERGE_QUEUE_UR
     try:
         # Create an SQS client
         if endpoint_url:
-            # Use the specified endpoint URL
+            # Use the specified endpoint URL (e.g. Localstack)
             sqs = boto3.client('sqs', endpoint_url=endpoint_url)
         else:
             # Default to AWS SQS

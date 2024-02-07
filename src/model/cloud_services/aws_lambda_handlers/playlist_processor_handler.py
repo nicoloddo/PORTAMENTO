@@ -6,8 +6,8 @@ Created on Wed Nov 22 18:43:39 2023
 
 This script will serve as the AWS Lambda handler
 that initiates the process of fetching songs from Spotify playlists.
-This handler will be triggered by an S3 event when a .txt file containing playlist URIs is uploaded. 
-It will read these URIs and enqueue tasks in an SQS queue to process each playlist sequentially.
+This handler will be triggered by an API Gateway event.
+It will read the URIs in the body of the request and enqueue tasks in an SQS queue to process each playlist sequentially.
 """
 
 from common.utils import generate_unique_request_code

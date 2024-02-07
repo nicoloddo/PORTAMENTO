@@ -66,8 +66,17 @@ def read_file_from_s3(key, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME
         
         # Read and return the content of the file
         return response['Body'].read().decode('utf-8')
-    except (BotoCoreError, ClientError) as e:
-        print(f"An error occurred: {e}")
+    except ClientError as e:
+        error_code = e.response['Error']['Code']
+        if error_code == 'NoSuchKey':
+            print(f"File not found: {key} does not exist in the bucket {bucket_name}.")
+        if error_code == 'NoSuchBucket':
+            print(f"Bucket not found: {bucket_name}.")
+        else:
+            print(f"An error occurred while reading the CSV file: {e}")
+        return None
+    except BotoCoreError as e:
+        print(f"An AWS error occurred: {e}")
         return None
 
 def list_folder_files_s3(prefix, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME):
@@ -135,6 +144,8 @@ def get_database_from_s3(database_key="database.csv", bucket_name=S3_BUCKET_NAME
         error_code = e.response['Error']['Code']
         if error_code == 'NoSuchKey':
             print(f"File not found: {database_key} does not exist in the bucket {bucket_name}.")
+        if error_code == 'NoSuchBucket':
+            print(f"Bucket not found: {bucket_name}.")
         else:
             print(f"An error occurred while reading the CSV file: {e}")
         return None
