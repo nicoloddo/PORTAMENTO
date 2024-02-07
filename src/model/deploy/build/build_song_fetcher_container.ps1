@@ -1,0 +1,1 @@
+docker build -t portamento_song_fetcher ../../
