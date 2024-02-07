@@ -36,7 +36,7 @@ def save_to_s3(data, file_name, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET
 
         # Save the data to the specified bucket and file name
         s3.put_object(Bucket=bucket_name, Key=file_name, Body=data)
-        print(f"File {file_name} saved successfully to {bucket_name}.")
+        print(f"File {file_name} saved successfully to {bucket_name}")
 
     except (BotoCoreError, ClientError) as e:
         print(f"An error occurred: {e}")
@@ -69,9 +69,9 @@ def read_file_from_s3(key, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME
     except ClientError as e:
         error_code = e.response['Error']['Code']
         if error_code == 'NoSuchKey':
-            print(f"File not found: {key} does not exist in the bucket {bucket_name}.")
+            print(f"File not found: {key} does not exist in the bucket {bucket_name}")
         if error_code == 'NoSuchBucket':
-            print(f"Bucket not found: {bucket_name}.")
+            print(f"Bucket not found: {bucket_name}")
         else:
             print(f"An error occurred while reading the CSV file: {e}")
         return None
@@ -143,9 +143,9 @@ def get_database_from_s3(database_key="database.csv", bucket_name=S3_BUCKET_NAME
     except ClientError as e:
         error_code = e.response['Error']['Code']
         if error_code == 'NoSuchKey':
-            print(f"File not found: {database_key} does not exist in the bucket {bucket_name}.")
+            print(f"File not found: {database_key} does not exist in the bucket {bucket_name}")
         if error_code == 'NoSuchBucket':
-            print(f"Bucket not found: {bucket_name}.")
+            print(f"Bucket not found: {bucket_name}")
         else:
             print(f"An error occurred while reading the CSV file: {e}")
         return None
