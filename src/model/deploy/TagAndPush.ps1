@@ -11,6 +11,14 @@ $templateFileContent = Get-Content -Path $templateFilePath
 # Login to docker-aws
 aws ecr get-login-password --region $awsRegion | docker login --username AWS --password-stdin "$awsAccountId.dkr.ecr.$awsRegion.amazonaws.com"
 
+$pushAll = Read-Host -Prompt "Push all? (Y/n)"
+# Check if the input is empty and set the default value
+if ([string]::IsNullOrWhiteSpace($pushAll)) {
+    $pushAll = "Y"  # Default value
+} else {
+    $pushAll = "N"  # Alternative value
+}
+
 # Process each line to find and handle ImageUri entries
 foreach ($line in $templateFileContent) {
     if ($line.Trim().StartsWith("ImageUri:")) {
@@ -28,8 +36,16 @@ foreach ($line in $templateFileContent) {
         Write-Host "Full ECR Image Name: $fullEcrImageName"
         Write-Host "Repository Name: $repositoryName"
 
-        # Wait for user confirmation to continue
-        Read-Host -Prompt "Press Enter to continue or Ctrl+C to abort"
+        if ($pushAll -eq "N") {
+            # Prompt the user
+            $userInput = Read-Host -Prompt "Press Enter to continue, type 'skip' to skip this iteration, or Ctrl+C to abort"
+            
+            # Check if the user wants to skip this iteration
+            if ($userInput -eq 'skip') {
+                Write-Host "Skipping this iteration."
+                continue
+            }
+        }
 
         # Check if the repository exists
         $repoExists = aws ecr describe-repositories --region $awsRegion --repository-names $repositoryName 2>&1
@@ -46,3 +62,5 @@ foreach ($line in $templateFileContent) {
         docker push $fullEcrImageName
     }
 }
+
+pause
