@@ -4,7 +4,7 @@
   "headers": {
     "Content-Type": "application/json"
   },
-  "path": "/playlist",
+  "path": "/fetch",
   "queryStringParameters": {},
   "pathParameters": {},
   "stageVariables": {},
