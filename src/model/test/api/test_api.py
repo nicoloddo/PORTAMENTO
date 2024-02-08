@@ -26,4 +26,4 @@ response = requests.post(url, headers=headers, data=json.dumps(data))
 
 # This will print the status code and response body
 print(f'Status Code: {response.status_code}')
-print(f'Response: {response.json()}')
+print(f'Response: {response.text}')
