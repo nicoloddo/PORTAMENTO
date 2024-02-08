@@ -10,6 +10,7 @@ import pandas as pd
 
 import uuid
 import time
+import re
 
 URI_LENGTH = 39
 URI_PORTION = 17
@@ -25,6 +26,25 @@ def generate_unique_request_code():
     # Combine them to form the request code
     request_code = f"{unique_id}-{timestamp}"
     return request_code
+
+def is_valid_spotify_playlist_uri(uri):
+    """
+    Validates if the given string is a valid Spotify playlist URI.
+
+    A valid Spotify playlist URI follows the format: spotify:playlist:playlist_id
+    where 'playlist_id' is exactly 22 alphanumeric characters.
+
+    Args:
+    uri (str): The Spotify playlist URI to validate.
+
+    Returns:
+    bool: True if valid, False otherwise.
+    """
+    # Regular expression for matching Spotify playlist URIs with exactly 22 alphanumeric characters for the ID
+    pattern = r'^spotify:playlist:[0-9a-zA-Z]{22}$'
+    
+    # Use regex to validate the URI
+    return bool(re.match(pattern, uri))
 
 def spotify_uri_to_id(uri):
     return uri[URI_PORTION:URI_LENGTH]
