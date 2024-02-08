@@ -22,4 +22,4 @@ output_path = f'{folder_path}/{output_csv}'
 merged_df = load_df_from_local_pickles(folder_path)
 
 # Export the merged DataFrame to a CSV file
-merged_df.to_csv(output_path, index=False)
+merged_df.to_csv(output_path)
