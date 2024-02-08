@@ -19,7 +19,7 @@ def lambda_handler(event, context):
     
     # Extract playlist URIs from the body of the POST request
     try:
-        body = event['body']
+        body = event['body'].replace('"', '') # The body often comes to the lambda as "<body content>"
         playlist_uris = [item.strip() for item in body.split(',')]
         
         # Validate each URI
