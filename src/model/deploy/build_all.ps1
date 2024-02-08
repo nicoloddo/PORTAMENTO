@@ -1,4 +1,4 @@
-$scriptsDirectory = ".\"
+$scriptsDirectory = ".\builds\"
 $selfScriptName = $MyInvocation.MyCommand.Name # Get the name of the current script
 
 # Get all .ps1 files in the directory

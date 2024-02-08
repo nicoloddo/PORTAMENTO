@@ -26,10 +26,11 @@ foreach ($line in $templateFileContent) {
         $fullEcrImageName = $line.Trim().Substring("ImageUri:".Length).Trim()
 
         # Extract just the image name (repository and tag) from the full ECR image name
-        $imageName = $fullEcrImageName -replace "$awsAccountId\.dkr\.ecr\.$awsRegion\.amazonaws\.com\/", ""
+        $tempName = $fullEcrImageName -replace "$awsAccountId\.dkr\.ecr\.$awsRegion\.amazonaws\.com\/", ""
 
         # Extract the repository name from the image name
-        $repositoryName = $imageName.Split(":")[0]
+        $repositoryName = $tempName.Split(":")[0]
+        $imageName = "${repositoryName}:latest" # the docker build always uses latest as tag
 
         # Print the image names
         Write-Host "Local Image Name: $imageName"
