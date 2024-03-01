@@ -43,5 +43,5 @@ def lambda_handler(event, context):
 
     return {
         'statusCode': 200,
-        'body': 'Playlists enqueued for processing'
+        'body': '{"request_id": ' + request_id + '}'
     }
