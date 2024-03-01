@@ -19,7 +19,7 @@ def save_to_s3(data, file_name, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET
     Saves data to an S3 bucket. Works with a specified endpoint URL (e.g., LocalStack)
     or defaults to AWS S3 if no endpoint URL is provided.
 
-    :param data: Data to be saved to S3.
+    :param data: Data to be saved to S3 as serialized bytes.
     :param file_name: The file name under which the data will be stored in S3.
     :param bucket_name: The name of the S3 bucket.
     :param endpoint_url: Optional. URL of the S3 service endpoint.

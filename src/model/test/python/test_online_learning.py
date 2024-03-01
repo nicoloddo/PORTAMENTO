@@ -32,5 +32,5 @@ second_half = dataset.iloc[midpoint:]
 clusterer = Clusterer(config)
 clusterer.partial_cluster_tracks(first_half)
 
-clusterer = Clusterer(config, clusterer.model)
+clusterer = Clusterer(config, clusterer.model) # passing the first clusterer's model
 clusterer.partial_cluster_tracks(second_half)
