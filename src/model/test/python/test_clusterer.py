@@ -10,6 +10,8 @@ import test_utils
 from common.utils import load_df_from_local_pickles
 from core.clusterer import Clusterer
 
+import pickle
+
 tests_path = test_utils.TESTS_PATH
 test_name = test_utils.TEST_NAME
 
@@ -21,6 +23,10 @@ dataset = load_df_from_local_pickles(folder_path)
 # Load the configuration
 config = test_utils.load_test_config()
 
+def local_pickle_save(model, path):
+    with open(path, "wb+") as file:
+        pickle.dump(model, file)
+        
 # Initialize and use the Clusterer
-clusterer = Clusterer(config)
+clusterer = Clusterer(config, save_callback = local_pickle_save)
 clusterer.cluster_tracks(dataset)

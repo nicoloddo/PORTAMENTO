@@ -7,8 +7,7 @@ Created on Thu Nov 23 17:19:45 2023
 
 import pandas as pd
 from clustering_models.birch_portamento import Birch
-import pickle
-
+        
 class Clusterer:
     """
     Main class for clustering tracks using various algorithms.
@@ -16,12 +15,14 @@ class Clusterer:
     Only the columns for which a weight has been specified in the config are kept and used for the clustering.
     """
 
-    def __init__(self, config, model = None):
+    def __init__(self, config, model = None, save_callback  = (lambda model, path: None)):
         """
         Initializes the Clusterer with a dataset and configuration settings.
 
         :param config: Configuration settings for the clustering process.
         :param model: Input dataset for clustering.
+        :param save_callback: a function(model, path) that will need to handle two inputs: the self.model object, 
+                                                      and the string contained in config['model_path']
         """
         self.config = config
         # Remove keys with value 0 from the weights dictionary: filter the blacklisted columns
@@ -33,6 +34,8 @@ class Clusterer:
             self.model = model
         else:
             self.model = self._select_clustering_model()
+            
+        self.save_callback = save_callback
 
     def cluster_tracks(self, dataset):
         """
@@ -67,8 +70,7 @@ class Clusterer:
         """
         if self.config['save_results']:
             # Save model
-            with open(self.config['model_path'], "wb+") as file:
-                pickle.dump(self.model, file)
+            self.save_callback(self.model, self.config['model_path'])
             
             # Save clusters and centroids if required
             # This can include saving cluster data to files or databases
