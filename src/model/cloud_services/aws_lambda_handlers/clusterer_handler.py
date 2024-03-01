@@ -42,7 +42,7 @@ def lambda_handler(event, context):
     
     # Initialize and use the Clusterer
     clusterer = Clusterer(config)
-    clusterer.cluster_tracks(dataset)
+    clusterer.partial_cluster_tracks(dataset)
 
     return {
         'statusCode': 200,
