@@ -13,9 +13,14 @@ WORKDIR ${FUNCTION_DIR}
 # Copy the current directory contents into the container
 COPY . ${FUNCTION_DIR}
 
-# Install dependencies and the runtime interface client
-COPY requirements.txt ./
-RUN pip install --no-cache-dir --target ${FUNCTION_DIR} -r requirements.txt \
+# Define a build-time argument
+ARG REQUIREMENTS_FILE=requirements.txt
+
+# Copy the entire requirements folder
+COPY requirements/ ./requirements/
+
+# Install dependencies using the specified requirements file
+RUN pip install --no-cache-dir --target ${FUNCTION_DIR} -r ./requirements/${REQUIREMENTS_FILE} \
     && pip install --no-cache-dir --target ${FUNCTION_DIR} awslambdaric
 
 # Set environment variables
