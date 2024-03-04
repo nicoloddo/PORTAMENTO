@@ -38,7 +38,8 @@ def lambda_handler(event, context):
             'statusCode': 400,
             'body': json.dumps({'error': 'Invalid JSON format'})
         }
-        config['model_path'] = f'{data_id}/model.pkl'
+    
+    config['model_path'] = f'{data_id}/model.pkl'
 
     data_key = f'{data_id}/data.csv'
     dataset_file = read_file_from_s3(data_key)
