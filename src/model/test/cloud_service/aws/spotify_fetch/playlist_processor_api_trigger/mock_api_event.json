@@ -1,6 +1,6 @@
 {
   "httpMethod": "POST",
-  "body": "spotify:playlist:5T54YmcS3PsSghWrqivfms\r\nspotify:playlist:7460eJSzkWMB3VQ2xzACiV\r\nspotify:playlist:2HF1k7XYrLeooG2EYzIYwk\r\nspotify:playlist:7rldaIGrPgeiOVcfeQ5ZjR",
+  "body": "spotify:playlist:5T54YmcS3PsSghWrqivfms,spotify:playlist:7460eJSzkWMB3VQ2xzACiV,spotify:playlist:2HF1k7XYrLeooG2EYzIYwk,spotify:playlist:7rldaIGrPgeiOVcfeQ5ZjR",
   "headers": {
     "Content-Type": "application/json"
   },
