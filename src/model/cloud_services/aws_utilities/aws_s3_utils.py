@@ -70,7 +70,7 @@ def read_file_from_s3(key, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME
         error_code = e.response['Error']['Code']
         if error_code == 'NoSuchKey':
             print(f"File not found: {key} does not exist in the bucket {bucket_name}")
-        if error_code == 'NoSuchBucket':
+        elif error_code == 'NoSuchBucket':
             print(f"Bucket not found: {bucket_name}")
         else:
             print(f"An error occurred while reading the CSV file: {e}")
