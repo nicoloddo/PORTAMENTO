@@ -9,6 +9,12 @@ import test_utils
 from common.utils import load_df_from_local_pickles
 from core.clusterer import Clusterer
 
+import pickle
+
+def local_pickle_save(model, path):
+    with open(path, "wb+") as file:
+        pickle.dump(model, file)
+
 tests_path = test_utils.TESTS_PATH
 test_name = test_utils.TEST_NAME
 
@@ -29,8 +35,15 @@ second_half = dataset.iloc[midpoint:]
 
 
 # Initialize and use the Clusterer
-clusterer = Clusterer(config)
+clusterer = Clusterer(config, save_callback = local_pickle_save)
 clusterer.partial_cluster_tracks(first_half)
 
-clusterer = Clusterer(config, clusterer.model) # passing the first clusterer's model
+byfile = True
+if byfile: # Test by loading the model from file
+    with open(folder_path + '/model.pkl', 'rb') as file:
+        model = pickle.load(file)
+    clusterer = Clusterer(config, model, save_callback = local_pickle_save) # Load the clusterer.model from where it was saved
+else: # Test by passing the model directly from the first clusterer
+    clusterer = Clusterer(config, clusterer.model, save_callback = local_pickle_save) # Passing the first clusterer's model
+    
 clusterer.partial_cluster_tracks(second_half)
