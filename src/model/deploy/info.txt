@@ -1,0 +1,8 @@
+When you implement a new module, update the template.yml to include its handler and resources (e.g. AWS Lambda), then create a builder in the builds/ folder.
+
+To test it,
+use only the build_all_containers script first. 
+go to the test/ folder and create some test for the new module following the other examples.
+
+To deploy,
+you can use the Main script, which automates the process using the other scripts.
