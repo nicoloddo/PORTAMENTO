@@ -13,15 +13,16 @@ from core.birch_tree_navigator import BirchTreeNavigator
 import pickle
 
 tests_path = test_utils.TESTS_PATH
-test_name = test_utils.TEST_NAME
+data_test_name = test_utils.TEST_NAME
 
-folder_path = f'{tests_path}/results/{test_name}'
-test_utils.make_test_results_folder(folder_path)
+data_folder_path = f'{tests_path}/results/{data_test_name}'
 
 # Load the dataset
-dataset = load_df_from_local_pickles(folder_path)
+dataset = load_df_from_local_pickles(data_folder_path)
+
+model_test_name = 'local_stack_clusterer' # default: mosiselecta
 # Load the configuration
-config = test_utils.load_test_config(test_name)
+config = test_utils.load_test_config(model_test_name)
     
 with open(config['model_path'], 'rb') as file:
     loaded_model = pickle.load(file)
