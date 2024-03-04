@@ -7,7 +7,7 @@ Created on Wed Nov 22 18:48:58 2023
 
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
-import json
+from io import StringIO
 
 from common.utils import load_env_var
 
@@ -50,7 +50,7 @@ def read_file_from_s3(key, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME
     :param bucket: Name of the S3 bucket.
     :param key: Key of the file in the S3 bucket.
     :param endpoint_url: Optional. URL of the S3 service endpoint.
-    :return: Content of the file.
+    :return: Pointer to the file created with StringIO(file)
     """
     # Create an S3 client
     if endpoint_url:
@@ -65,7 +65,8 @@ def read_file_from_s3(key, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME
         response = s3.get_object(Bucket=bucket_name, Key=key)
         
         # Read and return the content of the file
-        return response['Body'].read().decode('utf-8')
+        return StringIO(response['Body'].read().decode('utf-8'))
+    
     except ClientError as e:
         error_code = e.response['Error']['Code']
         if error_code == 'NoSuchKey':

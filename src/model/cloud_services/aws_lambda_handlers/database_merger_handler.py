@@ -24,12 +24,12 @@ def lambda_handler(event, context):
     req_n_playlists = message['req_n_playlists']
     
     # Step 1: Read the main database file
-    database_content = get_database_from_s3()
-    if database_content is None:
+    database_file = get_database_from_s3()
+    if database_file is None:
         print('Failed to read the main database: the file may not exist')
         database_df = pd.DataFrame()
     else:
-        database_df = pd.read_csv(StringIO(database_content))
+        database_df = pd.read_csv(database_file)
 
     # Step 2: List and read all request_id/file.csv files
     response = list_folder_files_s3(f'{request_id}/')
@@ -41,9 +41,9 @@ def lambda_handler(event, context):
         return {'statusCode': 500, 'body': 'Merge aborted: waiting to finish fetching all playlists in the request.'}
         
     for file_key in files:
-        file_content = read_file_from_s3(file_key)
-        if file_content:
-            file_df = pd.read_csv(StringIO(file_content))
+        file = read_file_from_s3(file_key)
+        if file:
+            file_df = pd.read_csv(file)
             # Step 3: Merge with the main database
             database_df = pd.concat([database_df, file_df]).drop_duplicates(subset='id')
 
