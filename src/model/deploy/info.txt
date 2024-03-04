@@ -3,6 +3,7 @@ When you implement a new module, update the template.yml to include its handler 
 To test it,
 use only the build_all_containers script first. 
 go to the test/ folder and create some test for the new module following the other examples.
+Remember: The test are done on the container tagged :latest, if you do the versioning step before testing, the retagged version will not be tested. Still, they should be the same versions..
 
 To deploy,
 you can use the Main script, which automates the process using the other scripts.
