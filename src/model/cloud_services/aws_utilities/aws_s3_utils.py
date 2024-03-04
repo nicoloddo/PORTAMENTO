@@ -7,7 +7,7 @@ Created on Wed Nov 22 18:48:58 2023
 
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
-from io import StringIO
+from io import StringIO, BytesIO
 
 from common.utils import load_env_var
 
@@ -64,8 +64,14 @@ def read_file_from_s3(key, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME
         # Retrieve the file from the specified bucket and key
         response = s3.get_object(Bucket=bucket_name, Key=key)
         
+        # Read the binary content
+        binary_content = response['Body'].read()
+        
         # Read and return the content of the file
-        return StringIO(response['Body'].read().decode('utf-8'))
+        if key.endswith('.csv'):
+            return StringIO(binary_content.decode('utf-8'))
+        else:
+            return BytesIO(binary_content)
     
     except ClientError as e:
         error_code = e.response['Error']['Code']
@@ -74,7 +80,7 @@ def read_file_from_s3(key, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME
         elif error_code == 'NoSuchBucket':
             print(f"Bucket not found: {bucket_name}")
         else:
-            print(f"An error occurred while reading the CSV file: {e}")
+            print(f"An error occurred while reading the file: {e}")
         return None
     except BotoCoreError as e:
         print(f"An AWS error occurred: {e}")
