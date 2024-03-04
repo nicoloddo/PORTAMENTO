@@ -13,10 +13,10 @@ import pandas as pd
 
 TEST_NAME = 'mosiselecta'
 
-def load_test_config():
+def load_test_config(test_name = TEST_NAME):
     with open(f'{TESTS_PATH}/clusterer_test_config.json', 'r') as file:
         config = json.load(file)
-    config['model_path'] = f'{TESTS_PATH}/results/{TEST_NAME}/model.pkl'
+    config['model_path'] = f'{TESTS_PATH}/results/{test_name}/model.pkl'
     return config
 
 def load_df_from_local_pickles(datapath):

@@ -21,7 +21,7 @@ test_utils.make_test_results_folder(folder_path)
 # Load the dataset
 dataset = load_df_from_local_pickles(folder_path)
 # Load the configuration
-config = test_utils.load_test_config()
+config = test_utils.load_test_config(test_name)
     
 with open(config['model_path'], 'rb') as file:
     loaded_model = pickle.load(file)
