@@ -11,7 +11,7 @@ It will read the clusterer config in the body of the request
 and start the clustering.
 """
 
-from cloud_services.aws_utilities.aws_s3_utils import get_database_from_s3, read_file_from_s3, save_to_s3
+from cloud_services.aws_utilities.aws_s3_utils import read_file_from_s3, save_to_s3
 import json
 import pickle
 from core.clusterer import Clusterer
@@ -25,6 +25,7 @@ def save_model_callback(model, path):
 
 def lambda_handler(event, context):
     data_id = event['headers'].get('data-id')
+    base_model_id = event['headers'].get('base-model-id')
     
     # Parse the config from the request body
     try:
@@ -40,8 +41,15 @@ def lambda_handler(event, context):
     data_key = f'{data_id}/data.csv'
     dataset = read_file_from_s3(data_key)
     
-    # Initialize and use the Clusterer
-    clusterer = Clusterer(config)
+    if base_model_id is not None: # Initialize with a base model from file
+        base_model_key = f'{base_model_id}/model.pkl'
+        base_model = read_file_from_s3(base_model_key)
+        clusterer = Clusterer(config, base_model, save_callback = save_model_callback)
+        
+    else: # Initialize without base model
+        clusterer = Clusterer(config, save_callback = save_model_callback)
+    
+    # Use the Clusterer
     clusterer.partial_cluster_tracks(dataset)
 
     return {
