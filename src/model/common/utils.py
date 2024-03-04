@@ -49,30 +49,6 @@ def is_valid_spotify_playlist_uri(uri):
 def spotify_uri_to_id(uri):
     return uri[URI_PORTION:URI_LENGTH]
 
-def load_df_from_local_pickles(datapath):
-    # List all pickle files in the folder and sort them by filename to keep consistency across OS. 
-    # On Linux os.listdir returns a list ordered by file creation. On windows it is ordered by filename.
-    # By adding sorted() we make sure both return the same array.
-    pickle_files = sorted([f for f in os.listdir(datapath) if f.endswith('.pickle')])
-
-    # Load and concatenate all DataFrames from the pickle files
-    dfs = []
-    for file in pickle_files:
-        file_path = os.path.join(datapath, file)
-        df = pd.read_pickle(file_path)
-        dfs.append(df)
-
-    # Concatenate all DataFrames
-    merged_df = pd.concat(dfs, ignore_index=True)
-    
-    # Remove duplicates based on 'id' column
-    merged_df = merged_df.drop_duplicates(subset='id')
-    
-    # Set the 'id' column as the index
-    merged_df = merged_df.set_index('id')
-
-    return merged_df
-
 def ordinal_ids_to_true_ids(ordinal_ids, lookup_table):
     """ 
     Transforms a list of ordinal ids into the true Spotify ids from a dictionary of ordinal_ids mapped to Spotify ids

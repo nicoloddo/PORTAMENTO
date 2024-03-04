@@ -7,7 +7,7 @@ Created on Thu Nov 23 15:48:37 2023
 
 import test_utils
 
-from common.utils import load_df_from_local_pickles
+from test_utils import load_df_from_local_pickles
 
 tests_path = test_utils.TESTS_PATH
 test_name = test_utils.TEST_NAME

@@ -18,7 +18,7 @@ import pickle
 import json
 import pandas as pd
 
-from common.utils import load_df_from_local_pickles
+from test_utils import load_df_from_local_pickles
 from core.birch_tree_navigator import BirchTreeNavigator
 
 tests_path = test_utils.TESTS_PATH

@@ -7,7 +7,7 @@ Created on Thu Nov 23 17:25:56 2023
 
 import test_utils
 
-from common.utils import load_df_from_local_pickles
+from test_utils import load_df_from_local_pickles
 from core.clusterer import Clusterer
 
 import pickle

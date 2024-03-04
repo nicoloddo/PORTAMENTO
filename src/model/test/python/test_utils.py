@@ -5,9 +5,11 @@ Created on Thu Nov 23 15:44:49 2023
 @author: nicol
 """
 
+from common.utils import running_in_docker, load_env_var
+
 import os
 import json
-from common.utils import running_in_docker, load_env_var
+import pandas as pd
 
 TEST_NAME = 'mosiselecta'
 
@@ -16,6 +18,30 @@ def load_test_config():
         config = json.load(file)
     config['model_path'] = f'{TESTS_PATH}/results/{TEST_NAME}/model.pkl'
     return config
+
+def load_df_from_local_pickles(datapath):
+    # List all pickle files in the folder and sort them by filename to keep consistency across OS. 
+    # On Linux os.listdir returns a list ordered by file creation. On windows it is ordered by filename.
+    # By adding sorted() we make sure both return the same array.
+    pickle_files = sorted([f for f in os.listdir(datapath) if f.endswith('.pickle')])
+
+    # Load and concatenate all DataFrames from the pickle files
+    dfs = []
+    for file in pickle_files:
+        file_path = os.path.join(datapath, file)
+        df = pd.read_pickle(file_path)
+        dfs.append(df)
+
+    # Concatenate all DataFrames
+    merged_df = pd.concat(dfs, ignore_index=True)
+    
+    # Remove duplicates based on 'id' column
+    merged_df = merged_df.drop_duplicates(subset='id')
+    
+    # Set the 'id' column as the index
+    merged_df = merged_df.set_index('id')
+
+    return merged_df
     
 def make_test_results_folder(folder_path):
     if not os.path.exists(folder_path):

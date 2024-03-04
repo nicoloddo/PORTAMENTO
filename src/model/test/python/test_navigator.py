@@ -7,10 +7,10 @@ Created on Thu Nov 23 18:22:47 2023
 
 import test_utils
 
-import pickle
-
-from common.utils import load_df_from_local_pickles
+from test_utils import load_df_from_local_pickles
 from core.birch_tree_navigator import BirchTreeNavigator
+
+import pickle
 
 tests_path = test_utils.TESTS_PATH
 test_name = test_utils.TEST_NAME
