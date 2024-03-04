@@ -8,10 +8,15 @@ Created on Wed Feb  7 21:49:20 2024
 import requests
 import json
 
-# API Gateway URL
-url = ''
+from common.utils import load_env_var
 
-api_key = input("Enter the API key:")
+# Get API Key
+api_key = load_env_var('API_KEY')
+
+# Build API Gateway URL path
+API_BASE_URL = load_env_var('API_BASE_URL')
+url = API_BASE_URL + '/fetch'
+
 
 # Replace with the appropriate headers, including the API key
 headers = {
