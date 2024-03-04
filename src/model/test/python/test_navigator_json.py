@@ -41,8 +41,8 @@ navigator = BirchTreeNavigator(loaded_model)
 current_node_id = "0"
 while True:
     try:
-        node_json = navigator.get_node(current_node_id).to_json(dataset, columns_blacklist=["artists", "album"])
-        current_node = json.loads(node_json)
+        node_json = navigator.get_node(current_node_id).to_json(dataset, columns_blacklist=["artists", "album"]) # This line gets the json
+        current_node = json.loads(node_json) # Transform into python dict
         
         # Print Node information and collect input from user on the next node to navigate to
         if current_node['is_leaf']: # Node is leaf, only print the songs of the node
