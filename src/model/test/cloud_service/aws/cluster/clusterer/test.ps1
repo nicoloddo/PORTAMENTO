@@ -1,0 +1,1 @@
+sam local invoke "PortamentoClusterer" --event mock_api_event.json -t $TEMPLATE_PATH
