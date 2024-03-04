@@ -15,6 +15,9 @@ from common.utils import generate_unique_request_code, is_valid_spotify_playlist
 from cloud_services.aws_utilities.aws_sqs_utils import enqueue_playlist
 
 def lambda_handler(event, context):
+    # TODO
+    # Add url referer check
+    
     request_id = generate_unique_request_code()
     
     # Extract playlist URIs from the body of the POST request

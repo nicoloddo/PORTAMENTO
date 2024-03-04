@@ -26,6 +26,9 @@ def save_model_callback(model, path):
     save_to_s3(model_bytes, path)
 
 def lambda_handler(event, context):
+    # TODO
+    # Add url referer check
+    
     data_id = event['headers'].get('data-id')
     base_model_id = event['headers'].get('base-model-id')
     
