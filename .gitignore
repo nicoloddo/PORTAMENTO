@@ -99,3 +99,4 @@ deployment/windows/
 # Ignore .yml templates of test because they contain .env information
 template.yml
 template.yaml
+.aws-sam/
