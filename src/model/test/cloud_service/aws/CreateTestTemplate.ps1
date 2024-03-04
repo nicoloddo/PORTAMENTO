@@ -13,7 +13,7 @@ $roleReplacement = 'Role: arn:aws:iam::000000000000:role/lambda-ex'
 $content = Get-Content $originalTemplatePath -Raw
 
 # Modify the ImageUri values
-$modifiedContent = $content -replace 'ImageUri: .*/', 'ImageUri: '
+$modifiedContent = $content -replace 'ImageUri: .*/([^:]+):.*', 'ImageUri: $1:latest'
 
 # Modify the Role values
 $modifiedContent = $modifiedContent -replace 'Role: .*', $roleReplacement
