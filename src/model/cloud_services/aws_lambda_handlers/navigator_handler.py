@@ -19,6 +19,8 @@ def lambda_handler(event, context):
     model_id = event['headers'].get('model-id')
     node_id = event['headers'].get('node-id')
     
+    print(f"Navigator starting for model {model_id}, at node {node_id}")
+    
     # Extract data
     data_key = f'{model_id}/data.csv'
     dataset_file = read_file_from_s3(data_key)
@@ -37,7 +39,8 @@ def lambda_handler(event, context):
     navigator_config = json.loads(navigator_config_file)
     base_model_id = navigator_config['base-model-id']
     
-    if base_model_id is not None: # Extract base data        
+    if base_model_id is not None: # Extract base data    
+        print(f"Base model has been specified: {base_model_id}")    
         # Extract the data the base model has been trained on        
         base_data_key = f'{base_model_id}/data.csv'
         base_dataset_file = read_file_from_s3(base_data_key)
@@ -49,7 +52,7 @@ def lambda_handler(event, context):
     else: # Initialize without base model
         nav_dataset = dataset
         
-    nav_dataset.set_index('id')
+    nav_dataset = nav_dataset.set_index('id')
         
     node_json = navigator.get_node(node_id).to_json(nav_dataset, columns_blacklist=["artists", "album"]) # This line gets the json
     
