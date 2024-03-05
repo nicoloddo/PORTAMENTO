@@ -10,15 +10,15 @@ aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name portament
 
 # To try the full clusterer:
 # Load the full data.csv
-aws s3 cp ./data.csv s3://portamento-bucket/full-clusterer-test/data.csv --endpoint-url=http://localhost:4566
+aws s3 cp ./s3_test_data/full-clusterer-test/data.csv s3://portamento-bucket/full-clusterer-test/data.csv --endpoint-url=http://localhost:4566
 
 # To try the online learning clusterer:
 # Load the half_model.pkl and its data to the default folder 
-aws s3 cp ./half_model.pkl s3://portamento-bucket/default/model.pkl --endpoint-url=http://localhost:4566
-aws s3 cp ./first_half_data.csv s3://portamento-bucket/default/data.csv --endpoint-url=http://localhost:4566
+aws s3 cp ./s3_test_data/default/half_model.pkl s3://portamento-bucket/default/model.pkl --endpoint-url=http://localhost:4566
+aws s3 cp ./s3_test_data/default/first_half_data.csv s3://portamento-bucket/default/data.csv --endpoint-url=http://localhost:4566
 
 # Load the second half of data
-aws s3 cp ./second_half_data.csv s3://portamento-bucket/online-learning-test/data.csv --endpoint-url=http://localhost:4566
+aws s3 cp ./s3_test_data/online-learning-test/second_half_data.csv s3://portamento-bucket/online-learning-test/data.csv --endpoint-url=http://localhost:4566
 
 
 # Set the template path and start the testing shell
