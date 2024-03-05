@@ -1,0 +1,1 @@
+docker build --build-arg REQUIREMENTS_FILE=requirements_nav.txt -t portamento_navigator ../../
