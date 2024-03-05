@@ -9,7 +9,7 @@ It checks if all playlists in the request have been fetched
 and then merges the new fetched songs with the existing database.
 """
 
-from cloud_services.aws_utilities.aws_s3_utils import get_database_from_s3, read_file_from_s3, save_to_s3, list_folder_files_s3, delete_folder_s3
+from cloud_services.aws_utilities.aws_s3_utils import read_file_from_s3, save_to_s3, list_folder_files_s3, delete_folder_s3
 
 import pandas as pd
 from io import StringIO
@@ -23,13 +23,8 @@ def lambda_handler(event, context):
     request_id = message['request_id']
     req_n_playlists = message['req_n_playlists']
     
-    # Step 1: Read the main database file
-    database_file = get_database_from_s3()
-    if database_file is None:
-        print('Failed to read the main database: the file may not exist')
-        database_df = pd.DataFrame()
-    else:
-        database_df = pd.read_csv(database_file)
+    # Step 1: Initialize database
+    database_df = pd.DataFrame()
 
     # Step 2: List and read all request_id/file.csv files
     response = list_folder_files_s3(f'{request_id}/')

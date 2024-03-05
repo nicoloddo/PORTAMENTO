@@ -70,6 +70,8 @@ def read_file_from_s3(key, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME
         # Read and return the content of the file
         if key.endswith('.csv'):
             return StringIO(binary_content.decode('utf-8'))
+        elif key.endswith('.json'):
+            return binary_content.decode('utf-8')
         else:
             return BytesIO(binary_content)
     
@@ -133,32 +135,6 @@ def delete_folder_s3(prefix, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NA
         bucket.objects.filter(Prefix=prefix).delete()
     except (BotoCoreError, ClientError) as e:
         print(f"An error occurred while deleting folder: {e}")
-
-def get_database_from_s3(database_key="database.csv", bucket_name=S3_BUCKET_NAME):
-    """
-    Retrieves the CSV file in the given S3 bucket that contains the main database.
-
-    :param bucket_name: Name of the S3 bucket.
-    :param database_key: Key of the CSV file in the S3 bucket.
-    :return: The Database CSV file or None if an error occurs.
-    """
-    s3_client = boto3.client('s3')
-    try:
-        # Retrieve the CSV file from the S3 bucket
-        return s3_client.get_object(Bucket=bucket_name, Key=database_key)
-
-    except ClientError as e:
-        error_code = e.response['Error']['Code']
-        if error_code == 'NoSuchKey':
-            print(f"File not found: {database_key} does not exist in the bucket {bucket_name}")
-        if error_code == 'NoSuchBucket':
-            print(f"Bucket not found: {bucket_name}")
-        else:
-            print(f"An error occurred while reading the CSV file: {e}")
-        return None
-    except BotoCoreError as e:
-        print(f"An AWS error occurred: {e}")
-        return None
 
 def check_s3():
     pass
