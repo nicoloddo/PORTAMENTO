@@ -1,5 +1,7 @@
 When you implement a new module, update the template.yml to include its handler and resources (e.g. AWS Lambda), then create a builder in the builds/ folder.
 
+Whenever you build containers, it's best to delete the previous versions from Docker, this will help preserve hard disk memory.
+
 To test it,
 use only the build_all_containers script first. 
 go to the test/ folder and create some test for the new module following the other examples.
