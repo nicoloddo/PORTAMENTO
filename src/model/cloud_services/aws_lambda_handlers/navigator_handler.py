@@ -49,6 +49,8 @@ def lambda_handler(event, context):
     else: # Initialize without base model
         nav_dataset = dataset
         
+    nav_dataset.set_index('id')
+        
     node_json = navigator.get_node(node_id).to_json(nav_dataset, columns_blacklist=["artists", "album"]) # This line gets the json
     
     return {
