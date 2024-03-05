@@ -1,0 +1,14 @@
+{
+  "httpMethod": "GET",
+  "headers": {
+    "Content-Type": "application/json",
+    "model-id": "full-clusterer-test",
+    "node-id": "0002"
+  },
+  "path": "/nav",
+  "queryStringParameters": {},
+  "pathParameters": {},
+  "stageVariables": {},
+  "requestContext": {},
+  "isBase64Encoded": false
+}

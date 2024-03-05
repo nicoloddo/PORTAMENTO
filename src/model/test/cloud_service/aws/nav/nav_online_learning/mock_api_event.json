@@ -1,0 +1,14 @@
+{
+  "httpMethod": "GET",
+  "headers": {
+    "Content-Type": "application/json",
+    "model-id": "online-learning-test",
+    "node-id": "0002"
+  },
+  "path": "/nav",
+  "queryStringParameters": {},
+  "pathParameters": {},
+  "stageVariables": {},
+  "requestContext": {},
+  "isBase64Encoded": false
+}

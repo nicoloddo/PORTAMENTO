@@ -1,0 +1,1 @@
+sam local invoke "PortamentoNavigator" --event mock_api_event.json -t $TEMPLATE_PATH
