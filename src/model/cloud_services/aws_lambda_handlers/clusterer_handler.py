@@ -49,17 +49,25 @@ def lambda_handler(event, context):
     dataset = pd.read_csv(dataset_file)
     
     if base_model_id is not None: # Initialize with a base model from file
+        # Extract model
         base_model_key = f'{base_model_id}/model.pkl'
         base_model_file = read_file_from_s3(base_model_key)
         base_model = pickle.load(base_model_file)
+        
         clusterer = Clusterer(config, base_model, save_callback = save_model_callback)
         
     else: # Initialize without base model
         clusterer = Clusterer(config, save_callback = save_model_callback)
     
-    # Use the Clusterer
+    # Use the Clusterer (it will be saved automatically)
     clusterer.partial_cluster_tracks(dataset)
 
+    # Save the base-model to use for a navigation
+    navigator_config = {'base-model-id': base_model_id}
+    json_data = json.dumps(navigator_config)  # Serialize dict to a JSON formatted str
+    byte_data = json_data.encode()   # Convert the JSON string to bytes
+    save_to_s3(data=byte_data, file_name=f'{data_id}/navigator-config.json')
+    
     return {
         'statusCode': 200,
         'body': 'Songs clustered and model saved.'
