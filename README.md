@@ -2,6 +2,9 @@
 
 This is a complete rewrite of my old project Portamento, designed for my Software Engineering bachelor's thesis project in 2021. The goal of the rewrite is to make it available online on my website, while running the backend on AWS as a serverless architecture.
 
+You can look at src/model for the backend.
+The frontend at src/unity is still in development.
+
 *Portamento: Machine Learning for music cataloguing and a three-dimensional interface to highlight its inherent nuances.*
 Read the thesis (in italian): [thesis](https://github.com/nicoloddo/PORTAMENTO/blob/master/THESIS.pdf)
 
