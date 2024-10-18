@@ -17,7 +17,7 @@ api_key = load_env_var('API_KEY')
 API_BASE_URL = load_env_var('API_BASE_URL')
 url = API_BASE_URL + '/nav'
 
-model_id = '' # Substitute this with the request id
+model_id = input("Please enter the model id: ")
 node_id = '0002'
 
 headers = {

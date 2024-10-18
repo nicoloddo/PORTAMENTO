@@ -32,3 +32,9 @@ response = requests.post(url, headers=headers, data=json.dumps(data))
 # This will print the status code and response body
 print(f'Status Code: {response.status_code}')
 print(f'Response: {response.text}')
+
+# Parse the JSON response into a dictionary
+data = json.loads(response.text)
+
+# Access the value associated with 'request_id'
+request_id = data['request_id']

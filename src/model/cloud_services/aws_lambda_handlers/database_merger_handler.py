@@ -13,15 +13,12 @@ from cloud_services.aws_utilities.aws_s3_utils import read_file_from_s3, save_to
 
 import pandas as pd
 from io import StringIO
-import json
 
 LASTBATCH_LABEL = 'lastbatch'
 
 def lambda_handler(event, context):
-    record = event['Records'][0]
-    message = json.loads(record['body'])
-    request_id = message['request_id']
-    req_n_playlists = message['req_n_playlists']
+    request_id = event.get('RequestID')
+    req_n_playlists = event.get('ReqNPlaylists')
     
     # Step 1: Initialize database
     database_df = pd.DataFrame()

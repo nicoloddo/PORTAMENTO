@@ -1,14 +1,6 @@
 # Start LocalStack in detached mode
 localstack start -d
 
-# Create bucket
-aws --endpoint-url=http://localhost:4566 s3 mb s3://portamento-bucket
-
-# Create queues
-aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name portamento-fetch-queue
-aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name portamento-merge-queue
-
-
 # Set the template path and start the testing shell
 
 # Link the original template path
@@ -17,6 +9,9 @@ $TEMPLATE_PATH = "../../../../template.yml"
 $TEST_TEMPLATE_PATH = "./template.yml"
 # Set the path to call inside the folders of this test
 $NEW_RELATIVE_TEMPLATE_PATH = "../template.yml"
+
+# Build Stack
+aws --endpoint-url=http://localhost:4566 cloudformation create-stack --stack-name PortamentoStack --template-body file://$TEST_TEMPLATE_PATH --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM
 
 # Create a template file with no ecr image uri to invoke locally
 & "..\CreateTestTemplate.ps1" -originalTemplatePath $TEMPLATE_PATH -newTemplatePath $TEST_TEMPLATE_PATH

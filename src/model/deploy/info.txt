@@ -2,6 +2,9 @@ When you implement a new module, update the template.yml to include its handler 
 
 Whenever you build containers, it's best to delete the previous versions from Docker, this will help preserve hard disk memory.
 
+To enter a container in interactive mode:
+docker run -it --entrypoint /bin/bash portamento_playlist_processor:latest
+
 To test it,
 use only the build_all_containers script first. 
 go to the test/ folder and create some test for the new module following the other examples.
@@ -9,3 +12,54 @@ Remember: The test are done on the container tagged :latest, if you do the versi
 
 To deploy,
 you can use the Main script, which automates the process using the other scripts.
+
+This is the code in the Main.ps1:
+
+# ENTRIRE IMPLEMENTATION AND DEPLOYING PIPELINE
+
+$rebuild = Read-Host -Prompt "Rebuild? (y/N)"
+# Check if the input is empty and set the default value
+if ([string]::IsNullOrWhiteSpace($rebuild)) {
+    $rebuild = "N"  # Default value
+} else {
+    $rebuild = "Y"  # Alternative value
+}
+
+if ($rebuild -eq "Y") {
+    # Build the containers
+    & "./build_all_containers.ps1"
+}
+
+
+
+
+$push = Read-Host -Prompt "New Push? Wait for the builds to have finished before starting! (y/N)"
+# Check if the input is empty and set the default value
+if ([string]::IsNullOrWhiteSpace($push)) {
+    $push = "N"  # Default value
+} else {
+    $push = "Y"  # Alternative value
+}
+
+if ($push -eq "Y") {
+    # Versioning and push
+    & "./declare_version.ps1"
+    & "./tag_push"
+}
+
+
+
+
+$deploy = Read-Host -Prompt "Deploy? (Y/n)"
+# Check if the input is empty and set the default value
+if ([string]::IsNullOrWhiteSpace($deploy)) {
+    $deploy = "Y"  # Default value
+} else {
+    $deploy = "N"  # Alternative value
+}
+
+if ($deploy -eq "Y") {
+    & "./build_deploy"
+}
+
+pause

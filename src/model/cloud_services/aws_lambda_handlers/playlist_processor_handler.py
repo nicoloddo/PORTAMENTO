@@ -12,7 +12,7 @@ It will read the URIs in the body of the request and enqueue tasks in an SQS que
 
 from common.utils import generate_unique_request_code, is_valid_spotify_playlist_uri
 
-from cloud_services.aws_utilities.aws_sqs_utils import enqueue_playlist
+from cloud_services.aws_utilities.aws_state_machine_utils import start_fetch_state_machine
 
 def lambda_handler(event, context):
     # TODO
@@ -41,10 +41,9 @@ def lambda_handler(event, context):
 
     # Iterate over playlist URIs and send messages to SQS queue
     req_n_playlists = len(playlist_uris)
-    for uri in playlist_uris:
-        enqueue_playlist(uri, request_id, req_n_playlists)
+    start_fetch_state_machine(request_id, playlist_uris, req_n_playlists)
 
     return {
         'statusCode': 200,
-        'body': '{"request_id": ' + request_id + '}'
+        'body': '{"request_id": "' + request_id + '"}'
     }
