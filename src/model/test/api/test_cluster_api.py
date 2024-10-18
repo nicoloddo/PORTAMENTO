@@ -34,3 +34,9 @@ response = requests.post(url, headers=headers, json=data)
 # This will print the status code and response body
 print(f'Status Code: {response.status_code}')
 print(f'Response: {response.text}')
+
+
+"""
+When implementing this in the interface, make an automatic retry until you get
+a 200 status code, or until a max number of requests is reached.
+"""

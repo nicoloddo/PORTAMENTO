@@ -38,3 +38,13 @@ data = json.loads(response.text)
 
 # Access the value associated with 'request_id'
 request_id = data['request_id']
+
+
+"""
+When implementing this in the interface, make an automatic retry until you get
+a 200 status code, or until a max number of requests is reached.
+Note though, in this step, even a 200 status code might not mean that the fetching was completed
+because there might have been an error during the step machine execution.
+Thus, before starting the next step (clustering) check if there is a valid data.csv in the
+request id bucket. If not, retry this.
+"""

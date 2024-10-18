@@ -38,3 +38,8 @@ print(f'Status Code: {response.status_code}')
 print(f'Response: {response.text}')
 
 body = json.loads(response.text)
+
+"""
+When implementing this in the interface, make an automatic retry until you get
+a 200 status code, or until a max number of requests is reached.
+"""
