@@ -57,9 +57,9 @@ def ordinal_ids_to_true_ids(ordinal_ids, lookup_table):
 
 def dataset_select(dataset, rows, columns = []):
     if len(columns) > 0:
-        return dataset.loc[rows, columns]
+        return dataset.loc[list(rows), list(columns)]
     else:
-        return dataset.loc[rows]
+        return dataset.loc[list(rows)]
 
 def running_in_docker():
     """Check if running in a Docker container."""
