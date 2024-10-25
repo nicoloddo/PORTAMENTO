@@ -129,6 +129,9 @@ class BirchTreeNavigatorNode:
     def get_child_is_leaf(self, child):
         return self._children[child]['is_leaf']
     
+    def get_child_centroid(self, child):
+        return self._children[child]['centroid']
+    
     def to_json(self, dataset, columns_blacklist=[]):
         """
         Converts the node and its children's data into a JSON string. This includes information
@@ -155,7 +158,7 @@ class BirchTreeNavigatorNode:
             unique_child_samples = set(self.get_child_samples(i))
             # Convert each child's samples to a dictionary
             child_samples = dataset_select(dataset, unique_child_samples).to_dict(orient='index')
-            children_info.append({"is_leaf": self.get_child_is_leaf(i), "samples": child_samples})
+            children_info.append({"is_leaf": self.get_child_is_leaf(i), "samples": child_samples, "centroid": self.get_child_centroid(i)})
         
         # Compile the node's data into a dictionary
         data = {
