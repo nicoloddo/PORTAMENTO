@@ -2,7 +2,7 @@
 ARG FUNCTION_DIR="/usr/src/app"
 
 # First stage: Build image
-FROM python:3.9.13-slim as build-image
+FROM python:3.11.10-slim as build-image
 
 # Include global arg in this stage of the build
 ARG FUNCTION_DIR
@@ -28,7 +28,7 @@ ENV PYTHONPATH ${FUNCTION_DIR}
 ENV PYTHON_TESTS_PATH ${FUNCTION_DIR}/test/python
 
 # Second stage: Slim version of the base Python image
-FROM python:3.9.13-slim
+FROM python:3.11.10-slim
 
 # Include global arg in this stage of the build
 ARG FUNCTION_DIR
