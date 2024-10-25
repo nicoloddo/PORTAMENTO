@@ -5,6 +5,7 @@ Created on Thu Nov 23 18:19:03 2023
 @author: nicol
 """
 from common.utils import ordinal_ids_to_true_ids, dataset_select
+import numpy as np
 import json
 
 class BirchTreeNavigator:
@@ -150,7 +151,10 @@ class BirchTreeNavigatorNode:
         columns_to_select = [col for col in dataset.columns if col not in columns_blacklist]
     
         # Convert the current node's samples to a dictionary
-        node_samples = dataset_select(dataset, self.samples, columns_to_select).to_dict(orient='index')
+        if self.is_leaf:
+            node_samples = dataset_select(dataset, self.samples, columns_to_select).to_dict(orient='index')
+        else:
+            node_samples = {} # If the node is not a leaf, the samples can be retrieved from the children
         
         children_info = []
         # Iterate over the children to get their samples
@@ -158,7 +162,9 @@ class BirchTreeNavigatorNode:
             unique_child_samples = set(self.get_child_samples(i))
             # Convert each child's samples to a dictionary
             child_samples = dataset_select(dataset, unique_child_samples).to_dict(orient='index')
-            children_info.append({"is_leaf": self.get_child_is_leaf(i), "samples": child_samples, "centroid": self.get_child_centroid(i)})
+            centroid = self.get_child_centroid(i)
+            centroid = np.round(centroid, decimals=2).tolist()
+            children_info.append({"is_leaf": self.get_child_is_leaf(i), "samples": child_samples, "centroid": centroid})
         
         # Compile the node's data into a dictionary
         data = {
