@@ -54,7 +54,7 @@ def lambda_handler(event, context):
         
     nav_dataset = nav_dataset.set_index('id')
         
-    node_json = navigator.get_node(node_id).to_json(nav_dataset, columns_blacklist=["artists", "album"]) # This line gets the json
+    node_json = navigator.get_node(node_id).to_json(nav_dataset, columns_blacklist=["artists", "album", "disc_number"]) # This line gets the json
     
     return {
         'statusCode': 200,
