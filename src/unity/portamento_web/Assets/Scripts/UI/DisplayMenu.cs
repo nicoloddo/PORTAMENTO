@@ -31,7 +31,7 @@ public class DisplayMenu : MonoBehaviour
         {
             if(axis_labels[i] != "tempo")
             {
-                pos[i] = (player_pos[i]/axis_multiplier*coord_multiplier).ToString("0.00"); // Divido per l'axis multiplier per rinormalizzarlo, poi lo riamplifico con il coord_multiplier
+                pos[i] = (player_pos[i]/axis_multiplier*coord_multiplier).ToString("0.00"); // Divide by axis_multiplier to normalize it, then multiply by coord_multiplier
             }
             else
             {

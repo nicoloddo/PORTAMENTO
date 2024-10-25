@@ -5,23 +5,23 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    int axis_multiplier = 400; // Presente anche nella classe SongMenu, DisplayMenu e Cluster: serve a distanziare i cluster
+    int axis_multiplier = 400; // Also present in SongMenu, DisplayMenu and Cluster classes: used to space out clusters
 
-    // ASSEGNAZIONI UTILI
+    // USEFUL ASSIGNMENTS
     private Animator animator;
     private CharacterController characterController;
     public Vector3 lookat_rotation;
 
-    // JUST PRESSED
-    float just_pressed = 0; // Serve ad aspettare prima di ricevere un nuovo input. Per evitare che si richiuda subito un menù se premiamo leggermente troppo
+    // INPUT DELAY
+    float just_pressed = 0; // Used to wait before receiving a new input. Prevents immediate menu closure if pressed slightly too long
     float just_pressed_max = 0.1f;
 
-    // LINKS
-    public GameObject camera;
+    // REFERENCES
+    public new GameObject camera;
     private GameManager gameManager;
     private GameObject nearCluster;
 
-    // BOOLS
+    // STATE FLAGS
     private bool starting = true;
     private bool first_run = true;
     public bool is_near = false;
@@ -29,21 +29,21 @@ public class PlayerController : MonoBehaviour
     private bool song_menu_opened = false;
     private bool map_opened = false;
 
-    // INPUTS
-    private float inputUpward; // Per muoversi verso sù
-    private float inputVertical; //Tasti per muoversi in avanti
-    private float inputHorizontal; //Tasti per ruotare (oltre al mouse)
-    public float totalXRot; //Rotazione in X totale
-    public float totalYRot; //Rotazione in Y totale
+    // INPUT VARIABLES
+    private float inputUpward; // For upward movement
+    private float inputVertical; // Keys for forward movement
+    private float inputHorizontal; // Keys for rotation (in addition to mouse)
+    public float totalXRot; // Total X rotation
+    public float totalYRot; // Total Y rotation
 
-    // PARAMETRI
-    private float rotateSpeedX = 4f; //Velocita' di rotazione X
-    private float rotateSpeedY = 3f; //Velocita' di rotazione Y
-    public float forwardSpeed = 0.8f; // Velocità di avanzamento
-    public float lateralSpeed = 0.5f; // Velocità movimento laterale
-    public float upwardSpeed = 0.5f; // Velocità di levitazione
+    // MOVEMENT PARAMETERS
+    private float rotateSpeedX = 4f; // X rotation speed
+    private float rotateSpeedY = 3f; // Y rotation speed
+    public float forwardSpeed = 0.8f; // Forward movement speed
+    public float lateralSpeed = 0.5f; // Lateral movement speed
+    public float upwardSpeed = 0.5f; // Upward movement speed
 
-    // NAVIGAZIONE
+    // NAVIGATION
     public string current_cluster_id = "0";
     public Transform selected_clust_transform;
 
@@ -66,8 +66,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        // DEVO RICORDARMI, PRIMA DI AVVIARE IL "VIAGGIO" DI UTILIZZARE LO SCRIPT start_trip.py
-        enterCluster(current_cluster_id, false, starting, true);   // All'inizio del caricamento della scena eseguiamo il ClustersInterface
+        // TODO: Remember to use the start_trip.py script before initiating the "journey"
+        enterCluster(current_cluster_id, false, starting, true);   // Execute ClustersInterface at the beginning of scene loading
     }
 
     // Update is called once per frame
@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
 
         if (first_run)
         {
-            // disattivo e riattivo il character controller perchè non mi permette il teletrasporto
+            // Disable and re-enable the character controller to allow teleportation
             gameObject.GetComponent<CharacterController>().enabled = false;
             transform.position = get_start();
             first_run = false;
@@ -90,13 +90,13 @@ public class PlayerController : MonoBehaviour
             if(!song_menu_opened)
             {
                 song_menu_run();
-                animator.SetFloat("fly", 0);    // Lo faccio fermare
-                just_pressed = 0;   // avvio il timer
+                animator.SetFloat("fly", 0);    // Stop the player
+                just_pressed = 0;   // Start the timer
             }
             else if(just_pressed > 1)
             {
                 song_menu_esc();
-                just_pressed = 0;   // avvio il timer
+                just_pressed = 0;   // Start the timer
             }  
         }
 
@@ -105,13 +105,13 @@ public class PlayerController : MonoBehaviour
             if (!map_opened)
             {
                 map_show();
-                animator.SetFloat("fly", 0);    // Lo faccio fermare
-                just_pressed = 0;   // avvio il timer
+                animator.SetFloat("fly", 0);    // Stop the player
+                just_pressed = 0;   // Start the timer
             }
             else if (just_pressed > 1)
             {
                 map_esc();
-                just_pressed = 0;   // avvio il timer
+                just_pressed = 0;   // Start the timer
             }
         }
 
@@ -159,7 +159,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // ******************* GESTIONE DEL MOVIMENTO
+        // Movement management
         if (can_move)
         {
             inputVertical = Input.GetAxis("Vertical");
@@ -168,7 +168,7 @@ public class PlayerController : MonoBehaviour
 
             animator.SetFloat("fly", inputVertical);
 
-            // Controller della rotazione, è fatto così per evitare la rotazione in z, che può avvenire per somma di rotazioni in x e y
+            // Rotation controller, designed to avoid z-axis rotation that can occur from summing x and y rotations
             totalXRot += Input.GetAxis("Mouse X") * rotateSpeedX;
             totalYRot -= Input.GetAxis("Mouse Y") * rotateSpeedY;
 
@@ -185,12 +185,12 @@ public class PlayerController : MonoBehaviour
                 camera.transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
             }
 
-            // Movimento
+            // Movement
             characterController.Move(camera.transform.forward * inputVertical * forwardSpeed);
             characterController.Move(camera.transform.right * inputHorizontal * forwardSpeed);
             characterController.Move(camera.transform.up * inputUpward * upwardSpeed);
 
-            // ******************* FINE GESTIONE MOVIMENTO
+            // End of movement management
         }
     }
 
@@ -242,7 +242,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         if (!starting) {
-            current_cluster_id = current_cluster_id + cluster_id;   // Aggiorno il current_cluster_id, che è tenuto all'interno del player.
+            current_cluster_id = current_cluster_id + cluster_id;   // Update the current_cluster_id, which is kept within the player.
         }
         PlayerPrefs.SetString("current_cluster_id", current_cluster_id);
 
@@ -254,7 +254,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Il cluster è un cluster foglia!");
+            Debug.Log("The cluster is a leaf cluster!");
         }
         
     }
@@ -279,7 +279,7 @@ public class PlayerController : MonoBehaviour
 
     private void load_scene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Ricarico la scena
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reload the scene
     }
 
 }

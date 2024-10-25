@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class SongMenu : MonoBehaviour
 {
-    int axis_multiplier = 400;  // presente anche nella classe Cluster e DisplayMenu serve a distanziare i cluster
-    int coord_multiplier = 100; // valore massimo delle coordinate durante il display, serve ad avere un metro di giudizio normale anzichè avere un numero float o un numero con valore massimo pari all'axis_multiplier
-    int songs_in_page = 11; // numero di canzoni in una pagina
+    int axis_multiplier = 400;  // also present in the Cluster and DisplayMenu classes, used to space out clusters
+    int coord_multiplier = 100; // maximum value of coordinates during display, used to have a normal scale of judgment instead of a float number or a number with maximum value equal to axis_multiplier
+    int songs_in_page = 11; // number of songs in a page
 
     public GameObject FeaturesContainer;
     private Text featuresLabel;
@@ -19,7 +19,7 @@ public class SongMenu : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         featuresLabel = FeaturesContainer.GetComponentInChildren<Text>();
-        featuresLabel.text = "Premi una canzone per vedere le sue caratteristiche qui.";
+        featuresLabel.text = "Press a song to see its characteristics here.";
     }
 
     // Update is called once per frame
@@ -30,16 +30,16 @@ public class SongMenu : MonoBehaviour
 
     public void CreateMenu(bool is_leaf, string cluster_id, List<Dictionary<string, string>> songs_meta, List<Dictionary<string, float>> songs_track, Dictionary<string, float> centroid, int page = 0)
     {
-        GameObject clustButton;  // Variabile temporanea in cui metto il button
+        GameObject clustButton;  // Temporary variable to hold the button
         
-        Transform[] children; // Variabile da cui accedo ai figli del menu, ossia tutti i song_button
+        Transform[] children; // Variable to access the children of the menu, i.e., all song_buttons
         children = gameObject.GetComponentsInChildren<Transform>();
 
         int n_songs = songs_meta.Count;
 
         if (songs_meta.Count != songs_track.Count)
         {
-            Debug.Log("In CreateMenu() songs_meta e songs_track sono di grandezze diverse!");
+            Debug.Log("In CreateMenu() songs_meta and songs_track have different sizes!");
         }
 
         int j = page * songs_in_page;
@@ -48,7 +48,7 @@ public class SongMenu : MonoBehaviour
             clustButton = children[i].gameObject;
 
             if (clustButton.CompareTag("EnterButton"))
-            {   // var button SERVE DENTRO AGLI IF PERCHE' NON TUTTI I FIGLI DEL MENù HANNO UN BOTTONE
+            {   // var button IS NEEDED INSIDE THE IFs BECAUSE NOT ALL CHILDREN OF THE MENU HAVE A BUTTON
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
                 background.GetComponentInChildren<Text>().text = "Enter Cluster\n" + "[" + player.GetComponent<PlayerController>().current_cluster_id + cluster_id + "]";
@@ -94,7 +94,7 @@ public class SongMenu : MonoBehaviour
 
     public void CancelMenu()
     {
-        Transform[] children; // Variabile da cui accedo ai figli del menu, ossia tutti i song_button
+        Transform[] children; // Variable to access the children of the menu, i.e., all song_buttons
         children = gameObject.GetComponentsInChildren<Transform>();
 
         GameObject clustButton;
@@ -112,7 +112,7 @@ public class SongMenu : MonoBehaviour
                 button.onClick.RemoveAllListeners();
             }
 
-            if (clustButton.CompareTag("SongButton")) // Solo se è effettivamente un SongButton
+            if (clustButton.CompareTag("SongButton")) // Only if it's actually a SongButton
             {
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
@@ -125,10 +125,10 @@ public class SongMenu : MonoBehaviour
 
     public void launch_button_song(Dictionary<string, string> meta, Dictionary<string, float> track)
     {
-        // FEATURES MENU AVVIO
-        int loop_control;   // var ausiliaria per il blocco tempestivo di possibili loop infiniti
+        // FEATURES MENU START
+        int loop_control;   // auxiliary var for timely blocking of possible infinite loops
 
-        featuresLabel.text = "";    // Cancello le features
+        featuresLabel.text = "";    // Clear the features
 
         foreach (string key in meta.Keys)
         {
@@ -147,7 +147,7 @@ public class SongMenu : MonoBehaviour
             if (key != "duration_ms")
             {
 
-                // Metto cuori per una quantificazione visuale
+                // Put hearts for a visual quantification
                 if (key != "key" && key != "loudness" && key != "mode" && key != "tempo" && key != "time_signature" && key != "popularity")
                 {
                     featuresLabel.text += key + " = " + (track[key] * coord_multiplier).ToString("0.00") + "\t\t";
@@ -156,7 +156,7 @@ public class SongMenu : MonoBehaviour
                         featuresLabel.text += "♪";
 
                         loop_control++;
-                        if (loop_control > 100)    // Per bloccare il loop nel caso in cui ci sia per sbaglio un loop infinito
+                        if (loop_control > 100)    // To block the loop in case there's an accidental infinite loop
                             break;
                     }
                 }
@@ -165,18 +165,18 @@ public class SongMenu : MonoBehaviour
                     if (key == "popularity")
                     {
                         featuresLabel.text += key + " = " + track[key].ToString("0") + "\t\t";
-                        for (float i = 0; i < track[key]; i += 100f / 10f)  // La popolarità va da 0 a 100
+                        for (float i = 0; i < track[key]; i += 100f / 10f)  // Popularity goes from 0 to 100
                         {
                             featuresLabel.text += "♥";
 
                             loop_control++;
-                            if (loop_control > 100)    // Per bloccare il loop nel caso in cui ci sia per sbaglio un loop infinito
+                            if (loop_control > 100)    // To block the loop in case there's an accidental infinite loop
                                 break;
                         }
                     }
                     else if (key == "tempo")
                     {
-                        featuresLabel.text += key + " = " + (track[key] * 250).ToString("0") + " BPM";   // Denormalizzo il tempo. Per il display è meglio esprimerlo in BPM
+                        featuresLabel.text += key + " = " + (track[key] * 250).ToString("0") + " BPM";   // Denormalize the tempo. For display it's better to express it in BPM
                     }
                     else if(key == "loudness")
                     {
@@ -203,11 +203,11 @@ public class SongMenu : MonoBehaviour
 
     public void launch_button_cluster_info(Dictionary<string, float> centroid, int n_songs)
     {
-        int loop_control;   // var ausiliaria per il blocco tempestivo di possibili loop infiniti
+        int loop_control;   // auxiliary var for timely blocking of possible infinite loops
 
-        featuresLabel.text = "";    // Cancello le features
+        featuresLabel.text = "";    // Clear the features
 
-        featuresLabel.text += "Numero di canzoni" + " : " + n_songs.ToString() + "\n";
+        featuresLabel.text += "Number of songs" + " : " + n_songs.ToString() + "\n";
 
         foreach (string key in centroid.Keys)
         {
@@ -216,7 +216,7 @@ public class SongMenu : MonoBehaviour
             if (key != "duration_ms")
             {
 
-                // Metto cuori per una quantificazione visuale
+                // Put hearts for a visual quantification
                 if (key != "key" && key != "loudness" && key != "mode" && key != "tempo" && key != "time_signature" && key != "popularity")
                 {
                     featuresLabel.text += key + " = " + (centroid[key] * coord_multiplier).ToString("0.00") + "\t\t";
@@ -225,7 +225,7 @@ public class SongMenu : MonoBehaviour
                         featuresLabel.text += "♪";
 
                         loop_control++;
-                        if (loop_control > 100)    // Per bloccare il loop nel caso in cui ci sia per sbaglio un loop infinito
+                        if (loop_control > 100)    // To block the loop in case there's an accidental infinite loop
                             break;
                     }
                 }
@@ -234,18 +234,18 @@ public class SongMenu : MonoBehaviour
                     if (key == "popularity")
                     {
                         featuresLabel.text += key + " = " + centroid[key] + "\t\t";
-                        for (float i = 0; i < centroid[key]; i += 100f / 10f)  // La popolarità va da 0 a 100
+                        for (float i = 0; i < centroid[key]; i += 100f / 10f)  // Popularity goes from 0 to 100
                         {
                             featuresLabel.text += "♥";
 
                             loop_control++;
-                            if (loop_control > 100)    // Per bloccare il loop nel caso in cui ci sia per sbaglio un loop infinito
+                            if (loop_control > 100)    // To block the loop in case there's an accidental infinite loop
                                 break;
                         }
                     }
                     else if (key == "tempo")
                     {
-                        featuresLabel.text += key + " = " + (centroid[key] * 250).ToString("0") + " BPM";   // Valore tramite il quale avevo normalizzato il tempo. Per il display è meglio esprimerlo in BPM
+                        featuresLabel.text += key + " = " + (centroid[key] * 250).ToString("0") + " BPM";   // Value through which I had normalized the tempo. For display it's better to express it in BPM
                     }
                     else if (key == "loudness")
                     {
@@ -261,7 +261,7 @@ public class SongMenu : MonoBehaviour
             }
         }
         string current_clust = featuresLabel.text;
-        featuresLabel.text += "\n***********  ULTIMO CLUSTER APERTO:  ***********\n";
+        featuresLabel.text += "\n***********  LAST OPENED CLUSTER:  ***********\n";
         featuresLabel.text += prev_clust;
         prev_clust = current_clust;
     }

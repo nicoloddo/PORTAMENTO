@@ -56,7 +56,7 @@ public class MapController : MonoBehaviour
     public void increment_x(int increment)
     {
         x += increment;
-        if(x >= axis.Count)     // Per gestire la rotazione dei valori tramite l'indice della lista
+        if(x >= axis.Count)     // To handle the rotation of the values through the list index
         {
             x = 0;
         }
@@ -75,7 +75,7 @@ public class MapController : MonoBehaviour
     public void increment_y(int increment)
     {
         y += increment;
-        if (y >= axis.Count)    // Per gestire la rotazione dei valori tramite l'indice della lista
+        if (y >= axis.Count)    // To handle the rotation of the values through the list index
         {
             y = 0;
         }
@@ -102,7 +102,7 @@ public class MapController : MonoBehaviour
         {
             GameObject cluster_button = Instantiate(cluster_button_prefab);
             cluster_button_list.Add(cluster_button);
-            cluster_button.transform.SetParent(transform);   // Imposto il button cluster come figlio della mappa per controllarne bene il transform
+            cluster_button.transform.SetParent(transform);   // Set the cluster button as a child of the map to easily control its transform
             cluster.GetComponent<Cluster>().create_clusterButton(cluster_button.GetComponent<ClusterButton>());
             cluster_button.GetComponent<ClusterButton>().set_axis(axis[x], axis[y]);
             cluster_button.GetComponent<ClusterButton>().set_number(cluster.GetComponent<Cluster>().get_id());

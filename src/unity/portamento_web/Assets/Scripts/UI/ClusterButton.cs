@@ -42,7 +42,7 @@ public class ClusterButton : MonoBehaviour
         x = x_min + cluster.centroid[x_axis] * x_range;
         y = y_min + cluster.centroid[y_axis] * y_range;
 
-        gameObject.GetComponent<RectTransform>().localPosition = new Vector3(x + 50, y - 315, 0);    // Quel 50 e quel 315 sono dovuti a offset che si creavano in game non so perchè
+        gameObject.GetComponent<RectTransform>().localPosition = new Vector3(x + 50, y - 315, 0);    // 50 and 315 are due to offset that were created in game
     }
 
     public void set_axis(string orizontal, string vertical)

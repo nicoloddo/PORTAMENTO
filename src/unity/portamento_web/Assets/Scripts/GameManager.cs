@@ -7,7 +7,7 @@ using System.Text;
 
 public class GameManager : MonoBehaviour
 {
-    // PERCORSO DELL'ESEGUIBILE DI PYTHON, DA OTTENERE DURANTE L'INSTALLAZIONE MAGARI
+    // Path to Python executable, to be configured during installation
     private string anaconda_activate_path = @"C:\Users\nicol\anaconda3\Scripts\activate";
     private string anaconda_env = "portamento";
 
@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject cluster_prefab;
 
-    // UI LINKS
+    // UI References
     public GameObject cluster_menu;
     private GameObject cluster_shown;
     public int cluster_menu_page;
@@ -40,21 +40,21 @@ public class GameManager : MonoBehaviour
     {
         UnityEngine.Debug.Log("Current path: " + current_path);
         if (Application.isEditor) { 
-            root_path = current_path.Remove(current_path.Length - 27);  // 27 PERCHE' QUESTO E' IL NUMERO DI CARATTERI DA CANCELLARE PER OTTENERE IL base_path A PARTIRE DAL PATH DEL PROGETTO
-        } else { // SE STIAMO USANDO LA BUILD
-            root_path = current_path.Remove(current_path.Length - 5);  // 5 SUPPONENDO CHE LA BUILD STIA NELLA CARTELLA /Play DI PORTAMENTO
+            root_path = current_path.Remove(current_path.Length - 27);  // Remove 27 characters to obtain the base_path from the project path
+        } else { // When using the build
+            root_path = current_path.Remove(current_path.Length - 5);  // Assuming the build is in the /Play folder of PORTAMENTO
         }
         string last_path_file = string.Concat(root_path, PATHS_FILE_NAME);
 
         paths = strings_csv_to_dict(last_path_file)[0];
-        // OTTENGO LE INFORMAZIONI DI IMPOSTAZIONE
-        settings.get_settings(paths["settings"]);   // Ottengo le settings
+        // Retrieve setting information
+        settings.get_settings(paths["settings"]);   // Obtain the settings
 
         cluster_menu.GetComponent<Canvas>().enabled = false;
         song_menu = cluster_menu.transform.GetChild(0).gameObject;
     }
 
-    // Start is called before the first frame update
+    // Initialization
     void Start()
     {
         List<Dictionary<string, float>> centroids;
@@ -67,25 +67,25 @@ public class GameManager : MonoBehaviour
 
         clusters_path = paths["track_clust"];
 
-        // ********************* DA QUI ESTRAPOLO LE INFORMAZIONI NEI .CSV
+        // Extract information from CSV files
         axis_packs = strings_csv_to_dict(paths["axis_table"]);
         axis = select_axis(axis_packs, settings.axis);
         display_menu.GetComponent<DisplayMenu>().set_axis_labels(axis["axis1"], axis["axis2"], axis["axis3"]);
 
-        // OTTENGO I CENTROIDI
+        // Retrieve centroids
         centroids = floats_csv_to_dict(clusters_path + @"\centroids.csv");
 
         n_clusters = centroids.Count;
 
         for(int i = 0; i < n_clusters; i++)
         {
-            // OTTENGO LE INFORMAZIONI TRACK E META DAI CSV
+            // Retrieve track and meta information from CSV
             track_data = floats_csv_to_dict(clusters_path + @"\track" + i.ToString() + @".csv");
             meta_data = strings_csv_to_dict(clusters_path + @"\meta" + i.ToString() + @".csv");
 
-            // CONVERTO L'INFORMAZIONE IS_LEAF
-            // L'INFORMAZIONE IS_LEAF E' MOLTO IMPORTANTE PERCHE' SE UN CLUSTER E' FOGLIA, NON BISOGNA RIAVVIARE clusters_interface.py
-            // BISOGNA INFATTI NELLA PROSSIMA SCENA MOSTRARE TUTTE LE CANZONI APPARTENENTI AL CLUSTER E NON ALTRI CLUSTER.
+            // Process is_leaf information
+            // This is crucial as it determines whether to restart clusters_interface.py
+            // For leaf clusters, we display all songs in the cluster rather than sub-clusters
             float is_leaf = centroids[i]["is_leaf"];
             bool is_leaf_bool = false;
             centroids[i].Remove("is_leaf");
@@ -98,12 +98,11 @@ public class GameManager : MonoBehaviour
                     is_leaf_bool = true;
                     break;
                 default:
-                    throw new System.Exception("Il valore di is_leaf non era nè 1 nè 0.");
-                    // break;
+                    throw new System.Exception("Invalid value for is_leaf: expected 0 or 1.");
             }
 
 
-            // ISTANZIO IL CLUSTER E INSERISCO LE INFORMAZIONI
+            // Instantiate cluster and populate with data
             GameObject cluster = Instantiate(cluster_prefab);
             cluster.GetComponent<Cluster>().set_id(i.ToString());
             cluster.GetComponent<Cluster>().set_is_leaf(is_leaf_bool);
@@ -119,13 +118,13 @@ public class GameManager : MonoBehaviour
         starting_centroid = centroids[(int)track_radars[0]["label"]];
         map.GetComponent<MapController>().set_radars(track_radars, meta_radars);
         
-        // DO I PARAMETRI DELLE CANZONI ALLA MAPPA
+        // Configure map with song parameters
         int j = 0;
         foreach(string key in centroids[0].Keys)
         {
             map.GetComponent<MapController>().append_axis(key);
 
-            if (key == axis["axis1"])   // COME PREDEFINITO VOGLIAMO I PRIMI DUE ASSI DELLO SPAZIO
+            if (key == axis["axis1"])   // Default to first two axes of the space
                 map.GetComponent<MapController>().set_x(j);
             if (key == axis["axis2"])
                 map.GetComponent<MapController>().set_y(j);
@@ -198,24 +197,24 @@ public class GameManager : MonoBehaviour
         string temp_key = "error";
         string temp_value = "error";
 
-        // LETTURA E FORMATTAZIONE DEL FILE
-        string file_data = System.IO.File.ReadAllText(path_csv);    // Leggo l'intero file
-        file_data = file_data.Replace("\r", string.Empty);  // tolgo i caratteri \r di fine riga perchè in windows il fine riga è indicato con \r\n e non solo \n
-        file_data = file_data.Replace("\"", string.Empty);  // compaiono anche di questi caratteri \" per qualche motivo
-        file_data = file_data.Replace(", ", "<COMMA> ");  // per evitare che virgole di punteggiatura si confondano con le , che separano i campi. Dopo le risostituisco.
+        // Read and process the file
+        string file_data = System.IO.File.ReadAllText(path_csv);    // Read the entire file
+        file_data = file_data.Replace("\r", string.Empty);  // Remove \r characters from line endings (Windows uses \r\n)
+        file_data = file_data.Replace("\"", string.Empty);  // Remove extraneous quotation marks
+        file_data = file_data.Replace(", ", "<COMMA> ");  // Temporarily replace commas in data to avoid confusion with field separators
 
-        string[] splitted = file_data.Split('\n');  // Ora il fine riga è indicato solo con \n, posso separare secondo quel carattere
-        System.Array.Resize(ref splitted, splitted.Length - 1); // tolgo l'ultimo elemento che è una stringa vuota
-        string[] keys = splitted[0].Split(','); // Ogni campo è separato da una virgola. La prima riga del csv indica il nome delle colonne, ossia le keys
+        string[] splitted = file_data.Split('\n');  // Split by newline character
+        System.Array.Resize(ref splitted, splitted.Length - 1); // Remove the last empty element
+        string[] keys = splitted[0].Split(','); // First row contains column names (keys)
         
-        // INSERIMENTO NELLA LISTA DI DIZIONARI
-        for (int i = 0; i < splitted.Length - 1; i++)   // Lenght-1 perchè nell'iterazione abbiamo i+1
+        // Populate the list of dictionaries
+        for (int i = 0; i < splitted.Length - 1; i++)   // Length-1 because we use i+1 in the loop
         {
-            Dictionary<string, string> dict_row = new Dictionary<string, string>(); // dizionario temporaneo per ogni elemento della lista di dizionari
+            Dictionary<string, string> dict_row = new Dictionary<string, string>(); // Temporary dictionary for each row
             for (int j = 0; j < keys.Length; j++)
             {
                 temp_key = keys[j];
-                temp_value = splitted[i + 1].Split(',')[j]; // i+1 perchè la prima riga è occupata dai nomi delle keys
+                temp_value = splitted[i + 1].Split(',')[j]; // i+1 to skip the header row
 
                 temp_value = temp_value.Replace("<COMMA> ", ", ");
                 
@@ -235,23 +234,23 @@ public class GameManager : MonoBehaviour
         string temp_string = "error";
         float temp_value = -1;
 
-        // LETTURA E FORMATTAZIONE DEL FILE
-        string file_data = System.IO.File.ReadAllText(path_csv);    // Leggo l'intero file
-        file_data = file_data.Replace("\r", string.Empty);  // tolgo i caratteri \r di fine riga perchè in windows il fine riga è indicato con \r\n e non solo \n
+        // Read and process the file
+        string file_data = System.IO.File.ReadAllText(path_csv);    // Read the entire file
+        file_data = file_data.Replace("\r", string.Empty);  // Remove \r characters from line endings (Windows uses \r\n)
 
-        string[] splitted = file_data.Split('\n');  // Ora il fine riga è indicato solo con \n, posso separare secondo quel carattere
-        System.Array.Resize(ref splitted, splitted.Length - 1); // tolgo l'ultimo elemento che è una stringa vuota
-        string[] keys = splitted[0].Split(','); // Ogni campo è separato da una virgola. La prima riga del csv indica il nome delle colonne, ossia le keys
+        string[] splitted = file_data.Split('\n');  // Split by newline character
+        System.Array.Resize(ref splitted, splitted.Length - 1); // Remove the last empty element
+        string[] keys = splitted[0].Split(','); // First row contains column names (keys)
 
-        // INSERIMENTO NELLA LISTA DI DIZIONARI
-        for (int i = 0; i < splitted.Length - 1; i++)   // Lenght-1 perchè nell'iterazione abbiamo i+1
+        // Populate the list of dictionaries
+        for (int i = 0; i < splitted.Length - 1; i++)   // Length-1 because we use i+1 in the loop
         {
-            Dictionary<string, float> dict_row = new Dictionary<string, float>(); // dizionario temporaneo per ogni elemento della lista di dizionari
+            Dictionary<string, float> dict_row = new Dictionary<string, float>(); // Temporary dictionary for each row
             for (int j = 0; j < keys.Length; j++)
             {
                 temp_key = keys[j];
-                temp_string = splitted[i + 1].Split(',')[j]; // i+1 perchè la prima riga è occupata dai nomi delle keys
-                // Converto la stringa in un float
+                temp_string = splitted[i + 1].Split(',')[j]; // i+1 to skip the header row
+                // Convert the string to a float
                 temp_value = float.Parse(temp_string, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
 
                 dict_row.Add(temp_key, temp_value);
@@ -270,7 +269,7 @@ public class GameManager : MonoBehaviour
             if (dict["id"] == id)
                 return dict;
         }
-        throw new System.Exception("Nessun dict ha questo id.");
+        throw new System.Exception("No dictionary found with the specified id.");
     }
 
     public void runClustersInterface(string current_cluster_id)
@@ -279,19 +278,19 @@ public class GameManager : MonoBehaviour
         string script_path = string.Concat(root_path, PATH_CLUSTERS_INTERFACE_SCRIPT);
         string script_arguments = string.Concat(current_cluster_id, " ", user);
         string process_arguments = string.Concat(@"/C ", anaconda_activate_path, " ", anaconda_env, " && ", "python ", script_path, " ", script_arguments);
-        // '/C' è molto importante qui: senza di quello non funziona e deve precedere i comandi da dare al prompt
+        // '/C' is crucial here: it must precede the commands for the prompt to execute them
 
         var psi = new ProcessStartInfo();
         psi.FileName = process_path;
         psi.Arguments = process_arguments;
 
-        // Process config
+        // Process configuration
         psi.UseShellExecute = false;
         psi.CreateNoWindow = true;
         psi.RedirectStandardOutput = true;
         psi.RedirectStandardError = true;
 
-        // Execute process and get output
+        // Execute process and capture output
         var results = "nothing";
         var errors = "nothing";
 
@@ -309,7 +308,7 @@ public class GameManager : MonoBehaviour
         buffy.Append("\n\n");
         buffy.Append(errors);
 
-        UnityEngine.Debug.Log("Script: " + buffy.ToString());
+        UnityEngine.Debug.Log("Script output: " + buffy.ToString());
     }
 
 }
@@ -323,7 +322,7 @@ public class Settings
 
     public void get_settings(string path)
     {
-        string json = System.IO.File.ReadAllText(path);    // Leggo l'intero file
+        string json = System.IO.File.ReadAllText(path);    // Read the entire file
         JsonUtility.FromJsonOverwrite(json, this);
     }
 }

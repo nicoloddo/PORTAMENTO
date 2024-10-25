@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class RadarMenu : MonoBehaviour
 {
-    int axis_multiplier = 400;  // presente anche nella classe Cluster e DisplayMenu serve a distanziare i cluster
-    int coord_multiplier = 100; // valore massimo delle coordinate durante il display, serve ad avere un metro di giudizio normale anzichè avere un numero float o un numero con valore massimo pari all'axis_multiplier
+    int axis_multiplier = 400;  // Also present in the Cluster and DisplayMenu classes, used to space out clusters
+    int coord_multiplier = 100; // Maximum value of coordinates during display, used to have a normal scale of judgment instead of a float number or a number with maximum value equal to axis_multiplier
 
     private GameObject player;
     public GameObject map;
@@ -25,14 +25,14 @@ public class RadarMenu : MonoBehaviour
 
     public void CreateMenu(List<Dictionary<string, string>> radar_meta, List<Dictionary<string, float>> radar_track)
     {
-        GameObject clustButton;  // Variabile temporanea in cui metto il button
+        GameObject clustButton;  // Temporary variable to hold the button
 
-        Transform[] children; // Variabile da cui accedo ai figli del menu, ossia tutti i song_button
+        Transform[] children; // Variable to access the children of the menu, i.e., all song_buttons
         children = gameObject.GetComponentsInChildren<Transform>();
 
         if (radar_meta.Count != radar_track.Count)
         {
-            Debug.Log("In CreateMenu() songs_meta e songs_track hanno un numero di canzoni diversi!");
+            Debug.Log("In CreateMenu() songs_meta and songs_track have different numbers of songs!");
         }
 
         int j = 0;
@@ -68,7 +68,7 @@ public class RadarMenu : MonoBehaviour
 
     public void CancelMenu()
     {
-        Transform[] children; // Variabile da cui accedo ai figli del menu, ossia tutti i song_button
+        Transform[] children; // Variable to access the children of the menu, i.e., all song_buttons
         children = gameObject.GetComponentsInChildren<Transform>();
 
         GameObject clustButton;
@@ -77,7 +77,7 @@ public class RadarMenu : MonoBehaviour
         {
             clustButton = children[i].gameObject;
 
-            if (clustButton.CompareTag("SongButton")) // Solo se è effettivamente un SongButton
+            if (clustButton.CompareTag("SongButton")) // Only if it's actually a SongButton
             {
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
