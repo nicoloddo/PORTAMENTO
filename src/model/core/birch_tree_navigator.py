@@ -161,7 +161,7 @@ class BirchTreeNavigatorNode:
         for i in range(self.n_children):
             unique_child_samples = set(self.get_child_samples(i))
             # Convert each child's samples to a dictionary
-            child_samples = dataset_select(dataset, unique_child_samples).to_dict(orient='index')
+            child_samples = dataset_select(dataset, unique_child_samples, columns_to_select).to_dict(orient='index')
             centroid = self.get_child_centroid(i)
             centroid = np.round(centroid, decimals=2).tolist()
             children_info.append({"is_leaf": self.get_child_is_leaf(i), "samples": child_samples, "centroid": centroid})
