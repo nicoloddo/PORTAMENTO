@@ -27,7 +27,7 @@ if ([string]::IsNullOrWhiteSpace($push)) {
 if ($push -eq "Y") {
     # Versioning and push
     & "./declare_version.ps1"
-    & "./tag_push"
+    & "./tag_push.ps1"
 }
 
 
@@ -35,14 +35,14 @@ if ($push -eq "Y") {
 
 $deploy = Read-Host -Prompt "Deploy? (Y/n)"
 # Check if the input is empty and set the default value
-if ([string]::IsNullOrWhiteSpace($deploy)) {
+if ([string]::IsNullOrWhiteSpace($deploy) -or $deploy -eq "Y" -or $deploy -eq "y") {
     $deploy = "Y"  # Default value
 } else {
     $deploy = "N"  # Alternative value
 }
 
 if ($deploy -eq "Y") {
-    & "./build_deploy"
+    & "./build_deploy.ps1"
 }
 
 pause

@@ -13,7 +13,7 @@ aws ecr get-login-password --region $awsRegion | docker login --username AWS --p
 
 $pushAll = Read-Host -Prompt "Push all? (Y/n)"
 # Check if the input is empty and set the default value
-if ([string]::IsNullOrWhiteSpace($pushAll)) {
+if ([string]::IsNullOrWhiteSpace($pushAll) -or $pushAll -eq "Y" -or $pushAll -eq "y") {
     $pushAll = "Y"  # Default value
 } else {
     $pushAll = "N"  # Alternative value
