@@ -9,6 +9,8 @@
 /src/unity/portamento_web/[Bb]uilds/
 /src/unity/portamento_web/[Ll]ogs/
 /src/unity/portamento_web/[Uu]ser[Ss]ettings/
+.conda
+.vscode
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
