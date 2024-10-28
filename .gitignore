@@ -9,6 +9,7 @@
 /src/unity/portamento_web/[Bb]uilds/
 /src/unity/portamento_web/[Ll]ogs/
 /src/unity/portamento_web/[Uu]ser[Ss]ettings/
+/src/unity/portamento_web/[Pp]roject[Ss]ettings/
 .conda
 .vscode
 
