@@ -12,6 +12,17 @@ class BirchTreeNavigator:
     """
     Handles navigation through the nodes of a BIRCH tree clustering model.
     """
+    AUDIO_COLUMNS = ['acousticness', 'danceability', 'energy', 
+                     'instrumentalness', 'key', 'liveness', 
+                     'loudness', 'mode', 'speechiness', 'tempo', 
+                     'time_signature', 'valence'] # Audio features
+    TRACK_COLUMNS = AUDIO_COLUMNS + ['duration_ms', 'popularity'] # Track features (audio + numerical metadata)
+
+    ID_COLUMN = 'id'
+    META_COLUMNS = [ID_COLUMN, 'album', 'album_id', 'artist', 
+                    'artists_id', 'disc_number',
+                    'name', 'playlist', 'preview_url', 
+                    'track_number', 'uri'] # Metadata features
 
     def __init__(self, birch_clusterer):
         """
@@ -62,7 +73,9 @@ class BirchTreeNavigator:
         :return: BirchTreeNavigatorNode representing the node.
         """
         node = self.select_node(node_id)
-        return BirchTreeNavigatorNode(node, node_id, self._lookup)
+
+        weights = self.birch_clusterer.config['weights']
+        return BirchTreeNavigatorNode(node, node_id, self._lookup, weights)
     
     
 class BirchTreeNavigatorNode:
@@ -70,17 +83,19 @@ class BirchTreeNavigatorNode:
     Represents a node in the BIRCH tree, encapsulating relevant information and functionalities.
     """
 
-    def __init__(self, node, node_id, lookup):
+    def __init__(self, node, node_id, lookup, weights):
         """
         Initializes the BirchTreeNavigatorNode with a node from the BIRCH tree.
 
         :param node: The node from the BIRCH tree.
-        :param node_id: The id of the node as a string of numerical values (the ordinal ids starting from the root)
+        :param node_id: The id of the node as a string of numerical values (the ordinal ids starting from the root).
         :param lookup: The lookup table to link the sample index to basic song information.
+        :param weights: The weights used to cluster the data.
         """
         self.node_id = node_id
         self._node = node
         self._lookup = lookup
+        self.weights = weights
         
         self.is_leaf = node.is_leaf
         self.samples = set()
@@ -148,30 +163,54 @@ class BirchTreeNavigatorNode:
         """
     
         # Filter the dataset columns based on the blacklist
-        columns_to_select = [col for col in dataset.columns if col not in columns_blacklist]
+        track_columns_to_select = [col for col in dataset.columns if col in BirchTreeNavigator.TRACK_COLUMNS and col not in columns_blacklist]
+        meta_columns_to_select = [col for col in dataset.columns if col in BirchTreeNavigator.META_COLUMNS and col not in columns_blacklist]
     
-        # Convert the current node's samples to a dictionary
-        if self.is_leaf:
-            node_samples = dataset_select(dataset, self.samples, columns_to_select).to_dict(orient='index')
-        else:
-            node_samples = {} # If the node is not a leaf, the samples can be retrieved from the children
+        # The node's samples are not included in the JSON because they can be retrieved from the children.
+        # Make sure to not allow entering a node with no children (leaf nodes)
         
         children_info = []
         # Iterate over the children to get their samples
         for i in range(self.n_children):
             unique_child_samples = set(self.get_child_samples(i))
-            # Convert each child's samples to a dictionary
-            child_samples = dataset_select(dataset, unique_child_samples, columns_to_select).to_dict(orient='index')
+
+            # Get child track data
+            child_track = dataset_select(dataset, unique_child_samples, track_columns_to_select)
+            # Get the most popular song in this child cluster, this will be used as a representative of the cluster
+            most_popular_id = child_track.loc[child_track['popularity'].idxmax()].name
+            # Convert to list of dictionaries, including the ID for each row
+            child_track = [{'id': idx, **row.to_dict()} for idx, row in child_track.iterrows()]
+            
+            # Get child metadata
+            child_meta = dataset_select(dataset, unique_child_samples, meta_columns_to_select)
+            # Convert to list of dictionaries, including the ID for each row
+            child_meta = [{'id': idx, **row.to_dict()} for idx, row in child_meta.iterrows()]
+
             centroid = self.get_child_centroid(i)
-            centroid = np.round(centroid, decimals=2).tolist()
-            children_info.append({"is_leaf": self.get_child_is_leaf(i), "samples": child_samples, "centroid": centroid})
+
+            # Convert centroid array to dictionary using weights keys
+            if len(centroid) != len(self.weights):
+                raise ValueError(f"Centroid length ({len(centroid)}) does not match weights length ({len(self.weights)})")
+            
+            # Deweight the centroid values directly using numpy array operations
+            weights_array = np.array(list(self.weights.values()))
+            deweighted_centroid = centroid / weights_array
+            
+            # Create dictionary with deweighted values
+            centroid_dict = {key: np.round(value, decimals=2) 
+                           for key, value in zip(self.weights.keys(), deweighted_centroid)}
+
+            children_info.append({
+                "is_leaf": self.get_child_is_leaf(i), 
+                "track": child_track, 
+                "meta": child_meta, 
+                "centroid": centroid_dict, 
+                "most_popular_id": most_popular_id})
         
         # Compile the node's data into a dictionary
         data = {
             "node_id": self.node_id,
             "is_leaf": self.is_leaf,
-            "samples": node_samples,
-            "n_children": self.n_children,
             "children": children_info
         }
         

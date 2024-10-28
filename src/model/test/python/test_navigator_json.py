@@ -57,7 +57,7 @@ while True:
         print()
         print('---------------------------------------')
         print(f"Current node ID is '{current_node_id}'. These are its children and their songs:")
-        for i in range(current_node['n_children']):
+        for i in range(len(current_node['children'])):
             
             print()
             if current_node['children'][i]['is_leaf']:
@@ -66,7 +66,9 @@ while True:
                 print(f"{i}: Child {i}")
             
             # And let's print the songs of each children
-            child_samples = pd.DataFrame.from_dict(current_node['children'][i]['samples'], orient='index')
+            child_track = pd.DataFrame(current_node['children'][i]['track'])
+            child_meta = pd.DataFrame(current_node['children'][i]['meta'])
+            child_samples = pd.concat([child_track, child_meta], axis=1)
             print(f"With {len(child_samples)} songs, among which:")
             test_utils.print_songs_from_df(child_samples)
 
