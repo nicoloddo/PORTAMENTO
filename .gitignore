@@ -12,6 +12,7 @@
 /src/unity/portamento_web/[Pp]roject[Ss]ettings/
 .conda
 .vscode
+secrets.*
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
