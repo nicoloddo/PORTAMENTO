@@ -10,6 +10,7 @@
 /src/unity/portamento_web/[Ll]ogs/
 /src/unity/portamento_web/[Uu]ser[Ss]ettings/
 /src/unity/portamento_web/[Pp]roject[Ss]ettings/
+/src/unity/portamento_web/obj/
 .conda
 .vscode
 secrets.*
