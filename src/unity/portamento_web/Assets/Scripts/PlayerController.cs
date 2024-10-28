@@ -22,7 +22,6 @@ public class PlayerController : MonoBehaviour
     private GameObject nearCluster;
 
     // STATE FLAGS
-    private bool starting = true;
     private bool first_run = true;
     public bool is_near = false;
     public bool can_move = true;
@@ -52,27 +51,18 @@ public class PlayerController : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
-
-        if (PlayerPrefs.HasKey("current_cluster_id"))
-        {
-            current_cluster_id = PlayerPrefs.GetString("current_cluster_id");
-            starting = false;
-        }
-        else
-        {
-            current_cluster_id = "0";
-        }
     }
 
     void Start()
     {
-        // TODO: Remember to use the start_trip.py script before initiating the "journey"
-        enterCluster(current_cluster_id, false, starting, true);   // Execute ClustersInterface at the beginning of scene loading
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!gameManager.fetched_node_data)
+            return;
+
         if(just_pressed < just_pressed_max + 5)
         just_pressed += Time.deltaTime;
 
@@ -244,11 +234,10 @@ public class PlayerController : MonoBehaviour
         if (!starting) {
             current_cluster_id = current_cluster_id + cluster_id;   // Update the current_cluster_id, which is kept within the player.
         }
-        PlayerPrefs.SetString("current_cluster_id", current_cluster_id);
+        PlayerPrefs.SetString("current_node_id", current_cluster_id);
 
         if (!is_leaf)
         {
-            gameManager.runClustersInterface(current_cluster_id);
             int delay_seconds = 0;
             Invoke("load_scene", delay_seconds);
         }
@@ -266,9 +255,9 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 get_start()
     {
-        Dictionary<string, string> a = gameManager.axis;
-        Dictionary<string, float> centroid = gameManager.starting_centroid;
-        return new Vector3(centroid[a["axis1"]] * axis_multiplier + 2, centroid[a["axis2"]] * axis_multiplier,centroid[a["axis3"]] * axis_multiplier);
+        Dictionary<string, string> axis = gameManager.axis;
+        Dictionary<string, float> centroid = gameManager.firstCentroid;
+        return new Vector3(centroid[axis["x"]] * axis_multiplier + 2, centroid[axis["y"]] * axis_multiplier,centroid[axis["z"]] * axis_multiplier);
     }
 
 

@@ -69,7 +69,7 @@ public class SongMenu : MonoBehaviour
                     var song_t = songs_track[j];
                     background.GetComponentInChildren<Text>().text = song_m["name"] + " - " + song_m["artist"];
 
-                    button.onClick.AddListener(() => launch_button_song(song_m, song_t));
+                    button.onClick.AddListener(() => song_click(song_m, song_t));
                 }
                 else
                 {
@@ -84,11 +84,11 @@ public class SongMenu : MonoBehaviour
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
                 button.onClick.RemoveAllListeners();
-                button.onClick.AddListener(() => launch_button_cluster_info(centroid, n_songs));
+                button.onClick.AddListener(() => get_cluster_info(centroid, n_songs));
             }
         }
 
-        launch_button_cluster_info(centroid, n_songs);
+        get_cluster_info(centroid, n_songs);
 
     }
 
@@ -123,7 +123,7 @@ public class SongMenu : MonoBehaviour
         }
     }
 
-    public void launch_button_song(Dictionary<string, string> meta, Dictionary<string, float> track)
+    public void song_click(Dictionary<string, string> meta, Dictionary<string, float> track)
     {
         // FEATURES MENU START
         int loop_control;   // auxiliary var for timely blocking of possible infinite loops
@@ -201,7 +201,7 @@ public class SongMenu : MonoBehaviour
         player.GetComponent<PlayerController>().enterCluster(cluster_id, is_leaf);
     }
 
-    public void launch_button_cluster_info(Dictionary<string, float> centroid, int n_songs)
+    public void get_cluster_info(Dictionary<string, float> centroid, int n_songs)
     {
         int loop_control;   // auxiliary var for timely blocking of possible infinite loops
 

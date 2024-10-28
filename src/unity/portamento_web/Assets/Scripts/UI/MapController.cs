@@ -109,13 +109,13 @@ public class MapController : MonoBehaviour
             cluster_button.GetComponent<ClusterButton>().update_position();
 
             var button = cluster_button.GetComponent<Button>();
-            button.onClick.AddListener(() => launch_button_clust(cluster_button, cluster));
+            button.onClick.AddListener(() => select_cluster(cluster_button, cluster));
         }
 
         radar_menu.GetComponent<RadarMenu>().CreateMenu(radar_meta, radar_track);
     }
 
-    private void launch_button_clust(GameObject cluster_button, GameObject cluster)
+    private void select_cluster(GameObject cluster_button, GameObject cluster)
     {
         if(selected_cluster != null)
         {
@@ -130,15 +130,15 @@ public class MapController : MonoBehaviour
         cluster_button.GetComponent<ClusterButton>().highlight();
     }
 
-    public void set_radars(List<Dictionary<string, float>> track_radars, List<Dictionary<string, string>> meta_radars)
+    public void set_radars(List<Dictionary<string, float>> radar_track_input, List<Dictionary<string, string>> radar_meta_input)
     {
-        radar_track = track_radars;
-        radar_meta = meta_radars;
+        radar_track = radar_track_input;
+        radar_meta = radar_meta_input;
     }
 
-    public void launch_button_from_index(int i)
+    public void select_cluster_from_index(int i)
     {
-        launch_button_clust(cluster_button_list[i], cluster_list[i]);
+        select_cluster(cluster_button_list[i], cluster_list[i]);
     }
 
 }

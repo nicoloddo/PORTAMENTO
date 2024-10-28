@@ -50,7 +50,7 @@ public class RadarMenu : MonoBehaviour
                     var background = button.gameObject.transform.GetChild(0).gameObject;
                     background.GetComponentInChildren<Text>().text = song_m["name"] + " - " + song_m["artist"];
 
-                    button.onClick.AddListener(() => launch_button_song((int) song_t["label"], song_m["uri"]));
+                    button.onClick.AddListener(() => song_click((int) song_t["label"], song_m["uri"]));
 
                     j++;
                 }
@@ -88,9 +88,9 @@ public class RadarMenu : MonoBehaviour
         }
     }
 
-    public void launch_button_song(int cluster_id, string url)
+    public void song_click(int cluster_id, string url)
     {
-        map.GetComponent<MapController>().launch_button_from_index(cluster_id);
+        map.GetComponent<MapController>().select_cluster_from_index(cluster_id);
 
         Application.OpenURL(url);
     }
