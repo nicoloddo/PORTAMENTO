@@ -1,0 +1,11 @@
+COMMANDS: **************************************************************
+"WASD" or arrows: Forward and lateral movement
+"Space": Up movement "Shift": Down movement Mouse: Orientation
+
+"m": Open map
+"f": Open cluster menu
+
+"r": Look at menu-selected cluster
+"x": Look towards x axis - "left-ctrl + x": look towards negative x axis"
+"c": Look towards y axis - "left-ctrl + c": look towards negative y axis"
+"z": Adjust orientation to be parallel to ground
