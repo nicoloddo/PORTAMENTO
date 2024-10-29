@@ -1,7 +1,7 @@
 {
     "algorithm": "birch",
     "birch_threshold": 0.2,
-    "branch_factor": 5,
+    "branch_factor": 18,
     "save_results": true,
     "model_path": "To be computed in the handler!",
     "tempo_range": {
