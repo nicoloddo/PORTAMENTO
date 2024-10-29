@@ -16,20 +16,30 @@ if ($rebuild -eq "Y") {
 
 
 
-$push = Read-Host -Prompt "New Push? Wait for the builds to have finished before starting! (y/N)"
+$push = Read-Host -Prompt "Push? Wait for the builds to have finished before starting! (Y/n)"
 # Check if the input is empty and set the default value
-if ([string]::IsNullOrWhiteSpace($push)) {
-    $push = "N"  # Default value
+if ([string]::IsNullOrWhiteSpace($push) -or $push -eq "Y" -or $push -eq "y") {
+    $push = "Y"  # Default value
 } else {
-    $push = "Y"  # Alternative value
+    $push = "N"  # Alternative value
+}
+
+$newversion = Read-Host -Prompt "Create new version? (Y/n)"
+# Check if the input is empty and set the default value
+if ([string]::IsNullOrWhiteSpace($newversion) -or $newversion -eq "Y" -or $newversion -eq "y") {
+    $newversion = "Y"  # Default value
+} else {
+    $newversion = "N"  # Alternative value
 }
 
 if ($push -eq "Y") {
-    # Versioning and push
-    & "./declare_version.ps1"
+    if ($newversion -eq "Y") {
+        # Versioning
+        & "./declare_version.ps1"
+    }
+    # Push
     & "./tag_push.ps1"
 }
-
 
 
 
