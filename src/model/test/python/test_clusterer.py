@@ -30,3 +30,4 @@ def local_pickle_save(model, path):
 # Initialize and use the Clusterer
 clusterer = Clusterer(config, save_callback = local_pickle_save)
 clusterer.cluster_tracks(dataset)
+print("Done!")
