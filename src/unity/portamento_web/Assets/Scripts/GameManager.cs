@@ -80,9 +80,7 @@ public class GameManager : MonoBehaviour
         axis["y"] = "energy";
         axis["z"] = "danceability";
 
-        // Initialize UI
-        cluster_menu.GetComponent<Canvas>().enabled = false;
-        map_menu.GetComponent<Canvas>().enabled = false;
+        // Initialize song menu
         song_menu = cluster_menu.transform.GetChild(0).gameObject;
     }
 
