@@ -19,10 +19,11 @@ class BirchTreeNavigator:
     TRACK_COLUMNS = AUDIO_COLUMNS + ['duration_ms', 'popularity'] # Track features (audio + numerical metadata)
 
     ID_COLUMN = 'id'
-    META_COLUMNS = [ID_COLUMN, 'album', 'album_id', 'artist', 
-                    'artists_id', 'disc_number',
-                    'name', 'playlist', 'preview_url', 
-                    'track_number', 'uri'] # Metadata features
+    META_COLUMNS = [ID_COLUMN, 
+                    'album', 'album_name', 'album_id', 
+                    'artist', 'artist_name', 'artists_id', 
+                    'disc_number', 'name', 'playlist', 
+                    'preview_url', 'track_number', 'uri'] # Metadata features
 
     def __init__(self, birch_clusterer):
         """
@@ -179,7 +180,7 @@ class BirchTreeNavigatorNode:
             # Get the most popular song in this child cluster, this will be used as a representative of the cluster
             most_popular_id = child_track.loc[child_track['popularity'].idxmax()].name
             # Convert to list of dictionaries, including the ID for each row
-            child_track = [{'id': idx, **row.to_dict()} for idx, row in child_track.iterrows()]
+            child_track = [row.to_dict() for idx, row in child_track.iterrows()]
             
             # Get child metadata
             child_meta = dataset_select(dataset, unique_child_samples, meta_columns_to_select)

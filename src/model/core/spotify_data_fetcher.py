@@ -196,6 +196,8 @@ class SpotifyBatchDataFetcher:
         for track in tracks:
             track = api_nav.track_info(track)
             track_id = api_nav.track_info_id(track)
+            track['album_name'] = track['album']['name']
+            track['artist_name'] = track['artists'][0]['name']
             if not filter_callback(track_id):
                 formatted_track = self._format_track_info(track)
                 processed_tracks.append(formatted_track)
