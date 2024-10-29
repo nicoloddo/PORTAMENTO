@@ -226,26 +226,18 @@ public class PlayerController : MonoBehaviour
         is_near = near_bool;
     }
 
-    public void enterCluster(string cluster_id, bool is_leaf, bool starting = false, bool start_call = false)
+    public void enterCluster(string cluster_id, bool is_leaf)
     {
-        if (start_call && !starting) // If we are calling this to start but we already started, we do not do this.
-            return;
-
-        if (!starting) {
+        if (!is_leaf) {
             current_cluster_id = current_cluster_id + cluster_id;   // Update the current_cluster_id, which is kept within the player.
-        }
-        PlayerPrefs.SetString("current_node_id", current_cluster_id);
+            PlayerPrefs.SetString("current_node_id", current_cluster_id);
 
-        if (!is_leaf)
-        {
             int delay_seconds = 0;
             Invoke("load_scene", delay_seconds);
         }
-        else
-        {
+        else {
             Debug.Log("The cluster is a leaf cluster!");
         }
-        
     }
 
     public void setSelectedCluster(Transform selected)
