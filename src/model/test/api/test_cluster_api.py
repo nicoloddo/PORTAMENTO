@@ -26,7 +26,7 @@ headers = {
 }
 
 # Example data
-with open('./clusterer_api_test_config.json', 'r') as file:
+with open('src/model/test/api/clusterer_api_test_config.json', 'r') as file:
     data = json.load(file)
 
 response = requests.post(url, headers=headers, json=data)
