@@ -149,6 +149,9 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!gameManager.fetched_node_data)
+            return;
+
         // Movement management
         if (can_move)
         {

@@ -9,6 +9,8 @@ using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
+    public bool debugging_mode = false;
+
     public GameObject cluster_prefab;
 
     /* UI References */
@@ -23,11 +25,10 @@ public class GameManager : MonoBehaviour
     public int cluster_menu_page;
     public GameObject display_menu;
 
-    // Map
+    // UI
+    public GameObject canvas;
     public GameObject map_menu;
     public GameObject map;
-
-    // Song Menu
     private GameObject song_menu;
 
     /* API FETCHING */
@@ -47,102 +48,120 @@ public class GameManager : MonoBehaviour
         axis["y"] = "energy";
         axis["z"] = "danceability";
 
-        // Initialize song menu
+        // Initialize UI
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        canvas.GetComponent<Canvas>().enabled = false;
         song_menu = cluster_menu.transform.GetChild(0).gameObject;
     }
 
     // Initialization
     async void Start()
     {
-        load_secrets();
-        if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(apiBaseUrl))
+        if (!debugging_mode)
         {
-            UnityEngine.Debug.LogError("Failed to load API credentials from secrets.txt");
-            return;
-        }
-
-        // Fetch initial cluster data
-        string current_node_id = PlayerPrefs.GetString("current_node_id", "0");
-        JObject nodeData = await fetch_node_data(current_node_id);
-        if (nodeData == null)
-        {
-            UnityEngine.Debug.LogError("Failed to fetch cluster data");
-            return;
-        }
-        fetched_node_data = true;
-
-        // Set up display menu axis labels (using fixed axes)
-        display_menu.GetComponent<DisplayMenu>().set_axis_labels(axis["x"], axis["y"], axis["z"]);
-
-        // Process cluster data
-        JArray children = (JArray)nodeData["children"];
-
-        // Initialize radar data, the most popular song in each cluster will be added to this
-        List<Dictionary<string, float>> radar_track = new List<Dictionary<string, float>>();
-        List<Dictionary<string, string>> radar_meta = new List<Dictionary<string, string>>();
-
-        // Process and Instantiate the clusters
-        int cluster_index = 0;
-        foreach (JObject child in children)
-        {
-            // Create centroid dictionary from child data
-            Dictionary<string, float> centroid = child["centroid"].ToObject<Dictionary<string, float>>();
-
-            // Retrieve the data for this cluster
-            List<Dictionary<string, float>> track = child["track"].ToObject<List<Dictionary<string, float>>>();
-            List<Dictionary<string, string>> meta = child["meta"].ToObject<List<Dictionary<string, string>>>();
-
-            // Verify track and meta lists have matching lengths
-            if (track.Count != meta.Count)
+            load_secrets();
+            if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(apiBaseUrl))
             {
-                UnityEngine.Debug.LogError($"Track and meta data length mismatch for cluster {cluster_index}. Track: {track.Count}, Meta: {meta.Count}");
+                UnityEngine.Debug.LogError("Failed to load API credentials from secrets.txt");
                 return;
             }
 
-            // Get the most popular song in this child cluster to build the radar data
-            string most_popular_id = child["most_popular_id"].ToString();
-            int popular_index = meta.FindIndex(m => m["id"] == most_popular_id);
+            // Fetch initial cluster data
+            string current_node_id = PlayerPrefs.GetString("current_node_id", "0");
+            JObject nodeData = await fetch_node_data(current_node_id);
+            if (nodeData == null)
+            {
+                UnityEngine.Debug.LogError("Failed to fetch cluster data");
+                return;
+            }
+            fetched_node_data = true;
 
-            Dictionary<string, float> most_popular_track = track[popular_index];
-            Dictionary<string, string> most_popular_meta = meta[popular_index];
+            // Set up display menu axis labels (using fixed axes)
+            display_menu.GetComponent<DisplayMenu>().set_axis_labels(axis["x"], axis["y"], axis["z"]);
 
-            // Add the most popular song in the cluster to the radar data
-            most_popular_track["label"] = cluster_index;
-            radar_track.Add(most_popular_track);
-            radar_meta.Add(most_popular_meta);
+            // Process cluster data
+            JArray children = (JArray)nodeData["children"];
 
-            // Instantiate cluster and populate with data
-            GameObject cluster = Instantiate(cluster_prefab);
-            cluster.GetComponent<Cluster>().set_id(cluster_index.ToString());
-            cluster.GetComponent<Cluster>().set_is_leaf((bool)child["is_leaf"]);
-            cluster.GetComponent<Cluster>().set_centroid(centroid);
-            cluster.GetComponent<Cluster>().set_axis(axis["x"], axis["y"], axis["z"]);
-            cluster.GetComponent<Cluster>().set_cluster_data(track, meta);
-            map.GetComponent<MapController>().append_cluster(cluster);
+            // Initialize radar data, the most popular song in each cluster will be added to this
+            List<Dictionary<string, float>> radar_track = new List<Dictionary<string, float>>();
+            List<Dictionary<string, string>> radar_meta = new List<Dictionary<string, string>>();
 
-            cluster_index++;
-        }
+            // Process and Instantiate the clusters
+            int cluster_index = 0;
+            foreach (JObject child in children)
+            {
+                // Create centroid dictionary from child data
+                Dictionary<string, float> centroid = child["centroid"].ToObject<Dictionary<string, float>>();
+
+                // Retrieve the data for this cluster
+                List<Dictionary<string, float>> track = child["track"].ToObject<List<Dictionary<string, float>>>();
+                List<Dictionary<string, string>> meta = child["meta"].ToObject<List<Dictionary<string, string>>>();
+
+                // Verify track and meta lists have matching lengths
+                if (track.Count != meta.Count)
+                {
+                    UnityEngine.Debug.LogError($"Track and meta data length mismatch for cluster {cluster_index}. Track: {track.Count}, Meta: {meta.Count}");
+                    return;
+                }
+
+                // Get the most popular song in this child cluster to build the radar data
+                string most_popular_id = child["most_popular_id"].ToString();
+                int popular_index = meta.FindIndex(m => m["id"] == most_popular_id);
+
+                Dictionary<string, float> most_popular_track = track[popular_index];
+                Dictionary<string, string> most_popular_meta = meta[popular_index];
+
+                // Add the most popular song in the cluster to the radar data
+                most_popular_track["label"] = cluster_index;
+                radar_track.Add(most_popular_track);
+                radar_meta.Add(most_popular_meta);
+
+                // Instantiate cluster and populate with data
+                GameObject cluster = Instantiate(cluster_prefab);
+                cluster.GetComponent<Cluster>().set_id(cluster_index.ToString());
+                cluster.GetComponent<Cluster>().set_is_leaf((bool)child["is_leaf"]);
+                cluster.GetComponent<Cluster>().set_centroid(centroid);
+                cluster.GetComponent<Cluster>().set_axis(axis["x"], axis["y"], axis["z"]);
+                cluster.GetComponent<Cluster>().set_cluster_data(track, meta);
+                map.GetComponent<MapController>().append_cluster(cluster);
+
+                cluster_index++;
+            }
         
-        // Configure map with song parameters
-        firstCentroid = ((JObject)children[0]["centroid"]).ToObject<Dictionary<string, float>>();
-        int j = 0;
-        foreach (string key in firstCentroid.Keys)
-        {
-            map.GetComponent<MapController>().append_axis(key);
+            // Configure map with song parameters
+            firstCentroid = ((JObject)children[0]["centroid"]).ToObject<Dictionary<string, float>>();
+            int j = 0;
+            foreach (string key in firstCentroid.Keys)
+            {
+                map.GetComponent<MapController>().append_axis(key);
 
-            if (key == axis["x"])   // Default to first two axes of the space
-                map.GetComponent<MapController>().set_x(j);
-            if (key == axis["y"])
-                map.GetComponent<MapController>().set_y(j);
+                if (key == axis["x"])   // Default to first two axes of the space
+                    map.GetComponent<MapController>().set_x(j);
+                if (key == axis["y"])
+                    map.GetComponent<MapController>().set_y(j);
 
-            j++;
+                j++;
+            }
+
+            // Set the radars
+            if (fetched_node_data)
+            {
+                map.GetComponent<MapController>().set_radars(radar_track, radar_meta);
+                map.GetComponent<MapController>().createMap();
+                map.GetComponent<MapController>().select_cluster_from_index((int)radar_track[0]["label"]);
+                map_menu.GetComponent<MenuHider>().SetActive(false);
+            }
         }
 
-        // Set the radars
-        map.GetComponent<MapController>().set_radars(radar_track, radar_meta);
-        map.GetComponent<MapController>().createMap();
-        map.GetComponent<MapController>().select_cluster_from_index((int)radar_track[0]["label"]);
-        map_menu.GetComponent<Canvas>().enabled = false;
+        // The clusters are fetched. Enable the canvas and hide the menus
+        if (fetched_node_data || debugging_mode)
+        {
+            canvas.GetComponent<Canvas>().enabled = true;
+            map_menu.GetComponent<MenuHider>().SetActive(false);
+            cluster_menu.GetComponent<MenuHider>().SetActive(false);
+            display_menu.GetComponent<MenuHider>().SetActive(true);
+        }
     }
 
     // Update is called once per frame
@@ -202,18 +221,24 @@ public class GameManager : MonoBehaviour
 
     public void view_map()
     {
-        map_menu.GetComponent<Canvas>().enabled = true;
-        display_menu.SetActive(false);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        map_menu.GetComponent<MenuHider>().SetActive(true);
+        display_menu.GetComponent<MenuHider>().SetActive(false);
     }
 
     public void close_map()
     {
-        map_menu.GetComponent<Canvas>().enabled = false;
-        display_menu.SetActive(true);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        map_menu.GetComponent<MenuHider>().SetActive(false);
+        display_menu.GetComponent<MenuHider>().SetActive(true);
     }
 
     public string start_songMenu(GameObject cluster)
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         cluster_menu_page = 0;
         cluster_shown = cluster;
         List<Dictionary<string, string>> cluster_meta = cluster.GetComponent<Cluster>().meta;
@@ -221,8 +246,8 @@ public class GameManager : MonoBehaviour
         Dictionary<string, float> centroid = cluster.GetComponent<Cluster>().centroid;
         string clusterID = cluster.GetComponent<Cluster>().get_id();
         bool is_leaf = cluster.GetComponent<Cluster>().is_leaf;
-        cluster_menu.GetComponent<Canvas>().enabled = true;
-        display_menu.SetActive(false);
+        cluster_menu.GetComponent<MenuHider>().SetActive(true);
+        display_menu.GetComponent<MenuHider>().SetActive(false);
         song_menu.GetComponent<SongMenu>().CreateMenu(is_leaf, clusterID, cluster_meta, cluster_track, centroid);
         return clusterID;
     }
@@ -236,15 +261,17 @@ public class GameManager : MonoBehaviour
         Dictionary<string, float> centroid = cluster.GetComponent<Cluster>().centroid;
         string clusterID = cluster.GetComponent<Cluster>().get_id();
         bool is_leaf = cluster.GetComponent<Cluster>().is_leaf;
-        cluster_menu.GetComponent<Canvas>().enabled = true;
-        display_menu.SetActive(false);
+        cluster_menu.GetComponent<MenuHider>().SetActive(true);
+        display_menu.GetComponent<MenuHider>().SetActive(false);
         song_menu.GetComponent<SongMenu>().CreateMenu(is_leaf, clusterID, cluster_meta, cluster_track, centroid, page);
     }
 
     public void stop_songMenu()
     {
-        cluster_menu.GetComponent<Canvas>().enabled = false;
-        display_menu.SetActive(true);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        cluster_menu.GetComponent<MenuHider>().SetActive(false);
+        display_menu.GetComponent<MenuHider>().SetActive(true);
         song_menu.GetComponent<SongMenu>().CancelMenu();
     }
 
