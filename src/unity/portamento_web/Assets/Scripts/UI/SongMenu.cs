@@ -48,7 +48,7 @@ public class SongMenu : MonoBehaviour
             clustButton = children[i].gameObject;
 
             if (clustButton.CompareTag("EnterButton"))
-            {   // var button IS NEEDED INSIDE THE IFs BECAUSE NOT ALL CHILDREN OF THE MENU HAVE A BUTTON
+            {   // var button IS NEEDED INSIDE THE IFs BECAUSE NOT ALL CHILDREN OF THE MENU ARE A BUTTON
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
                 background.GetComponentInChildren<Text>().text = "Enter Cluster\n" + "[" + player.GetComponent<PlayerController>().current_cluster_id + cluster_id + "]";
