@@ -87,7 +87,8 @@ def _split_node(node, threshold, branching_factor):
 
     farthest_idx = np.unravel_index(
         dist.argmax(), (n_clusters, n_clusters))
-    node1_dist, node2_dist = dist[[farthest_idx]]
+    node1_dist = dist[farthest_idx[0], :]  # Get all distances from point i
+    node2_dist = dist[farthest_idx[1], :]  # Get all distances from point j
 
     node1_closer = node1_dist < node2_dist
     for idx, subcluster in enumerate(node.subclusters_):
