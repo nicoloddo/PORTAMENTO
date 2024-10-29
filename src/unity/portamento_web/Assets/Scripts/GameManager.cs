@@ -37,39 +37,6 @@ public class GameManager : MonoBehaviour
     private const int MAX_RETRIES = 3;
     public bool fetched_node_data = false;
 
-    private async Task<JObject> FetchNodeData(string nodeId, int retryCount = 0)
-    {
-        if (retryCount >= MAX_RETRIES)
-        {
-            UnityEngine.Debug.LogError("Max retries reached when fetching node data");
-            return null;
-        }
-
-        using (UnityWebRequest request = UnityWebRequest.Get($"{apiBaseUrl}/nav"))
-        {
-            // Set headers
-            request.SetRequestHeader("x-api-key", apiKey);
-            request.SetRequestHeader("Content-Type", "application/json");
-            request.SetRequestHeader("model-id", modelId);
-            request.SetRequestHeader("node-id", nodeId);
-
-            var operation = request.SendWebRequest();
-            while (!operation.isDone)
-                await Task.Yield();
-
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                UnityEngine.Debug.LogWarning($"Request failed (attempt {retryCount + 1}): {request.error}");
-                // Retry with exponential backoff
-                await Task.Delay((retryCount + 1) * 1000);
-                return await FetchNodeData(nodeId, retryCount + 1);
-            }
-
-            string jsonResponse = request.downloadHandler.text;
-            return JObject.Parse(jsonResponse);
-        }
-    }
-
     private void Awake()
     {
         /* Set default settings */
@@ -84,26 +51,10 @@ public class GameManager : MonoBehaviour
         song_menu = cluster_menu.transform.GetChild(0).gameObject;
     }
 
-    private void LoadSecrets()
-    {
-        string[] lines = System.IO.File.ReadAllLines(Application.dataPath + "/secrets.txt");
-        foreach (string line in lines)
-        {
-            string[] parts = line.Split('=');
-            if (parts.Length == 2)
-            {
-                if (parts[0] == "API_KEY")
-                    apiKey = parts[1].Trim();
-                else if (parts[0] == "API_BASE_URL")
-                    apiBaseUrl = parts[1].Trim();
-            }
-        }
-    }
-
     // Initialization
     async void Start()
     {
-        LoadSecrets();
+        load_secrets();
         if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(apiBaseUrl))
         {
             UnityEngine.Debug.LogError("Failed to load API credentials from secrets.txt");
@@ -112,7 +63,7 @@ public class GameManager : MonoBehaviour
 
         // Fetch initial cluster data
         string current_node_id = PlayerPrefs.GetString("current_node_id", "0");
-        JObject nodeData = await FetchNodeData(current_node_id);
+        JObject nodeData = await fetch_node_data(current_node_id);
         if (nodeData == null)
         {
             UnityEngine.Debug.LogError("Failed to fetch cluster data");
@@ -162,7 +113,7 @@ public class GameManager : MonoBehaviour
 
             // Instantiate cluster and populate with data
             GameObject cluster = Instantiate(cluster_prefab);
-            cluster.GetComponent<Cluster>().set_id(current_node_id + cluster_index.ToString());
+            cluster.GetComponent<Cluster>().set_id(cluster_index.ToString());
             cluster.GetComponent<Cluster>().set_is_leaf((bool)child["is_leaf"]);
             cluster.GetComponent<Cluster>().set_centroid(centroid);
             cluster.GetComponent<Cluster>().set_axis(axis["x"], axis["y"], axis["z"]);
@@ -198,6 +149,55 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
+    }
+
+    private async Task<JObject> fetch_node_data(string nodeId, int retryCount = 0)
+    {
+        if (retryCount >= MAX_RETRIES)
+        {
+            UnityEngine.Debug.LogError("Max retries reached when fetching node data");
+            return null;
+        }
+
+        using (UnityWebRequest request = UnityWebRequest.Get($"{apiBaseUrl}/nav"))
+        {
+            // Set headers
+            request.SetRequestHeader("x-api-key", apiKey);
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader("model-id", modelId);
+            request.SetRequestHeader("node-id", nodeId);
+
+            var operation = request.SendWebRequest();
+            while (!operation.isDone)
+                await Task.Yield();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                UnityEngine.Debug.LogWarning($"Request failed (attempt {retryCount + 1}): {request.error}");
+                // Retry with exponential backoff
+                await Task.Delay((retryCount + 1) * 1000);
+                return await fetch_node_data(nodeId, retryCount + 1);
+            }
+
+            string jsonResponse = request.downloadHandler.text;
+            return JObject.Parse(jsonResponse);
+        }
+    }
+
+    private void load_secrets()
+    {
+        string[] lines = System.IO.File.ReadAllLines(Application.dataPath + "/secrets.txt");
+        foreach (string line in lines)
+        {
+            string[] parts = line.Split('=');
+            if (parts.Length == 2)
+            {
+                if (parts[0] == "API_KEY")
+                    apiKey = parts[1].Trim();
+                else if (parts[0] == "API_BASE_URL")
+                    apiBaseUrl = parts[1].Trim();
+            }
+        }
     }
 
     public void view_map()
