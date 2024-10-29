@@ -1,6 +1,8 @@
 COMMANDS: **************************************************************
 "WASD" or arrows: Forward and lateral movement
-"Space": Up movement "Shift": Down movement Mouse: Orientation
+"Space": Up movement 
+"Shift": Down movement 
+Mouse: Orientation
 
 "m": Open map
 "f": Open cluster menu
