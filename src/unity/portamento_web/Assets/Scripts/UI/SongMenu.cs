@@ -67,7 +67,7 @@ public class SongMenu : MonoBehaviour
                 {
                     var song_m = songs_meta[j];
                     var song_t = songs_track[j];
-                    background.GetComponentInChildren<Text>().text = song_m["name"] + " - " + song_m["artist"];
+                    background.GetComponentInChildren<Text>().text = song_m["name"] + " - " + song_m["artist_name"];
 
                     button.onClick.AddListener(() => song_click(song_m, song_t));
                 }
@@ -132,9 +132,21 @@ public class SongMenu : MonoBehaviour
 
         foreach (string key in meta.Keys)
         {
-            if(key == "name" || key == "artist" || key == "album" || key == "playlist")
+            if(key == "name")
             {
-                featuresLabel.text += key + " : " + meta[key] + "\n"; 
+                featuresLabel.text += "Name : " + meta[key] + "\n"; 
+            }
+            else if (key == "artist_name")
+            {
+                featuresLabel.text += "Artist : " + meta[key] + "\n";
+            }
+            else if (key == "album_name")
+            {
+                featuresLabel.text += "Album : " + meta[key] + "\n";
+            }
+            else if (key == "playlist")
+            {
+                featuresLabel.text += "Playlist : " + meta[key] + "\n";
             }
         }
 
@@ -192,8 +204,8 @@ public class SongMenu : MonoBehaviour
             }
         }
 
-        string url = meta["uri"];
-        Application.OpenURL(url);
+        string uri = "spotify:track:" + meta["id"];
+        Application.OpenURL(uri);
     }
 
     public void launch_button_enter(string cluster_id, bool is_leaf)

@@ -45,12 +45,13 @@ public class RadarMenu : MonoBehaviour
                 if(j < radar_meta.Count)
                 {
                     var song_m = radar_meta[j];
+                    var song_uri = "spotify:track:" + song_m["id"];
                     var song_t = radar_track[j];
                     var button = clustButton.GetComponent<Button>();
                     var background = button.gameObject.transform.GetChild(0).gameObject;
-                    background.GetComponentInChildren<Text>().text = song_m["name"] + " - " + song_m["artist"];
+                    background.GetComponentInChildren<Text>().text = song_m["name"] + " - " + song_m["artist_name"];
 
-                    button.onClick.AddListener(() => song_click((int) song_t["label"], song_m["uri"]));
+                    button.onClick.AddListener(() => song_click((int) song_t["label"], song_uri));
 
                     j++;
                 }

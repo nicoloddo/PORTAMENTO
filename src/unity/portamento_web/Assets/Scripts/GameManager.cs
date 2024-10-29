@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class GameManager : MonoBehaviour
     /* API FETCHING */
     private string apiBaseUrl;
     private string apiKey;
-    private string modelId = "7cee9ff4-d496-4b68-b2bc-c3034e5e7cea-1711649889"; // Default model ID
+    private string modelId = "9a5a63d8-6113-461c-9bb0-e0ba363a8b21-1730202855"; // Default model ID
     private const int MAX_RETRIES = 3;
     public bool fetched_node_data = false;
 
@@ -81,6 +82,7 @@ public class GameManager : MonoBehaviour
 
         // Initialize UI
         cluster_menu.GetComponent<Canvas>().enabled = false;
+        map_menu.GetComponent<Canvas>().enabled = false;
         song_menu = cluster_menu.transform.GetChild(0).gameObject;
     }
 
@@ -119,24 +121,43 @@ public class GameManager : MonoBehaviour
             return;
         }
         fetched_node_data = true;
+
         // Set up display menu axis labels (using fixed axes)
         display_menu.GetComponent<DisplayMenu>().set_axis_labels(axis["x"], axis["y"], axis["z"]);
 
         // Process cluster data
         JArray children = (JArray)nodeData["children"];
 
+        // Initialize radar data, the most popular song in each cluster will be added to this
         List<Dictionary<string, float>> radar_track = new List<Dictionary<string, float>>();
         List<Dictionary<string, string>> radar_meta = new List<Dictionary<string, string>>();
+
+        // Process and Instantiate the clusters
         int cluster_index = 0;
         foreach (JObject child in children)
         {
             // Create centroid dictionary from child data
             Dictionary<string, float> centroid = child["centroid"].ToObject<Dictionary<string, float>>();
 
+            // Retrieve the data for this cluster
+            List<Dictionary<string, float>> track = child["track"].ToObject<List<Dictionary<string, float>>>();
+            List<Dictionary<string, string>> meta = child["meta"].ToObject<List<Dictionary<string, string>>>();
+
+            // Verify track and meta lists have matching lengths
+            if (track.Count != meta.Count)
+            {
+                UnityEngine.Debug.LogError($"Track and meta data length mismatch for cluster {cluster_index}. Track: {track.Count}, Meta: {meta.Count}");
+                return;
+            }
+
             // Get the most popular song in this child cluster to build the radar data
             string most_popular_id = child["most_popular_id"].ToString();
-            Dictionary<string, float> most_popular_track = child["track"][most_popular_id].ToObject<Dictionary<string, float>>();
-            Dictionary<string, string> most_popular_meta = child["meta"][most_popular_id].ToObject<Dictionary<string, string>>();
+            int popular_index = meta.FindIndex(m => m["id"] == most_popular_id);
+
+            Dictionary<string, float> most_popular_track = track[popular_index];
+            Dictionary<string, string> most_popular_meta = meta[popular_index];
+
+            // Add the most popular song in the cluster to the radar data
             most_popular_track["label"] = cluster_index;
             radar_track.Add(most_popular_track);
             radar_meta.Add(most_popular_meta);
@@ -147,8 +168,6 @@ public class GameManager : MonoBehaviour
             cluster.GetComponent<Cluster>().set_is_leaf((bool)child["is_leaf"]);
             cluster.GetComponent<Cluster>().set_centroid(centroid);
             cluster.GetComponent<Cluster>().set_axis(axis["x"], axis["y"], axis["z"]);
-            List<Dictionary<string, float>> track = child["track"].ToObject<List<Dictionary<string, float>>>();
-            List<Dictionary<string, string>> meta = child["meta"].ToObject<List<Dictionary<string, string>>>();
             cluster.GetComponent<Cluster>().set_cluster_data(track, meta);
             map.GetComponent<MapController>().append_cluster(cluster);
 
