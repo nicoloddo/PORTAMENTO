@@ -28,7 +28,12 @@ folder_path = f'{tests_path}/results/{test_name}'
 test_utils.make_test_results_folder(folder_path)
 
 # Load the dataset
-dataset = load_df_from_local_pickles(folder_path)
+from_pickles = False
+if from_pickles:
+    dataset = load_df_from_local_pickles(folder_path)
+else:
+    dataset = pd.read_csv(f'{folder_path}/data.csv', index_col='id')
+
 # Load the configuration
 config = test_utils.load_test_config()
     
