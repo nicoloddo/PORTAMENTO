@@ -52,15 +52,17 @@ def lambda_handler(event, context):
     # Calculate appropriate branch factor based on database size
     database_size = len(database_df)
     if database_size < 1000:
-        branch_factor = 50
+        branch_factor = 10
     elif database_size < 7000:
-        branch_factor = 100
+        branch_factor = 30
+    elif database_size < 15000:
+        branch_factor = 50
     elif database_size < 30000:
-        branch_factor = 200
+        branch_factor = 100
     elif database_size < 50000:
-        branch_factor = 300
+        branch_factor = 100
     else:
-        branch_factor = 400
+        branch_factor = 200
 
     # Save the clusterer configuration
     clusterer_config = {
