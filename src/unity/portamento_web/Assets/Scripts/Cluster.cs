@@ -6,7 +6,7 @@ public class Cluster : MonoBehaviour
 {
     private const int AXIS_MULTIPLIER = 400; // Also present in SongMenu and DisplayMenu classes, used to space out clusters
 
-    private string _id;
+    public string Id;
     public List<Dictionary<string, float>> Track = new List<Dictionary<string, float>>();
     public List<Dictionary<string, string>> Meta = new List<Dictionary<string, string>>();
     private string[] _axis = new string[3];  // Names of the reference axes (keys of the track features dictionary)
@@ -57,7 +57,7 @@ public class Cluster : MonoBehaviour
 
     public void SetId(string clustId)
     {
-        _id = clustId;
+        Id = clustId;
     }
 
     public void SetIsLeaf(bool isLeafBool)
@@ -85,7 +85,7 @@ public class Cluster : MonoBehaviour
 
     public string GetId()
     {
-        return _id;
+        return Id;
     }
 
     public void CreateClusterButton(ClusterButton clust)

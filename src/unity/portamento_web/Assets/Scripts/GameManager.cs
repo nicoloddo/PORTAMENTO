@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
     /* API FETCHING */
     private string _apiBaseUrl;
     private string _apiKey;
-    private string _modelId = "9a5a63d8-6113-461c-9bb0-e0ba363a8b21-1730202855"; // Default model ID
+    private string _modelId = "7d2a491e-5911-4e59-8516-a8c61a52f002-1730918817"; // Default model ID
     private const int MAX_RETRIES = 3;
     public bool FetchedNodeData = false;
 
@@ -177,6 +177,7 @@ public class GameManager : MonoBehaviour
             return null;
         }
 
+        // First request to get the pre-signed URL
         using (UnityWebRequest request = UnityWebRequest.Get($"{_apiBaseUrl}/nav"))
         {
             request.SetRequestHeader("x-api-key", _apiKey);
@@ -195,8 +196,28 @@ public class GameManager : MonoBehaviour
                 return await FetchNodeData(nodeId, retryCount + 1);
             }
 
-            string jsonResponse = request.downloadHandler.text;
-            return JObject.Parse(jsonResponse);
+            // Parse the initial response to get the pre-signed URL
+            string initialResponse = request.downloadHandler.text;
+            JObject urlResponse = JObject.Parse(initialResponse);
+            string presignedUrl = urlResponse["url"].ToString();
+            
+            // Second request to get the actual data using the pre-signed URL
+            using (UnityWebRequest dataRequest = UnityWebRequest.Get(presignedUrl))
+            {
+                var dataOperation = dataRequest.SendWebRequest();
+                while (!dataOperation.isDone)
+                    await Task.Yield();
+
+                if (dataRequest.result != UnityWebRequest.Result.Success)
+                {
+                    UnityEngine.Debug.LogWarning($"Data fetch failed (attempt {retryCount + 1}): {dataRequest.error}");
+                    await Task.Delay((retryCount + 1) * 1000);
+                    return await FetchNodeData(nodeId, retryCount + 1);
+                }
+
+                string jsonResponse = dataRequest.downloadHandler.text;
+                return JObject.Parse(jsonResponse);
+            }
         }
     }
 

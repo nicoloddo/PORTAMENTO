@@ -3870,7 +3870,6 @@ MonoBehaviour:
   ClusterMenu: {fileID: 35740936}
   ClusterMenuPage: 0
   DisplayMenu: {fileID: 1060128239}
-  Canvas: {fileID: 2042401550}
   StatusLabel: {fileID: 562402599}
   MapMenu: {fileID: 1257754263}
   Map: {fileID: 90232300}
@@ -6681,6 +6680,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: PrevAxisY
       objectReference: {fileID: 0}
+    - target: {fileID: 3497490175531002882, guid: 5ef00e8ec88f4554085436dc7cd488cb, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -112.77654
+      objectReference: {fileID: 0}
+    - target: {fileID: 3497490175531002882, guid: 5ef00e8ec88f4554085436dc7cd488cb, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 17.38827
+      objectReference: {fileID: 0}
+    - target: {fileID: 3497490175531002883, guid: 5ef00e8ec88f4554085436dc7cd488cb, type: 3}
+      propertyPath: m_Text
+      value: 'Here are the most popular songs per mini-universe '
+      objectReference: {fileID: 0}
     - target: {fileID: 3497490176105354151, guid: 5ef00e8ec88f4554085436dc7cd488cb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: NextAxisY
@@ -6813,6 +6824,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2042401554}
     m_Modifications:
+    - target: {fileID: 8088342556993345000, guid: 46a7a55930223ef48ab599a2cb295a3c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PrevPage
+      objectReference: {fileID: 0}
     - target: {fileID: 8088342557378121048, guid: 46a7a55930223ef48ab599a2cb295a3c, type: 3}
       propertyPath: m_Name
       value: ClusterMenu
@@ -6900,6 +6915,10 @@ PrefabInstance:
     - target: {fileID: 8088342557378121052, guid: 46a7a55930223ef48ab599a2cb295a3c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8088342558131787820, guid: 46a7a55930223ef48ab599a2cb295a3c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: NextPage
       objectReference: {fileID: 0}
     - target: {fileID: 8088342558245161432, guid: 46a7a55930223ef48ab599a2cb295a3c, type: 3}
       propertyPath: m_SizeDelta.x
