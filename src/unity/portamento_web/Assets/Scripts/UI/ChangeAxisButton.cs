@@ -4,34 +4,25 @@ using UnityEngine;
 
 public class ChangeAxisButton : MonoBehaviour
 {
-    public GameObject map;
+    public GameObject Map;
     
-    // Start is called before the first frame update
-    void Start()
+    public void NextAxisX()
     {
-        
+        Map.GetComponent<MapController>().IncrementX(1);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void NextAxisY()
     {
-        
+        Map.GetComponent<MapController>().IncrementY(1);
     }
 
-    public void next_axis_x()
+    public void PrevAxisX()
     {
-        map.GetComponent<MapController>().increment_x(1);
+        Map.GetComponent<MapController>().IncrementX(-1);
     }
-    public void next_axis_y()
+
+    public void PrevAxisY()
     {
-        map.GetComponent<MapController>().increment_y(1);
-    }
-    public void prev_axis_x()
-    {
-        map.GetComponent<MapController>().increment_x(-1);
-    }
-    public void prev_axis_y()
-    {
-        map.GetComponent<MapController>().increment_y(-1);
+        Map.GetComponent<MapController>().IncrementY(-1);
     }
 }

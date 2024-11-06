@@ -5,265 +5,252 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    int axis_multiplier = 400; // Also present in SongMenu, DisplayMenu and Cluster classes: used to space out clusters
+    private const int AXIS_MULTIPLIER = 400; // Also present in SongMenu, DisplayMenu and Cluster classes: used to space out clusters
 
     // USEFUL ASSIGNMENTS
-    private Animator animator;
-    private CharacterController characterController;
-    public Vector3 lookat_rotation;
+    private Animator _animator;
+    private CharacterController _characterController;
+    public Vector3 LookatRotation { get; private set; }
 
     // INPUT DELAY
-    float just_pressed = 0; // Used to wait before receiving a new input. Prevents immediate menu closure if pressed slightly too long
-    float just_pressed_max = 0.1f;
+    private float _justPressed = 0; // Used to wait before receiving a new input. Prevents immediate menu closure if pressed slightly too long
+    private const float JUST_PRESSED_MAX = 0.1f;
 
     // REFERENCES
     public new GameObject camera;
-    private GameManager gameManager;
-    private GameObject nearCluster;
+    private GameManager _gameManager;
+    private GameObject _nearCluster;
 
     // STATE FLAGS
-    private bool first_run = true;
-    public bool is_near = false;
-    public bool can_move = true;
-    private bool song_menu_opened = false;
-    private bool map_opened = false;
+    private bool _firstRun = true;
+    private bool _isNear = false;
+    private bool _canMove = true;
+    private bool _songMenuOpened = false;
+    private bool _mapOpened = false;
 
     // INPUT VARIABLES
-    private float inputUpward; // For upward movement
-    private float inputVertical; // Keys for forward movement
-    private float inputHorizontal; // Keys for rotation (in addition to mouse)
-    public float totalXRot; // Total X rotation
-    public float totalYRot; // Total Y rotation
+    private float _inputUpward; // For upward movement
+    private float _inputVertical; // Keys for forward movement
+    private float _inputHorizontal; // Keys for rotation (in addition to mouse)
+    public float TotalXRotation { get; private set; } // Total X rotation
+    public float TotalYRotation { get; private set; } // Total Y rotation
 
     // MOVEMENT PARAMETERS
-    private float rotateSpeedX = 4f; // X rotation speed
-    private float rotateSpeedY = 3f; // Y rotation speed
-    public float forwardSpeed = 0.8f; // Forward movement speed
-    public float lateralSpeed = 0.5f; // Lateral movement speed
-    public float upwardSpeed = 0.5f; // Upward movement speed
+    private const float ROTATE_SPEED_X = 4f; // X rotation speed
+    private const float ROTATE_SPEED_Y = 3f; // Y rotation speed
+    public float ForwardSpeed = 0.8f; // Forward movement speed
+    public float LateralSpeed = 0.5f; // Lateral movement speed
+    public float UpwardSpeed = 0.5f; // Upward movement speed
 
     // NAVIGATION
-    public string current_cluster_id = "0";
-    public Transform selected_clust_transform;
+    public string CurrentClusterId = "0";
+    public Transform SelectedClusterTransform;
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
-        animator = GetComponent<Animator>();
-        characterController = GetComponent<CharacterController>();
+        _gameManager = FindObjectOfType<GameManager>();
+        _animator = GetComponent<Animator>();
+        _characterController = GetComponent<CharacterController>();
     }
 
-    void Start()
+    private void Update()
     {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (!gameManager.fetched_node_data)
+        if (!_gameManager.FetchedNodeData)
             return;
 
-        if(just_pressed < just_pressed_max + 5)
-        just_pressed += Time.deltaTime;
+        if(_justPressed < JUST_PRESSED_MAX + 5)
+            _justPressed += Time.deltaTime;
 
-        if (first_run)
+        if (_firstRun)
         {
             // Disable and re-enable the character controller to allow teleportation
-            gameObject.GetComponent<CharacterController>().enabled = false;
-            transform.position = get_start();
-            first_run = false;
-            gameObject.GetComponent<CharacterController>().enabled = true;
+            _characterController.enabled = false;
+            transform.position = GetStartPosition();
+            _firstRun = false;
+            _characterController.enabled = true;
         }
 
-        if (Input.GetKey("f") && is_near && !map_opened && just_pressed > just_pressed_max)
+        if (Input.GetKey("f") && _isNear && !_mapOpened && _justPressed > JUST_PRESSED_MAX)
         {
-            if(!song_menu_opened)
+            if(!_songMenuOpened)
             {
-                song_menu_run();
-                animator.SetFloat("fly", 0);    // Stop the player
-                just_pressed = 0;   // Start the timer
+                SongMenuRun();
+                _animator.SetFloat("fly", 0);    // Stop the player
+                _justPressed = 0;   // Start the timer
             }
-            else if(just_pressed > 1)
+            else if(_justPressed > 1)
             {
-                song_menu_esc();
-                just_pressed = 0;   // Start the timer
+                SongMenuEsc();
+                _justPressed = 0;   // Start the timer
             }  
         }
 
-        if (Input.GetKey("m") && !song_menu_opened && just_pressed > just_pressed_max)
+        if (Input.GetKey("m") && !_songMenuOpened && _justPressed > JUST_PRESSED_MAX)
         {
-            if (!map_opened)
+            if (!_mapOpened)
             {
-                map_show();
-                animator.SetFloat("fly", 0);    // Stop the player
-                just_pressed = 0;   // Start the timer
+                MapShow();
+                _animator.SetFloat("fly", 0);    // Stop the player
+                _justPressed = 0;   // Start the timer
             }
-            else if (just_pressed > 1)
+            else if (_justPressed > 1)
             {
-                map_esc();
-                just_pressed = 0;   // Start the timer
+                MapEsc();
+                _justPressed = 0;   // Start the timer
             }
         }
 
-        if (Input.GetKey("r") && !song_menu_opened && !map_opened)
+        if (Input.GetKey("r") && !_songMenuOpened && !_mapOpened)
         {
-            transform.LookAt(selected_clust_transform);
-            totalXRot = transform.rotation.eulerAngles.y;
-            totalYRot = transform.rotation.eulerAngles.x;
+            transform.LookAt(SelectedClusterTransform);
+            TotalXRotation = transform.rotation.eulerAngles.y;
+            TotalYRotation = transform.rotation.eulerAngles.x;
         }
 
-        if (Input.GetKey("z") && !song_menu_opened && !map_opened)
+        if (Input.GetKey("z") && !_songMenuOpened && !_mapOpened)
         {
-            totalYRot = 0;
+            TotalYRotation = 0;
         }
 
-        if (Input.GetKey("x") && !song_menu_opened && !map_opened)
+        if (Input.GetKey("x") && !_songMenuOpened && !_mapOpened)
         {
             if (!Input.GetKey(KeyCode.LeftControl))
             {
-                totalXRot = 90;
-                totalYRot = 0;
+                TotalXRotation = 90;
+                TotalYRotation = 0;
             }
             if (Input.GetKey(KeyCode.LeftControl))
             {
-                totalXRot = -90;
-                totalYRot = 0;
+                TotalXRotation = -90;
+                TotalYRotation = 0;
             }
         }
 
-        if (Input.GetKey("c") && !song_menu_opened && !map_opened)
+        if (Input.GetKey("c") && !_songMenuOpened && !_mapOpened)
         {
             if (!Input.GetKey(KeyCode.LeftControl))
             {
-                totalXRot = 0;
-                totalYRot = 0;
+                TotalXRotation = 0;
+                TotalYRotation = 0;
             }
             if (Input.GetKey(KeyCode.LeftControl))
             {
-                totalXRot = 180;
-                totalYRot = 0;
+                TotalXRotation = 180;
+                TotalYRotation = 0;
             }
         }
     }
 
-
     private void FixedUpdate()
     {
-        if (!gameManager.fetched_node_data)
+        if (!_gameManager.FetchedNodeData)
             return;
 
         // Movement management
-        if (can_move)
+        if (_canMove)
         {
-            inputVertical = Input.GetAxis("Vertical");
-            inputHorizontal = Input.GetAxis("Horizontal");
-            inputUpward = Input.GetAxis("Jump");
+            _inputVertical = Input.GetAxis("Vertical");
+            _inputHorizontal = Input.GetAxis("Horizontal");
+            _inputUpward = Input.GetAxis("Jump");
 
-            animator.SetFloat("fly", inputVertical);
+            _animator.SetFloat("fly", _inputVertical);
 
             // Rotation controller, designed to avoid z-axis rotation that can occur from summing x and y rotations
-            totalXRot += Input.GetAxis("Mouse X") * rotateSpeedX;
-            totalYRot -= Input.GetAxis("Mouse Y") * rotateSpeedY;
+            TotalXRotation += Input.GetAxis("Mouse X") * ROTATE_SPEED_X;
+            TotalYRotation -= Input.GetAxis("Mouse Y") * ROTATE_SPEED_Y;
 
             transform.forward = camera.transform.forward;
 
-            if (inputVertical > 0)
+            if (_inputVertical > 0)
             {
-                camera.transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
+                camera.transform.rotation = Quaternion.Euler(TotalYRotation, TotalXRotation, 0f);
             }
             else
             {
                 camera.transform.rotation = transform.rotation;
-                transform.rotation = Quaternion.Euler(0f, totalXRot, 0f);
-                camera.transform.rotation = Quaternion.Euler(totalYRot, totalXRot, 0f);
+                transform.rotation = Quaternion.Euler(0f, TotalXRotation, 0f);
+                camera.transform.rotation = Quaternion.Euler(TotalYRotation, TotalXRotation, 0f);
             }
 
             // Movement
-            characterController.Move(camera.transform.forward * inputVertical * forwardSpeed);
-            characterController.Move(camera.transform.right * inputHorizontal * forwardSpeed);
-            characterController.Move(camera.transform.up * inputUpward * upwardSpeed);
-
-            // End of movement management
+            _characterController.Move(camera.transform.forward * _inputVertical * ForwardSpeed);
+            _characterController.Move(camera.transform.right * _inputHorizontal * ForwardSpeed);
+            _characterController.Move(camera.transform.up * _inputUpward * UpwardSpeed);
         }
     }
 
-    private void map_show()
+    private void MapShow()
     {
-        map_opened = true;
-
-        can_move = false;
-
-        gameManager.view_map();
+        _mapOpened = true;
+        _canMove = false;
+        _gameManager.ViewMap();
     }
 
-    private void map_esc()
+    private void MapEsc()
     {
-        map_opened = false;
-
-        can_move = true;
-
-        gameManager.close_map();
+        _mapOpened = false;
+        _canMove = true;
+        _gameManager.CloseMap();
     }
 
-    private string song_menu_run()
+    private string SongMenuRun()
     {
-        song_menu_opened = true;
-
-        can_move = false;
-
-        return gameManager.start_songMenu(nearCluster);
+        _songMenuOpened = true;
+        _canMove = false;
+        return _gameManager.StartSongMenu(_nearCluster);
     }
 
-    private void song_menu_esc()
+    private void SongMenuEsc()
     {
-        song_menu_opened = false;
-
-        can_move = true;
-
-        gameManager.stop_songMenu();
+        _songMenuOpened = false;
+        _canMove = true;
+        _gameManager.StopSongMenu();
     }
 
-    public void set_nearCluster(GameObject cluster, bool near_bool)
+    public void SetNearCluster(GameObject cluster, bool isNear)
     {
-        nearCluster = cluster;
-        is_near = near_bool;
+        _nearCluster = cluster;
+        _isNear = isNear;
     }
 
-    public void enterCluster(string cluster_id, bool is_leaf)
+    public void EnterCluster(string clusterId, bool isLeaf)
     {
-        if (!is_leaf) {
-            current_cluster_id = current_cluster_id + cluster_id;   // Update the current_cluster_id, which is kept within the player.
-            PlayerPrefs.SetString("current_node_id", current_cluster_id);
-
-            int delay_seconds = 0;
-            Invoke("load_scene", delay_seconds);
+        if (!isLeaf) 
+        {
+            CurrentClusterId = CurrentClusterId + clusterId;   // Update the CurrentClusterId, which is kept within the player.
+            PlayerPrefs.SetString("current_node_id", CurrentClusterId);
+            Invoke(nameof(LoadScene), 0);
         }
-        else {
+        else 
+        {
+            _gameManager.StatusLabel.SetStatus("This universe is too small for you to enter!");
             Debug.Log("The cluster is a leaf cluster!");
         }
     }
 
-    public void setSelectedCluster(Transform selected)
+    public void SetSelectedCluster(Transform selected)
     {
-        selected_clust_transform = selected;
+        SelectedClusterTransform = selected;
     }
 
-    public Vector3 get_start()
+    public Vector3 GetStartPosition()
     {
-        Dictionary<string, string> axis = gameManager.axis;
-        Dictionary<string, float> centroid = gameManager.firstCentroid;
-        return new Vector3(centroid[axis["x"]] * axis_multiplier + 2, centroid[axis["y"]] * axis_multiplier,centroid[axis["z"]] * axis_multiplier);
+        Dictionary<string, string> axis = _gameManager.Axis;
+        Dictionary<string, float> centroid = _gameManager.FirstCentroid;
+        return new Vector3(
+            centroid[axis["x"]] * AXIS_MULTIPLIER + 2, 
+            centroid[axis["y"]] * AXIS_MULTIPLIER,
+            centroid[axis["z"]] * AXIS_MULTIPLIER
+        );
     }
-
 
     private void OnApplicationQuit()
     {
         PlayerPrefs.DeleteAll();
     }
 
-    private void load_scene()
+    private void LoadScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reload the scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-
 }

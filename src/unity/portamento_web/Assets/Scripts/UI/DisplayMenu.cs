@@ -5,50 +5,47 @@ using UnityEngine.UI;
 
 public class DisplayMenu : MonoBehaviour
 {
-    int axis_multiplier = 400;  // presente anche nella classe Cluster serve a distanziare i cluster
-    int coord_multiplier = 100; // valore massimo delle coordinate durante il display, serve ad avere un metro di giudizio normale anzichè avere un numero float o un numero con valore massimo pari all'axis_multiplier
+    private const int AXIS_MULTIPLIER = 400;  // Also present in Cluster class, used to space out clusters
+    private const int COORD_MULTIPLIER = 100; // Maximum value of coordinates during display, used to have a normal scale
 
-    private GameObject player;
-    private Vector3 player_pos;
-    private string[] axis_labels = new string[3];
-    private string[] pos = new string[3];
+    private GameObject _player;
+    private Vector3 _playerPos;
+    private string[] _axisLabels = new string[3];
+    private string[] _pos = new string[3];
 
-    public Text coordsLabel;
-    public Text clusterLabel;
+    public Text CoordsLabel;
+    public Text ClusterLabel;
 
-
-    // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        _player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    // Update is called once per frame
     void Update()
     {
-        player_pos = player.transform.position;
+        _playerPos = _player.transform.position;
         for (int i = 0; i < 3; i++)
         {
-            if(axis_labels[i] != "tempo")
+            if(_axisLabels[i] != "tempo")
             {
-                pos[i] = (player_pos[i]/axis_multiplier*coord_multiplier).ToString("0.00"); // Divide by axis_multiplier to normalize it, then multiply by coord_multiplier
+                _pos[i] = (_playerPos[i]/AXIS_MULTIPLIER*COORD_MULTIPLIER).ToString("0.00"); // Normalize and scale for display
             }
             else
             {
-                pos[i] = (player_pos[i]/axis_multiplier*250).ToString("0.00");
+                _pos[i] = (_playerPos[i]/AXIS_MULTIPLIER*250).ToString("0.00");
             }
         }
             
-        coordsLabel.text = axis_labels[0] + " = " + pos[0] + "\n" +
-                           axis_labels[2] + " = " + pos[2] + "\n" +
-                           axis_labels[1] + " = " + pos[1];
-        clusterLabel.text = "Cluster ID: " + player.GetComponent<PlayerController>().current_cluster_id;
+        CoordsLabel.text = _axisLabels[0] + " = " + _pos[0] + "\n" +
+                          _axisLabels[2] + " = " + _pos[2] + "\n" +
+                          _axisLabels[1] + " = " + _pos[1];
+        ClusterLabel.text = "Cluster ID: " + _player.GetComponent<PlayerController>().CurrentClusterId;
     }
 
-    public void set_axis_labels(string axis1, string axis2, string axis3)
+    public void SetAxisLabels(string axis1, string axis2, string axis3)
     {
-        axis_labels[0] = axis1;
-        axis_labels[1] = axis2;
-        axis_labels[2] = axis3;
+        _axisLabels[0] = axis1;
+        _axisLabels[1] = axis2;
+        _axisLabels[2] = axis3;
     }
 }

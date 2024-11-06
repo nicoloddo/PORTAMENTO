@@ -5,140 +5,134 @@ using UnityEngine.UI;
 
 public class MapController : MonoBehaviour
 {
-    List<string> axis = new List<string>();
-    int x = 0;
-    int y = 1;
+    private List<string> _axis = new List<string>();
+    private int _x = 0;
+    private int _y = 1;
 
-    List<GameObject> cluster_list = new List<GameObject>();
-    List<GameObject> cluster_button_list = new List<GameObject>();
-    public GameObject cluster_button_prefab;
-    public GameObject radar_menu;
-    public Text orizontal_label;
-    public Text vertical_label;
+    private List<GameObject> _clusterList = new List<GameObject>();
+    private List<GameObject> _clusterButtonList = new List<GameObject>();
+    public GameObject ClusterButtonPrefab;
+    public GameObject RadarMenu;
+    public Text HorizontalLabel;
+    public Text VerticalLabel;
 
-    private List<Dictionary<string, float>> radar_track;
-    private List<Dictionary<string, string>> radar_meta;
+    private List<Dictionary<string, float>> _radarTrack;
+    private List<Dictionary<string, string>> _radarMeta;
 
-    private GameObject player;
-    private GameObject selected_cluster;
-    private GameObject selected_button;
+    private GameObject _player;
+    private GameObject _selectedCluster;
+    private GameObject _selectedButton;
 
-    // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        _player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AppendCluster(GameObject cluster)
     {
-        
+        _clusterList.Add(cluster);
     }
 
-    public void append_cluster(GameObject cluster)
+    public void AppendAxis(string attribute)
     {
-        cluster_list.Add(cluster);
+        _axis.Add(attribute);
     }
 
-    public void append_axis(string attribute)
+    public void SetX(int i)
     {
-        axis.Add(attribute);
+        _x = i;
     }
 
-    public void set_x(int i)
+    public void SetY(int i)
     {
-        x = i;
+        _y = i;
     }
-    public void set_y(int i)
+
+    public void IncrementX(int increment)
     {
-        y = i;
-    }
-    public void increment_x(int increment)
-    {
-        x += increment;
-        if(x >= axis.Count)     // To handle the rotation of the values through the list index
+        _x += increment;
+        if(_x >= _axis.Count)     // To handle the rotation of the values through the list index
         {
-            x = 0;
+            _x = 0;
         }
-        else if (x <= -1)
+        else if (_x <= -1)
         {
-            x = axis.Count - 1;
+            _x = _axis.Count - 1;
         }
 
-        foreach (GameObject cluster_button in cluster_button_list)
+        foreach (GameObject clusterButton in _clusterButtonList)
         {
-            cluster_button.GetComponent<ClusterButton>().set_axis(axis[x], axis[y]);
-            cluster_button.GetComponent<ClusterButton>().update_position();
+            clusterButton.GetComponent<ClusterButton>().SetAxis(_axis[_x], _axis[_y]);
+            clusterButton.GetComponent<ClusterButton>().UpdatePosition();
         }
-        orizontal_label.text = axis[x];
+        HorizontalLabel.text = _axis[_x];
     }
-    public void increment_y(int increment)
+
+    public void IncrementY(int increment)
     {
-        y += increment;
-        if (y >= axis.Count)    // To handle the rotation of the values through the list index
+        _y += increment;
+        if (_y >= _axis.Count)    // To handle the rotation of the values through the list index
         {
-            y = 0;
+            _y = 0;
         }
-        else if (y <= -1)
+        else if (_y <= -1)
         {
-            y = axis.Count - 1;
+            _y = _axis.Count - 1;
         }
 
-        foreach (GameObject cluster_button in cluster_button_list)
+        foreach (GameObject clusterButton in _clusterButtonList)
         {
-            cluster_button.GetComponent<ClusterButton>().set_axis(axis[x], axis[y]);
-            cluster_button.GetComponent<ClusterButton>().update_position();
+            clusterButton.GetComponent<ClusterButton>().SetAxis(_axis[_x], _axis[_y]);
+            clusterButton.GetComponent<ClusterButton>().UpdatePosition();
         }
-        vertical_label.text = axis[y];
+        VerticalLabel.text = _axis[_y];
     }
 
-    public void createMap()
+    public void CreateMap()
     {
-        orizontal_label.text = axis[x];
-        vertical_label.text = axis[y];
+        HorizontalLabel.text = _axis[_x];
+        VerticalLabel.text = _axis[_y];
 
-        // CREO I PUNTI CLUSTER
-        foreach(GameObject cluster in cluster_list)
+        foreach(GameObject cluster in _clusterList)
         {
-            GameObject cluster_button = Instantiate(cluster_button_prefab);
-            cluster_button_list.Add(cluster_button);
-            cluster_button.transform.SetParent(transform);   // Set the cluster button as a child of the map to easily control its transform
-            cluster.GetComponent<Cluster>().create_clusterButton(cluster_button.GetComponent<ClusterButton>());
-            cluster_button.GetComponent<ClusterButton>().set_axis(axis[x], axis[y]);
-            cluster_button.GetComponent<ClusterButton>().set_number(cluster.GetComponent<Cluster>().get_id());
-            cluster_button.GetComponent<ClusterButton>().update_position();
+            GameObject clusterButton = Instantiate(ClusterButtonPrefab);
+            _clusterButtonList.Add(clusterButton);
+            clusterButton.transform.SetParent(transform);   // Set the cluster button as a child of the map to easily control its transform
+            cluster.GetComponent<Cluster>().CreateClusterButton(clusterButton.GetComponent<ClusterButton>());
+            clusterButton.GetComponent<ClusterButton>().SetAxis(_axis[_x], _axis[_y]);
+            clusterButton.GetComponent<ClusterButton>().SetNumber(cluster.GetComponent<Cluster>().GetId());
+            clusterButton.GetComponent<ClusterButton>().UpdatePosition();
 
-            var button = cluster_button.GetComponent<Button>();
-            button.onClick.AddListener(() => select_cluster(cluster_button, cluster));
+            var button = clusterButton.GetComponent<Button>();
+            button.onClick.AddListener(() => SelectCluster(clusterButton, cluster));
         }
 
-        radar_menu.GetComponent<RadarMenu>().CreateMenu(radar_meta, radar_track);
+        RadarMenu.GetComponent<RadarMenu>().CreateMenu(_radarMeta, _radarTrack);
     }
 
-    private void select_cluster(GameObject cluster_button, GameObject cluster)
+    private void SelectCluster(GameObject clusterButton, GameObject cluster)
     {
-        if(selected_cluster != null)
+        if(_selectedCluster != null)
         {
-            selected_cluster.GetComponent<Cluster>().unselect();
-            selected_button.GetComponent<ClusterButton>().unselect();
+            _selectedCluster.GetComponent<Cluster>().Unselect();
+            _selectedButton.GetComponent<ClusterButton>().Unselect();
         }
 
-        player.GetComponent<PlayerController>().setSelectedCluster(cluster.transform);
-        selected_cluster = cluster;
-        selected_button = cluster_button;
-        cluster.GetComponent<Cluster>().highlight();
-        cluster_button.GetComponent<ClusterButton>().highlight();
+        _player.GetComponent<PlayerController>().SetSelectedCluster(cluster.transform);
+        _selectedCluster = cluster;
+        _selectedButton = clusterButton;
+        cluster.GetComponent<Cluster>().Highlight();
+        clusterButton.GetComponent<ClusterButton>().Highlight();
     }
 
-    public void set_radars(List<Dictionary<string, float>> radar_track_input, List<Dictionary<string, string>> radar_meta_input)
+    public void SetRadars(List<Dictionary<string, float>> radarTrack, List<Dictionary<string, string>> radarMeta)
     {
-        radar_track = radar_track_input;
-        radar_meta = radar_meta_input;
+        _radarTrack = radarTrack;
+        _radarMeta = radarMeta;
     }
 
-    public void select_cluster_from_index(int i)
+    public void SelectClusterFromIndex(int i)
     {
-        select_cluster(cluster_button_list[i], cluster_list[i]);
+        SelectCluster(_clusterButtonList[i], _clusterList[i]);
     }
-
 }

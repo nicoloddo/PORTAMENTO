@@ -4,29 +4,23 @@ using UnityEngine;
 
 public class ChangePage : MonoBehaviour
 {
-    private GameManager gameManager;
+    private GameManager _gameManager;
 
-    // Start is called before the first frame update
     void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
+        _gameManager = FindObjectOfType<GameManager>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void NextPage()
     {
-        
+        int page = _gameManager.ClusterMenuPage + 1;
+        _gameManager.ChangePageSongMenu(page);
     }
 
-    public void next_page()
+    public void PrevPage()
     {
-        int page = gameManager.cluster_menu_page + 1;
-        gameManager.changepage_songMenu(page);
-    }
-    public void prev_page()
-    {
-        int page = gameManager.cluster_menu_page - 1;
+        int page = _gameManager.ClusterMenuPage - 1;
         if(page >= 0)
-            gameManager.changepage_songMenu(page);
+            _gameManager.ChangePageSongMenu(page);
     }
 }

@@ -4,25 +4,29 @@ using UnityEngine;
 
 public class Cluster : MonoBehaviour
 {
-    int axis_multiplier = 400; // Also present in SongMenu and DisplayMenu classes, used to space out clusters
+    private const int AXIS_MULTIPLIER = 400; // Also present in SongMenu and DisplayMenu classes, used to space out clusters
 
-    string id;
-    public List<Dictionary<string, float>> track = new List<Dictionary<string, float>>();
-    public List<Dictionary<string, string>> meta = new List<Dictionary<string, string>>();
-    private string[] axis = new string[3];  // Names of the reference axes (keys of the track features dictionary)
-    public Dictionary<string, float> centroid = new Dictionary<string, float>();
-    public bool is_leaf;
-    public bool player_near;
+    private string _id;
+    public List<Dictionary<string, float>> Track = new List<Dictionary<string, float>>();
+    public List<Dictionary<string, string>> Meta = new List<Dictionary<string, string>>();
+    private string[] _axis = new string[3];  // Names of the reference axes (keys of the track features dictionary)
+    public Dictionary<string, float> Centroid = new Dictionary<string, float>();
+    private bool _isLeaf;
+    private bool _playerNear;
 
-    private GameObject player;
+    private GameObject _player;
 
-    public GameObject highlight_supernova;
-    public GameObject standard_supernova;
+    public GameObject HighlightSupernova;
+    public GameObject StandardSupernova;
 
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = new Vector3(centroid[axis[0]] * axis_multiplier, centroid[axis[1]] * axis_multiplier, centroid[axis[2]] * axis_multiplier);
+        transform.position = new Vector3(
+            Centroid[_axis[0]] * AXIS_MULTIPLIER, 
+            Centroid[_axis[1]] * AXIS_MULTIPLIER, 
+            Centroid[_axis[2]] * AXIS_MULTIPLIER
+        );
     }
 
     // Update is called once per frame
@@ -35,9 +39,9 @@ public class Cluster : MonoBehaviour
     {
         if(other.gameObject.CompareTag("Player"))
         {
-            player_near = true;
-            player = other.gameObject;
-            player.GetComponent<PlayerController>().set_nearCluster(this.gameObject, player_near);
+            _playerNear = true;
+            _player = other.gameObject;
+            _player.GetComponent<PlayerController>().SetNearCluster(this.gameObject, _playerNear);
         }
     }
 
@@ -45,59 +49,64 @@ public class Cluster : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            player_near = false;
-            player = other.gameObject;
-            player.GetComponent<PlayerController>().set_nearCluster(this.gameObject, player_near);
+            _playerNear = false;
+            _player = other.gameObject;
+            _player.GetComponent<PlayerController>().SetNearCluster(this.gameObject, _playerNear);
         }
     }
 
-    public void set_id(string clust_id)
+    public void SetId(string clustId)
     {
-        id = clust_id;
+        _id = clustId;
     }
 
-    public void set_is_leaf(bool is_leaf_bool)
+    public void SetIsLeaf(bool isLeafBool)
     {
-        is_leaf = is_leaf_bool;
+        _isLeaf = isLeafBool;
     }
 
-    public void set_centroid(Dictionary<string, float> centroid_params)
+    public void SetCentroid(Dictionary<string, float> centroidParams)
     {
-        centroid = centroid_params;
+        Centroid = centroidParams;
     }
 
-    public void set_cluster_data(List<Dictionary<string, float>> track_data, List<Dictionary<string, string>> meta_data)
+    public void SetClusterData(List<Dictionary<string, float>> trackData, List<Dictionary<string, string>> metaData)
     {
-        track = track_data;
-        meta = meta_data;
+        Track = trackData;
+        Meta = metaData;
     }
 
-    public void set_axis(string x, string y, string z)
+    public void SetAxis(string x, string y, string z)
     {
-        axis[0] = x;
-        axis[1] = y;
-        axis[2] = z;
+        _axis[0] = x;
+        _axis[1] = y;
+        _axis[2] = z;
     }
 
-    public string get_id()
+    public string GetId()
     {
-        return id;
+        return _id;
     }
 
-    public void create_clusterButton(ClusterButton clust)
+    public void CreateClusterButton(ClusterButton clust)
     {
-        clust.cluster = this;
+        clust.Cluster = this;
     }
 
-    public void highlight()
+    public void Highlight()
     {
-        highlight_supernova.SetActive(true);
-        standard_supernova.SetActive(false);
+        HighlightSupernova.SetActive(true);
+        StandardSupernova.SetActive(false);
     }
 
-    public void unselect()
+    public void Unselect()
     {
-        highlight_supernova.SetActive(false);
-        standard_supernova.SetActive(true);
+        HighlightSupernova.SetActive(false);
+        StandardSupernova.SetActive(true);
+    }
+
+    public bool IsLeaf
+    {
+        get { return _isLeaf; }
     }
 }
