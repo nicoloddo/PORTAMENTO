@@ -25,7 +25,8 @@ headers = {
 }
 
 # Example data
-data = "spotify:playlist:5T54YmcS3PsSghWrqivfms,spotify:playlist:7460eJSzkWMB3VQ2xzACiV,spotify:playlist:2HF1k7XYrLeooG2EYzIYwk,spotify:playlist:7rldaIGrPgeiOVcfeQ5ZjR"
+#data = "spotify:playlist:5T54YmcS3PsSghWrqivfms,spotify:playlist:7460eJSzkWMB3VQ2xzACiV,spotify:playlist:2HF1k7XYrLeooG2EYzIYwk,spotify:playlist:7rldaIGrPgeiOVcfeQ5ZjR"
+data = "spotify:playlist:69fEt9DN5r4JQATi52sRtq" # Sound of Everything (6430 songs)
 
 response = requests.post(url, headers=headers, data=json.dumps(data))
 
