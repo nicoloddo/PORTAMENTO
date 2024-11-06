@@ -42,6 +42,18 @@ def lambda_handler(event, context):
             'body': json.dumps({'error': 'Invalid JSON format'})
         }
     
+    # Only load and set branch_factor if it's not already specified in config
+    if 'branch_factor' not in config:
+        try:
+            clusterer_config_file = read_file_from_s3(f'{data_id}/clusterer-config.json')
+            clusterer_config = json.loads(clusterer_config_file)
+            config['branch_factor'] = clusterer_config['branch_factor']
+        except Exception as e:
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'error': f'Failed to load clusterer config: {str(e)}'})
+            }
+    
     config['model_path'] = f'{data_id}/model.pkl'
 
     data_key = f'{data_id}/data.csv'

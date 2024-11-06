@@ -14,6 +14,8 @@ from cloud_services.aws_utilities.aws_s3_utils import read_file_from_s3, save_to
 import pandas as pd
 from io import StringIO
 
+import json
+
 LASTBATCH_LABEL = 'lastbatch'
 
 def lambda_handler(event, context):
@@ -46,5 +48,26 @@ def lambda_handler(event, context):
     csv_buffer = StringIO()
     database_df.to_csv(csv_buffer, index=False)
     save_to_s3(csv_buffer.getvalue().encode(), f'{request_id}/data.csv')
+
+    # Calculate appropriate branch factor based on database size
+    database_size = len(database_df)
+    if database_size < 1000:
+        branch_factor = 50
+    elif database_size < 7000:
+        branch_factor = 100
+    elif database_size < 30000:
+        branch_factor = 200
+    elif database_size < 50000:
+        branch_factor = 300
+    else:
+        branch_factor = 400
+
+    # Save the clusterer configuration
+    clusterer_config = {
+        'branch_factor': branch_factor
+    }
+    json_data = json.dumps(clusterer_config)
+    byte_data = json_data.encode()
+    save_to_s3(data=byte_data, file_name=f'{request_id}/clusterer-config.json')
 
     return {'statusCode': 200, 'body': 'Request database merged!'}
