@@ -138,3 +138,36 @@ def delete_folder_s3(prefix, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NA
 
 def check_s3():
     pass
+
+def generate_presigned_url(key, expiration=3600, endpoint_url=ENDPOINT_URL, bucket_name=S3_BUCKET_NAME):
+    """
+    Generates a pre-signed URL for an S3 object that expires after the specified time.
+    
+    :param key: The key of the S3 object
+    :param expiration: Time in seconds until the URL expires (default 1 hour)
+    :param endpoint_url: Optional. URL of the S3 service endpoint
+    :param bucket_name: The name of the S3 bucket
+    :return: Pre-signed URL as string
+    """
+    try:
+        # Create an S3 client
+        if endpoint_url:
+            s3 = boto3.client('s3', endpoint_url=endpoint_url)
+        else:
+            s3 = boto3.client('s3')
+            
+        # Generate the URL
+        url = s3.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': bucket_name,
+                'Key': key
+            },
+            ExpiresIn=expiration
+        )
+        
+        return url
+        
+    except (BotoCoreError, ClientError) as e:
+        print(f"An error occurred generating presigned URL: {e}")
+        return None

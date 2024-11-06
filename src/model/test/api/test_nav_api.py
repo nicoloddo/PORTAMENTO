@@ -7,6 +7,7 @@ Created on Tue Mar  5 22:25:58 2024
 
 import requests
 import json
+from datetime import datetime
 
 from common.utils import load_env_var
 
@@ -31,13 +32,32 @@ headers = {
     'node-id': node_id
 }
 
+# Get the pre-signed URL from Lambda
 response = requests.get(url, headers=headers)
 
-# This will print the status code and response body
-print(f'Status Code: {response.status_code}')
-print(f'Response: {response.text}')
+# Print the initial response
+print(f'Lambda Status Code: {response.status_code}')
+print(f'Lambda Response: {response.text}')
 
-body = json.loads(response.text)
+if response.status_code == 200:
+    # Parse the response
+    response_data = json.loads(response.text)
+    
+    # Check expiration
+    if datetime.now().timestamp() < response_data['expires_at']:
+        # Fetch the actual data using the pre-signed URL
+        data_response = requests.get(response_data['url'])
+        print(f'\nS3 Data Status Code: {data_response.status_code}')
+        
+        if data_response.status_code == 200:
+            node_data = data_response.json()
+            print(f'Node Data: {json.dumps(node_data, indent=4)}')
+        else:
+            print(f'Failed to fetch data from S3: {data_response.text}')
+    else:
+        print('Response URL has expired')
+else:
+    print('Failed to get pre-signed URL from Lambda')
 
 """
 When implementing this in the interface, make an automatic retry until you get
