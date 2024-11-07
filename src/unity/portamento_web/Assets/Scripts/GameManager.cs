@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
         StatusLabel.manualMode = true;
         if (!DebuggingMode)
         {
-            LoadSecrets();
+            LoadBackendSettings();
             if (string.IsNullOrEmpty(_apiKey) || string.IsNullOrEmpty(_apiBaseUrl))
             {
                 StatusLabel.SetStatus("Failed to load API credentials. You can contact me at https://github.com/nicoloddo");
@@ -221,9 +221,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void LoadSecrets()
+    private void LoadBackendSettings()
     {
-        string[] lines = System.IO.File.ReadAllLines(Application.dataPath + "/secrets.txt");
+        string[] lines = System.IO.File.ReadAllLines(Application.dataPath + "/backend_settings.txt");
         foreach (string line in lines)
         {
             string[] parts = line.Split('=');

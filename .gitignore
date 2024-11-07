@@ -14,6 +14,7 @@
 .conda
 .vscode
 secrets.*
+backend_settings.txt*
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
