@@ -5,6 +5,7 @@ using UnityEngine;
 public class Cluster : MonoBehaviour
 {
     private const int AXIS_MULTIPLIER = 400; // Also present in SongMenu and DisplayMenu classes, used to space out clusters
+    private const float MIN_CLUSTER_DISTANCE = 50f;
 
     public string Id;
     public List<Dictionary<string, float>> Track = new List<Dictionary<string, float>>();
@@ -22,11 +23,34 @@ public class Cluster : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = new Vector3(
+        Vector3 desiredPosition = new Vector3(
             Centroid[_axis[0]] * AXIS_MULTIPLIER, 
             Centroid[_axis[1]] * AXIS_MULTIPLIER, 
             Centroid[_axis[2]] * AXIS_MULTIPLIER
         );
+
+        // Find all other clusters
+        Cluster[] otherClusters = FindObjectsOfType<Cluster>();
+        
+        // Check for overlaps and adjust position
+        foreach (Cluster other in otherClusters)
+        {
+            if (other != this)
+            {
+                float distance = Vector3.Distance(desiredPosition, other.transform.position);
+                
+                if (distance < MIN_CLUSTER_DISTANCE)
+                {
+                    // Calculate direction away from other cluster
+                    Vector3 direction = (desiredPosition - other.transform.position).normalized;
+                    
+                    // Move cluster away until minimum distance is met
+                    desiredPosition += direction * (MIN_CLUSTER_DISTANCE - distance);
+                }
+            }
+        }
+
+        transform.position = desiredPosition;
     }
 
     // Update is called once per frame
