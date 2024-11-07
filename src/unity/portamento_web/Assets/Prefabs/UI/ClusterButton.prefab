@@ -188,7 +188,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.4, y: 0.00000667572}
+  m_AnchoredPosition: {x: 2.399994, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5494235699559748507
@@ -272,11 +272,11 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -200, y: 300}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 411, y: 42}
   m_SizeDelta: {x: 30, y: 30}
-  m_Pivot: {x: 1, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5494235699559748509
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -361,10 +361,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f57a0853457ed454496753875a55d991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cluster: {fileID: 0}
+  Cluster: {fileID: 0}
   BackgroundHighlight: {fileID: 2113150604995081096}
-  XMin: -600
-  XMax: -150
-  YMin: 75
-  YMax: 525
   Label: {fileID: 5494235699575528987}
