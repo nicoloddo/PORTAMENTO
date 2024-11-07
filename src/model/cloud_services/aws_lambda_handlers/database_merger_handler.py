@@ -49,24 +49,10 @@ def lambda_handler(event, context):
     database_df.to_csv(csv_buffer, index=False)
     save_to_s3(csv_buffer.getvalue().encode(), f'{request_id}/data.csv')
 
-    # Calculate appropriate branch factor based on database size
-    database_size = len(database_df)
-    if database_size < 1000:
-        branch_factor = 10
-    elif database_size < 7000:
-        branch_factor = 30
-    elif database_size < 15000:
-        branch_factor = 50
-    elif database_size < 30000:
-        branch_factor = 100
-    elif database_size < 50000:
-        branch_factor = 100
-    else:
-        branch_factor = 200
-
     # Save the clusterer configuration
     clusterer_config = {
-        'branch_factor': branch_factor
+        'branch_factor': 10,
+        'birch_threshold': 0.1
     }
     json_data = json.dumps(clusterer_config)
     byte_data = json_data.encode()

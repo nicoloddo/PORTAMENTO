@@ -18,6 +18,9 @@ import json
 import pickle
 import pandas as pd
 
+import sys
+sys.setrecursionlimit(10000) # Increase recursion limit to avoid pickling errors
+
 def save_model_callback(model, path):
     # Serialize the model to bytes
     model_bytes = pickle.dumps(model)
@@ -42,18 +45,23 @@ def lambda_handler(event, context):
             'body': json.dumps({'error': 'Invalid JSON format'})
         }
     
-    # Only load and set branch_factor if it's not already specified in config
-    if 'branch_factor' not in config:
+    def load_param_from_s3(config, param_name):
         try:
             clusterer_config_file = read_file_from_s3(f'{data_id}/clusterer-config.json')
             clusterer_config = json.loads(clusterer_config_file)
-            config['branch_factor'] = clusterer_config['branch_factor']
+            config[param_name] = clusterer_config[param_name]
+            return config
         except Exception as e:
             return {
                 'statusCode': 400,
                 'body': json.dumps({'error': f'Failed to load clusterer config: {str(e)}'})
             }
     
+    # Only load and set the parameter if it's not already specified in config
+    for param_name in ['branch_factor', 'birch_threshold']:
+        if param_name not in config:
+            config = load_param_from_s3(config, param_name)
+
     config['model_path'] = f'{data_id}/model.pkl'
 
     data_key = f'{data_id}/data.csv'
