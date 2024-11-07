@@ -11,7 +11,7 @@ It will read the clusterer config in the body of the request
 and start the clustering.
 """
 
-from cloud_services.aws_utilities.aws_s3_utils import read_file_from_s3, save_to_s3
+from cloud_services.aws_utilities.aws_s3_utils import read_file_from_s3, save_to_s3, delete_folder_s3
 from core.clusterer import Clusterer
 
 import json
@@ -88,8 +88,8 @@ def lambda_handler(event, context):
     byte_data = json_data.encode()   # Convert the JSON string to bytes
     save_to_s3(data=byte_data, file_name=f'{data_id}/navigator-config.json')
 
-    # TODO: The clusterer should delete the previous response files since after
-    # clustering we have a new model and the cached responses don't reflect it.
+    # Delete all cached responses for this data_id
+    delete_folder_s3(f'{data_id}/responses/')
     
     return {
         'statusCode': 200,
