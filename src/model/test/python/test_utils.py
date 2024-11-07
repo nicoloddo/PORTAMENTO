@@ -11,7 +11,8 @@ import os
 import json
 import pandas as pd
 
-TEST_NAME = 'mosiselecta'
+TEST_NAME = 'sound_of_everything'
+FROM_PICKLES = False
 
 def load_test_config(test_name = TEST_NAME):
     with open(f'{TESTS_PATH}/clusterer_test_config.json', 'r') as file:

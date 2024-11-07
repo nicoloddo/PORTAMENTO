@@ -23,12 +23,12 @@ from core.birch_tree_navigator import BirchTreeNavigator
 
 tests_path = test_utils.TESTS_PATH
 test_name = test_utils.TEST_NAME
+from_pickles = test_utils.FROM_PICKLES
 
 folder_path = f'{tests_path}/results/{test_name}'
 test_utils.make_test_results_folder(folder_path)
 
 # Load the dataset
-from_pickles = False
 if from_pickles:
     dataset = load_df_from_local_pickles(folder_path)
 else:
