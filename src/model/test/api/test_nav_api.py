@@ -18,11 +18,11 @@ api_key = load_env_var('API_KEY')
 API_BASE_URL = load_env_var('API_BASE_URL')
 url = API_BASE_URL + '/nav'
 
-ask_for_model_id = False
-if ask_for_model_id:
-    model_id = input("Please enter the model id: ")
-else:
+use_default_model_id = True
+if use_default_model_id:
     model_id = load_env_var('DEFAULT_MODEL_ID')
+else:
+    model_id = input("Please enter the model id: ")
 node_id = '0'
 
 headers = {

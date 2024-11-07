@@ -17,7 +17,11 @@ api_key = load_env_var('API_KEY')
 API_BASE_URL = load_env_var('API_BASE_URL')
 url = API_BASE_URL + '/cluster'
 
-data_id = input("Please enter the data id: ")
+use_default_model_id = True
+if use_default_model_id:
+    data_id = load_env_var('DEFAULT_MODEL_ID')
+else:
+    data_id = input("Please enter the data id: ")
 
 headers = {
     'x-api-key': api_key,
