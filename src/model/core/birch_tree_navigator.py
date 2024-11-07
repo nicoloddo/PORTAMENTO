@@ -148,6 +148,62 @@ class BirchTreeNavigatorNode:
     
     def get_child_centroid(self, child):
         return self._children[child]['centroid']
+
+    def get_child_deweighted_centroid_dict(self, child):
+        centroid = self.get_child_centroid(child)
+
+        # Convert centroid array to dictionary using weights keys
+        if len(centroid) != len(self.weights):
+            raise ValueError(f"Centroid length ({len(centroid)}) does not match weights length ({len(self.weights)})")
+        
+        # Deweight the centroid values directly using numpy array operations
+        weights_array = np.array(list(self.weights.values()))
+        deweighted_centroid = centroid / weights_array
+        
+        # Create dictionary with deweighted values
+        centroid_dict = {key: np.round(value, decimals=2) 
+                        for key, value in zip(self.weights.keys(), deweighted_centroid)}
+        
+        return centroid_dict
+    
+    def get_child_representative_id(self, child, dataset):
+        """
+        Returns the most representative song id of the child node, the number of songs within a radius
+        of the centroid and the distances of all songs to the centroid sorted by distance.
+        """
+        # Calculate Euclidean distances from each song to the centroid
+        distances = []
+        RADIUS = 0.5  # Constant radius threshold
+        weights = {k: v for k, v in self.weights.items() if k not in ['tempo', 'key']}
+
+        centroid_dict = self.get_child_deweighted_centroid_dict(child)
+        centroid_dict = {k: v for k, v in centroid_dict.items() if k in weights.keys()}
+        centroid = np.array(list(centroid_dict.values()))
+        child_track = dataset_select(dataset, self.get_child_samples(child), weights.keys())
+
+        for idx, row in child_track.iterrows():
+            # Get feature values for this song
+            song_features = row.values
+            
+            # Calculate weighted Euclidean distance to centroid
+            weights_array = np.array(list(weights.values()))
+            distance = np.sqrt(np.sum(weights_array * (song_features - centroid)**2))
+            distances.append((idx, distance))
+        
+        # Sort by distance and get songs within radius
+        distances.sort(key=lambda x: x[1])
+        representative_ids = [idx for idx, dist in distances if dist <= RADIUS]
+        
+        # Get the most popular song among the representative songs
+        popularity_df = dataset_select(dataset, self.get_child_samples(child), ['popularity'])
+        if representative_ids:
+            representative_tracks = popularity_df.loc[representative_ids]
+            most_representative_id = representative_tracks.loc[representative_tracks['popularity'].idxmax()].name
+        else:
+            # Fallback to most popular in cluster if no songs within radius
+            most_representative_id = popularity_df.loc[popularity_df['popularity'].idxmax()].name
+
+        return most_representative_id, len(representative_ids), distances
     
     def to_json(self, dataset, columns_blacklist=[]):
         """
@@ -173,40 +229,35 @@ class BirchTreeNavigatorNode:
         children_info = []
         # Iterate over the children to get their samples
         for i in range(self.n_children):
+            centroid_dict = self.get_child_deweighted_centroid_dict(i)
+
+            # Get the unique samples of the child
             unique_child_samples = set(self.get_child_samples(i))
+
+            most_representative_id, n_representative_ids, distances = self.get_child_representative_id(i, dataset)
+
+            # Create a dictionary of distances for quick lookup, converting to float and rounding
+            distance_dict = {idx: round(float(dist), 3) for idx, dist in distances}
 
             # Get child track data
             child_track = dataset_select(dataset, unique_child_samples, track_columns_to_select)
-            # Get the most popular song in this child cluster, this will be used as a representative of the cluster
-            most_popular_id = child_track.loc[child_track['popularity'].idxmax()].name
-            # Convert to list of dictionaries, including the ID for each row
-            child_track = [row.to_dict() for idx, row in child_track.iterrows()]
+            # Convert to list of dictionaries, including the ID and distance for each row
+            child_track = [
+                {**row.to_dict(), 'distance': distance_dict[idx]} 
+                for idx, row in child_track.iterrows()
+            ]
             
             # Get child metadata
             child_meta = dataset_select(dataset, unique_child_samples, meta_columns_to_select)
             # Convert to list of dictionaries, including the ID for each row
             child_meta = [{'id': idx, **row.to_dict()} for idx, row in child_meta.iterrows()]
 
-            centroid = self.get_child_centroid(i)
-
-            # Convert centroid array to dictionary using weights keys
-            if len(centroid) != len(self.weights):
-                raise ValueError(f"Centroid length ({len(centroid)}) does not match weights length ({len(self.weights)})")
-            
-            # Deweight the centroid values directly using numpy array operations
-            weights_array = np.array(list(self.weights.values()))
-            deweighted_centroid = centroid / weights_array
-            
-            # Create dictionary with deweighted values
-            centroid_dict = {key: np.round(value, decimals=2) 
-                           for key, value in zip(self.weights.keys(), deweighted_centroid)}
-
             children_info.append({
                 "is_leaf": self.get_child_is_leaf(i), 
                 "track": child_track, 
                 "meta": child_meta, 
                 "centroid": centroid_dict, 
-                "most_popular_id": most_popular_id})
+                "most_representative_id": most_representative_id})
         
         # Compile the node's data into a dictionary
         data = {
