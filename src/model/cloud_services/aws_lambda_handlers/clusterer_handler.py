@@ -87,6 +87,9 @@ def lambda_handler(event, context):
     json_data = json.dumps(navigator_config)  # Serialize dict to a JSON formatted str
     byte_data = json_data.encode()   # Convert the JSON string to bytes
     save_to_s3(data=byte_data, file_name=f'{data_id}/navigator-config.json')
+
+    # TODO: The clusterer should delete the previous response files since after
+    # clustering we have a new model and the cached responses don't reflect it.
     
     return {
         'statusCode': 200,
