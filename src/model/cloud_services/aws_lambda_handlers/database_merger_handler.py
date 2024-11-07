@@ -51,7 +51,7 @@ def lambda_handler(event, context):
 
     # Save the clusterer configuration
     clusterer_config = {
-        'branch_factor': 10,
+        'branch_factor': 11,
         'birch_threshold': 0.1
     }
     json_data = json.dumps(clusterer_config)
