@@ -40,23 +40,27 @@ class BirchTreeNavigator:
         Iteratively navigates a BIRCH tree to find and return the node specified by node_id.
         Optimizes navigation for nodes with a single subcluster and checks for leaf nodes.
 
-        :param node_id: A string of numbers where each number represents the index of the child node to navigate to at the current level.
+        :param node_id: A string of dot-separated numbers where each number represents the index of the child node to navigate to at the current level.
         :return: The BIRCH tree node specified by node_id.
         """
     
         current_node = self.model.root_
+        
+        # Split the node_id into individual indices, skipping the first '0' for root
+        indices = node_id.split('.')[1:] if '.' in node_id else node_id[1:]
     
-        for i, char_id in enumerate(node_id[1:]):  # Start from the second character as the first is always '0' for the root
+        for i, index_str in enumerate(indices):
             while len(current_node.subclusters_) == 1 and not current_node.is_leaf:
                 # If there's only one subcluster and it's not a leaf, skip directly to its child
                 current_node = current_node.subclusters_[0].child_
     
             # If the current node is a leaf, issue a warning and break the loop
             if current_node.is_leaf:
-                print(f"Warning: Search of node '{node_id}' has been truncated at node '{node_id[:i+1]}': reached a leaf node.")
+                truncated_id = '.'.join(['0'] + indices[:i+1]) if '.' in node_id else node_id[:i+1]
+                print(f"Warning: Search of node '{node_id}' has been truncated at node '{truncated_id}': reached a leaf node.")
                 break
     
-            index = int(char_id)
+            index = int(index_str)
     
             # Check if the current node has the required subcluster
             if index >= len(current_node.subclusters_):
