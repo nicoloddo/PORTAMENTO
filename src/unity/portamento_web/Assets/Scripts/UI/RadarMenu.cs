@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class RadarMenu : MonoBehaviour
 {
@@ -10,10 +11,37 @@ public class RadarMenu : MonoBehaviour
 
     private GameObject _player;
     public GameObject Map;
+    public GameObject EnterPreviousClusterButton;
+    private string _previousClusterId;
 
     void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
+        string currentClusterId = _player.GetComponent<PlayerController>().CurrentClusterId;
+
+        var button = EnterPreviousClusterButton.GetComponent<Button>();
+        var background = button.gameObject.transform.GetChild(0).gameObject;
+
+        if (currentClusterId.Length > 1)
+        {
+            string[] clusterIds = currentClusterId.Split('.');
+            _previousClusterId = string.Join(".", clusterIds.Take(clusterIds.Length - 1));
+
+            background.GetComponentInChildren<Text>().text = "Back to Cluster\n" + "[" + 
+                _previousClusterId + "]";
+
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(() => EnterPreviousCluster());
+        }
+        else
+        {
+            background.GetComponentInChildren<Text>().text = "No Cluster to\n go back to yet";
+        }
+    }
+
+    private void EnterPreviousCluster()
+    {
+        _player.GetComponent<PlayerController>().EnterCluster(_previousClusterId, false, true);
     }
 
     public void CreateMenu(List<Dictionary<string, string>> radarMeta, List<Dictionary<string, float>> radarTrack)
@@ -34,25 +62,29 @@ public class RadarMenu : MonoBehaviour
 
             if (clustButton.CompareTag("SongButton"))
             {
+                var button = clustButton.GetComponent<Button>();
+                var background = button.gameObject.transform.GetChild(0).gameObject;
+                var playButton = button.gameObject.transform.GetChild(1).gameObject;
+                button.onClick.RemoveAllListeners();
+
                 if(j < radarMeta.Count)
                 {
                     var songMeta = radarMeta[j];
-                    var songUri = "spotify:track:" + songMeta["id"];
                     var songTrack = radarTrack[j];
-                    var button = clustButton.GetComponent<Button>();
-                    var background = button.gameObject.transform.GetChild(0).gameObject;
                     background.GetComponentInChildren<Text>().text = songMeta["name"] + " - " + songMeta["artist_name"];
+                    button.onClick.AddListener(() => SongClick((int)songTrack["label"]));
 
-                    button.onClick.AddListener(() => SongClick((int)songTrack["label"], songUri));
-
-                    j++;
+                    if (playButton.CompareTag("PlayButton"))
+                    {
+                        playButton.GetComponent<Button>().onClick.RemoveAllListeners();
+                        playButton.GetComponent<Button>().onClick.AddListener(() => PlayClick(songMeta));
+                    }
                 }
                 else
                 {
-                    var button = clustButton.GetComponent<Button>();
-                    var background = button.gameObject.transform.GetChild(0).gameObject;
                     background.GetComponentInChildren<Text>().text = "";
                 }
+                j++;
             }
         }
     }
@@ -73,12 +105,20 @@ public class RadarMenu : MonoBehaviour
                 background.GetComponentInChildren<Text>().text = "";
                 button.onClick.RemoveAllListeners();
             }
+            else if(clustButton.CompareTag("PlayButton"))
+            {
+                var button = clustButton.GetComponent<Button>();
+                button.onClick.RemoveAllListeners();
+            }
         }
     }
 
-    public void SongClick(int clusterId, string url)
+    public void SongClick(int clusterId)
     {
         Map.GetComponent<MapController>().SelectClusterFromIndex(clusterId);
-        Application.OpenURL(url);
+    }
+    public void PlayClick(Dictionary<string, string> meta)
+    {
+        Application.OpenURL("spotify:track:" + meta["id"]);
     }
 }

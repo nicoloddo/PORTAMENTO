@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
             }  
         }
 
-        if (Input.GetKey("m") && !_songMenuOpened && _justPressed > JUST_PRESSED_MAX)
+        if ((Input.GetKey("m") || Input.GetKey("escape")) && !_songMenuOpened && _justPressed > JUST_PRESSED_MAX)
         {
             if (!_mapOpened)
             {
@@ -101,7 +101,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (Input.GetKey("r") && !_songMenuOpened && !_mapOpened)
+        if (Input.GetKey("e") && !_songMenuOpened && !_mapOpened)
         {
             transform.LookAt(SelectedClusterTransform);
             TotalXRotation = transform.rotation.eulerAngles.y;
@@ -214,11 +214,14 @@ public class PlayerController : MonoBehaviour
         _isNear = isNear;
     }
 
-    public void EnterCluster(string clusterId, bool isLeaf)
+    public void EnterCluster(string clusterId, bool isLeaf, bool specificCluster = false)
     {
         if (!isLeaf) 
         {
-            CurrentClusterId = CurrentClusterId + clusterId;   // Update the CurrentClusterId, which is kept within the player.
+            if (specificCluster)
+                CurrentClusterId = clusterId;
+            else
+                CurrentClusterId = CurrentClusterId + '.' + clusterId;   // Update the CurrentClusterId, which is kept within the player.
             PlayerPrefs.SetString("current_node_id", CurrentClusterId);
             Invoke(nameof(LoadScene), 0);
         }
@@ -243,6 +246,11 @@ public class PlayerController : MonoBehaviour
             centroid[axis["y"]] * AXIS_MULTIPLIER,
             centroid[axis["z"]] * AXIS_MULTIPLIER
         );
+    }
+
+    public GameManager GetGameManager()
+    {
+        return _gameManager;
     }
 
     private void OnApplicationQuit()

@@ -33,7 +33,7 @@ public class SongMenu : MonoBehaviour
             Debug.Log("In CreateMenu() songsMeta and songsTrack have different sizes!");
         }
 
-        int j = page * SONGS_IN_PAGE;
+        int j = page * SONGS_IN_PAGE; // Index of the songs in the current page in the database list
         for(int i = 0; i < children.Length; i++)
         {
             clustButton = children[i].gameObject;
@@ -43,7 +43,7 @@ public class SongMenu : MonoBehaviour
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
                 background.GetComponentInChildren<Text>().text = "Enter Cluster\n" + "[" + 
-                    _player.GetComponent<PlayerController>().CurrentClusterId + clusterId + "]";
+                    _player.GetComponent<PlayerController>().CurrentClusterId + '.' + clusterId + "]";
                 button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() => LaunchButtonEnter(clusterId, isLeaf));
             }
@@ -52,6 +52,7 @@ public class SongMenu : MonoBehaviour
             {
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
+                var playButton = button.gameObject.transform.GetChild(1).gameObject;
                 button.onClick.RemoveAllListeners();
 
                 if (j < songsMeta.Count)
@@ -60,6 +61,12 @@ public class SongMenu : MonoBehaviour
                     var songTrack = songsTrack[j];
                     background.GetComponentInChildren<Text>().text = songMeta["name"] + " - " + songMeta["artist_name"];
                     button.onClick.AddListener(() => SongClick(songMeta, songTrack));
+                    
+                    if (playButton.CompareTag("PlayButton"))
+                    {
+                        playButton.GetComponent<Button>().onClick.RemoveAllListeners();
+                        playButton.GetComponent<Button>().onClick.AddListener(() => PlayClick(songMeta));
+                    }
                 }
                 else
                 {
@@ -166,7 +173,10 @@ public class SongMenu : MonoBehaviour
                 _featuresLabel.text += "\n";
             }
         }
+    }
 
+    private void PlayClick(Dictionary<string, string> meta)
+    {
         string uri = "spotify:track:" + meta["id"];
         Application.OpenURL(uri);
     }

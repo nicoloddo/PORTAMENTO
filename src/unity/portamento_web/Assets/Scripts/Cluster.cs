@@ -66,6 +66,7 @@ public class Cluster : MonoBehaviour
             _playerNear = true;
             _player = other.gameObject;
             _player.GetComponent<PlayerController>().SetNearCluster(this.gameObject, _playerNear);
+            _player.GetComponent<PlayerController>().GetGameManager().StatusLabel.SetStatus("Press F to inspect");
         }
     }
 
