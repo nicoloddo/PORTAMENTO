@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
     /* API FETCHING */
     private string _apiBaseUrl;
     private string _apiKey;
-    private string _modelId = "7d2a491e-5911-4e59-8516-a8c61a52f002-1730918817"; // Default model ID
+    private string _modelId; // Put the default model ID in the secrets.txt file
     private const int MAX_RETRIES = 3;
     public bool FetchedNodeData = false;
 
@@ -233,6 +233,8 @@ public class GameManager : MonoBehaviour
                     _apiKey = parts[1].Trim();
                 else if (parts[0] == "API_BASE_URL")
                     _apiBaseUrl = parts[1].Trim();
+                else if (parts[0] == "MODEL_ID")
+                    _modelId = parts[1].Trim();
             }
         }
     }

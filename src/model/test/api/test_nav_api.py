@@ -22,7 +22,7 @@ ask_for_model_id = False
 if ask_for_model_id:
     model_id = input("Please enter the model id: ")
 else:
-    model_id = '7d2a491e-5911-4e59-8516-a8c61a52f002-1730918817'
+    model_id = load_env_var('DEFAULT_MODEL_ID')
 node_id = '0'
 
 headers = {
