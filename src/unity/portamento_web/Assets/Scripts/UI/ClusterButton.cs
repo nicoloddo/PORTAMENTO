@@ -8,12 +8,6 @@ public class ClusterButton : MonoBehaviour
     public Cluster Cluster;
     public GameObject BackgroundHighlight;
 
-    public float XMin = -600;
-    public float XMax = -150;
-
-    public float YMin = 75;
-    public float YMax = 525;
-
     private float _x;
     private float _y;
 
@@ -26,13 +20,37 @@ public class ClusterButton : MonoBehaviour
 
     public void UpdatePosition()
     {
-        _xRange = XMax - XMin;
-        _yRange = YMax - YMin;
+        RectTransform parentRect = transform.parent.GetComponent<RectTransform>();
+        
+        // Get parent dimensions
+        float parentWidth = parentRect.rect.width;
+        float parentHeight = parentRect.rect.height;
+        Vector3 parentPos = parentRect.position;
 
-        _x = XMin + Cluster.Centroid[_xAxis] * _xRange;
-        _y = YMin + Cluster.Centroid[_yAxis] * _yRange;
+        // Get the centroid coordinates
+        float centroid_x = Cluster.Centroid[_xAxis];
+        float centroid_y = Cluster.Centroid[_yAxis];
 
-        gameObject.GetComponent<RectTransform>().localPosition = new Vector3(_x + 50, _y - 315, 0);    // 50 and 315 are due to offset that were created in game
+        // Pan them to -0.5 to 0.5
+        centroid_x = (centroid_x - 0.5f);
+        centroid_y = (centroid_y - 0.5f);
+        
+        // Calculate ranges based on parent dimensions
+        _xRange = parentWidth*0.65f;
+        _yRange = parentHeight*0.65f;
+        
+        // Calculate position relative to parent's position
+        float parent_center_x = parentPos.x - (parentWidth/2);
+        float parent_center_y = parentPos.y;
+
+        // Add some padding due to the map image not fitting the entire parent
+        parent_center_x += (parentWidth*0.1f); 
+        parent_center_y += (parentHeight*0.1f);
+        
+        _x = parent_center_x + (centroid_x * _xRange);
+        _y = parent_center_y + (centroid_y * _yRange);
+        
+        gameObject.GetComponent<RectTransform>().position = new Vector3(_x, _y, parentPos.z);
     }
 
     public void SetAxis(string horizontal, string vertical)
