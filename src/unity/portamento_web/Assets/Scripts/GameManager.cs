@@ -110,17 +110,17 @@ public class GameManager : MonoBehaviour
                     return;
                 }
 
-                // Get the most popular song in this child cluster to build the radar data
-                string mostPopularId = child["most_popular_id"].ToString();
-                int popularIndex = meta.FindIndex(m => m["id"] == mostPopularId);
+                // Get the most representative song in this child cluster to build the radar data
+                string mostRepresentativeId = child["most_representative_id"].ToString();
+                int representativeIndex = meta.FindIndex(m => m["id"] == mostRepresentativeId);
 
-                Dictionary<string, float> mostPopularTrack = track[popularIndex];
-                Dictionary<string, string> mostPopularMeta = meta[popularIndex];
+                Dictionary<string, float> mostRepresentativeTrack = track[representativeIndex];
+                Dictionary<string, string> mostRepresentativeMeta = meta[representativeIndex];
 
                 // Add the most popular song in the cluster to the radar data
-                mostPopularTrack["label"] = clusterIndex;
-                radarTrack.Add(mostPopularTrack);
-                radarMeta.Add(mostPopularMeta);
+                mostRepresentativeTrack["label"] = clusterIndex;
+                radarTrack.Add(mostRepresentativeTrack);
+                radarMeta.Add(mostRepresentativeMeta);
 
                 // Instantiate cluster and populate with data
                 GameObject cluster = Instantiate(ClusterPrefab);
