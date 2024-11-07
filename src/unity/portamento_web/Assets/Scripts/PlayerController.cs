@@ -43,11 +43,12 @@ public class PlayerController : MonoBehaviour
     public float UpwardSpeed = 0.5f; // Upward movement speed
 
     // NAVIGATION
-    public string CurrentClusterId = "0";
+    public string CurrentClusterId;
     public Transform SelectedClusterTransform;
 
     private void Awake()
     {
+        CurrentClusterId = PlayerPrefs.GetString("current_node_id", "0");
         _gameManager = FindObjectOfType<GameManager>();
         _animator = GetComponent<Animator>();
         _characterController = GetComponent<CharacterController>();
