@@ -11,18 +11,22 @@ from test_utils import load_df_from_local_pickles
 from core.birch_tree_navigator import BirchTreeNavigator
 
 import pickle
+import pandas as pd
 
 tests_path = test_utils.TESTS_PATH
 data_test_name = test_utils.TEST_NAME
+from_pickles = test_utils.FROM_PICKLES
 
 data_folder_path = f'{tests_path}/results/{data_test_name}'
 
 # Load the dataset
-dataset = load_df_from_local_pickles(data_folder_path)
+if from_pickles:
+    dataset = load_df_from_local_pickles(data_folder_path)
+else:
+    dataset = pd.read_csv(f'{data_folder_path}/data.csv', index_col='id')
 
-model_test_name = 'local_stack_clusterer' # default: mosiselecta
 # Load the configuration
-config = test_utils.load_test_config(model_test_name)
+config = test_utils.load_test_config()
     
 with open(config['model_path'], 'rb') as file:
     loaded_model = pickle.load(file)
@@ -55,6 +59,11 @@ while True:
                     print(f"{i}: Child {i} (leaf)")
                 else:
                     print(f"{i}: Child {i}")
+
+                print(f"Centroid: {current_node.get_child_deweighted_centroid_dict(i)}")
+                representative_id, n_representative_ids, distances = current_node.get_child_representative_id(i, dataset)
+                print(f"Most representative ID: {representative_id}")
+                print(f"Number of songs within radius: {n_representative_ids}")
                 
                 # And let's print the songs of each children
                 print(f"With {current_node.get_child_n_samples(i)} songs, among which:")
