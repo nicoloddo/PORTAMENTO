@@ -7,7 +7,7 @@
         "max": 250
     },
     "weights": {
-        "acousticness"        :5, 
+        "acousticness"        :10, 
         "danceability"        :10,
         "energy"              :10,
         "instrumentalness"    :5,
@@ -16,7 +16,7 @@
         "loudness"            :0,
         "mode"                :0,
         "speechiness"         :2,
-        "tempo"               :0,
+        "tempo"               :10,
         "time_signature"      :0,
         "valence"             :10
     }
