@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using BackendSettingsSpace;
 
 public class GameManager : MonoBehaviour
 {
@@ -223,20 +224,9 @@ public class GameManager : MonoBehaviour
 
     private void LoadBackendSettings()
     {
-        string[] lines = System.IO.File.ReadAllLines(Application.dataPath + "/backend_settings.txt");
-        foreach (string line in lines)
-        {
-            string[] parts = line.Split('=');
-            if (parts.Length == 2)
-            {
-                if (parts[0] == "API_KEY")
-                    _apiKey = parts[1].Trim();
-                else if (parts[0] == "API_BASE_URL")
-                    _apiBaseUrl = parts[1].Trim();
-                else if (parts[0] == "MODEL_ID")
-                    _modelId = parts[1].Trim();
-            }
-        }
+        _apiKey = BackendSettings.ApiKey;
+        _apiBaseUrl = BackendSettings.ApiBaseUrl;
+        _modelId = BackendSettings.ModelId;
     }
 
     public void ViewMap()
