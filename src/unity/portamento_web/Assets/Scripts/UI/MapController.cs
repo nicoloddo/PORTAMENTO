@@ -124,7 +124,7 @@ public class MapController : MonoBehaviour
         cluster.GetComponent<Cluster>().Highlight();
         clusterButton.GetComponent<ClusterButton>().Highlight();
 
-        _player.GetComponent<PlayerController>().GetGameManager().StatusLabel.SetStatus("Press E in-game\n to point at the selected mini-universe");
+        _player.GetComponent<PlayerController>().GetGameManager().StatusLabel.SetStatus("Press E in-game to point at the selected mini-universe");
     }
 
     public void SetRadars(List<Dictionary<string, float>> radarTrack, List<Dictionary<string, string>> radarMeta)

@@ -15,7 +15,7 @@ public class StatusController : MonoBehaviour
     void Start()
     {
         StatusLabel.text = "Give us a sec... We are loading the multiverse!\n" +
-            "P.S. Move with WASD, fly with Space and Shift, press Esc for the map.";
+            "P.S. Move with WASD, go up/down with Space and Shift, press Esc for the map.";
     }
 
     // Update is called once per frame

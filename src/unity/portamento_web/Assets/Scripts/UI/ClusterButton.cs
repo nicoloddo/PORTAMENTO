@@ -16,7 +16,18 @@ public class ClusterButton : MonoBehaviour
     private string _xAxis;
     private string _yAxis;
 
+    public float XRangePercentage = 0.5f;
+    public float YRangePercentage = 0.55f;
+
+    public float ParentCenterXPaddingPercentage = 0.15f;
+    public float ParentCenterYPaddingPercentage = 0f;
+
     public Text Label;
+
+    public void Update()
+    {
+        //UpdatePosition(); Uncomment to debug the position in game
+    }
 
     public void UpdatePosition()
     {
@@ -28,27 +39,27 @@ public class ClusterButton : MonoBehaviour
         Vector3 parentPos = parentRect.position;
 
         // Get the centroid coordinates
-        float centroid_x = Cluster.Centroid[_xAxis];
-        float centroid_y = Cluster.Centroid[_yAxis];
+        float centroidX = Cluster.Centroid[_xAxis];
+        float centroidY = Cluster.Centroid[_yAxis];
 
         // Pan them to -0.5 to 0.5
-        centroid_x = (centroid_x - 0.5f);
-        centroid_y = (centroid_y - 0.5f);
+        centroidX = (centroidX - 0.5f);
+        centroidY = (centroidY - 0.5f);
         
         // Calculate ranges based on parent dimensions
-        _xRange = parentWidth*0.65f;
-        _yRange = parentHeight*0.65f;
+        _xRange = parentWidth*XRangePercentage;
+        _yRange = parentHeight*YRangePercentage;
         
         // Calculate position relative to parent's position
-        float parent_center_x = parentPos.x - (parentWidth/2);
-        float parent_center_y = parentPos.y;
+        float parentCenterX = parentPos.x - (parentWidth/2);
+        float parentCenterY = parentPos.y;
 
         // Add some padding due to the map image not fitting the entire parent
-        parent_center_x += (parentWidth*0.1f); 
-        parent_center_y += (parentHeight*0.1f);
+        parentCenterX += (parentWidth*ParentCenterXPaddingPercentage); 
+        parentCenterY += (parentHeight*ParentCenterYPaddingPercentage);
         
-        _x = parent_center_x + (centroid_x * _xRange);
-        _y = parent_center_y + (centroid_y * _yRange);
+        _x = parentCenterX + (centroidX * _xRange);
+        _y = parentCenterY + (centroidY * _yRange);
         
         gameObject.GetComponent<RectTransform>().position = new Vector3(_x, _y, parentPos.z);
     }
