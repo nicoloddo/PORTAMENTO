@@ -21,6 +21,12 @@ import time
 
 EXPIRATION_MINUTES = 1200 # 20 hours
 
+cors_headers = {
+    'Access-Control-Allow-Headers': 'Content-Type, model-id, node-id, x-api-key',
+    'Access-Control-Allow-Origin': 'https://nicoloddo.github.io',
+    'Access-Control-Allow-Methods': 'OPTIONS,GET'
+}
+
 def generate_response(response_key, expiration_time):
     """
     Generate a standardized response with a pre-signed URL.
@@ -39,6 +45,7 @@ def generate_response(response_key, expiration_time):
     
     return {
         'statusCode': 200,
+        'headers': cors_headers,
         'body': json.dumps({
             'url': presigned_url,
             'expires_at': int(expiration_time.timestamp())
@@ -46,8 +53,14 @@ def generate_response(response_key, expiration_time):
     }
 
 def lambda_handler(event, context):
-    # TODO
-    # Add url referer check
+    print(event)
+    if event['httpMethod'] == 'OPTIONS':
+        # Return response for OPTIONS preflight request
+        return {
+            'statusCode': 200,
+            'headers': cors_headers,
+            'body': ''
+        }
     
     model_id = event['headers'].get('model-id')
     node_id = event['headers'].get('node-id')
