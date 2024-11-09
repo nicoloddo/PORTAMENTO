@@ -851,7 +851,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: DisplayMenu
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 720128213333437476, guid: f92e1c6273f777141af68d7821114471, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
