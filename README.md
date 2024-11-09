@@ -3,17 +3,18 @@
 This is a complete rewrite of my old project Portamento, designed for my Software Engineering bachelor's thesis project in 2021. The goal of the rewrite is to make it available online on my website, while running the backend on AWS as a serverless architecture.
 
 You can look at src/model for the backend.
-The frontend at src/unity is still in development.
+The frontend at src/unity.
 
 *Portamento: Machine Learning for music cataloguing and a three-dimensional interface to highlight its inherent nuances.*
 Read the thesis (in italian): [thesis](https://github.com/nicoloddo/PORTAMENTO/blob/master/THESIS.pdf)
 
 
-Portamento is a music cataloguing software that uses a selfmade mod of the BIRCH algorithm to cluster a database of tracks. The interface is developed using the Unity Engine with an approach similar to videogames, obtaining an interactive exploration of the clustering tree hierarchy.
+Portamento is a music cataloguing software that uses a selfmade mod of the BIRCH algorithm to cluster a database of tracks. The interface is developed using the Unity Engine, obtaining an immersive and interactive exploration of the clustering tree hierarchy.
 The backend is written in Python, while the frontend is written in C#.
 
 [![Watch the video](https://i.imgur.com/wOLEDrZ.jpg)](https://youtu.be/aSUIdFPvFPQ)
 This video shows the functioning of the Beta version.
+You can try yourself the current version at [nicoloddo.github.io/PORTAMENTO](https://nicoloddo.github.io/PORTAMENTO/)
 
 Database references:
 1. **[Spotify](https://developer.spotify.com/documentation/web-api/reference/)**, from which I get the tracks' metadata and analysis.
@@ -25,13 +26,13 @@ Database references:
 "Shift": Down movement
 Mouse: Orientation
 
-"m": Open map\
-"f": Open cluster menu
+"M": Open map\
+"F": Open cluster menu
 
-"r": Look at menu-selected cluster\
-"x": Look towards x axis - "left-ctrl + x": look towards negative x axis"\
-"c": Look towards y axis - "left-ctrl + c": look towards negative y axis"\
-"z": Adjust orientation to be parallel to ground
+"E": Go to the map-selected cluster\
+"X": Look towards x axis - "left-ctrl + X": look towards negative x axis"\
+"C": Look towards y axis - "left-ctrl + C": look towards negative y axis"\
+"Z": Adjust orientation to be parallel to ground
 
 ## Backend
 The backend is written in Python and runs on AWS on a serverless architecture based on Lambdas, S3 and API Gateway. The backend handles the data retrieval from Spotify's API, the clusterization of the database and the navigation inside its structure.
