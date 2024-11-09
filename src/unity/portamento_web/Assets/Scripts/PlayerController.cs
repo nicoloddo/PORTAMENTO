@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
     private float _inputHorizontal; // Keys for rotation (in addition to mouse)
     public float TotalXRotation; // Total X rotation
     public float TotalYRotation; // Total Y rotation
+    public bool PointAtCluster = false; // Whether the player is pointing at a cluster
 
     // MOVEMENT PARAMETERS
     private const float ROTATE_SPEED_X = 4f; // X rotation speed
@@ -106,6 +107,13 @@ public class PlayerController : MonoBehaviour
             transform.LookAt(SelectedClusterTransform);
             TotalXRotation = transform.rotation.eulerAngles.y;
             TotalYRotation = transform.rotation.eulerAngles.x;
+            _characterController.Move(camera.transform.forward * ForwardSpeed);
+            _animator.SetFloat("fly", 1);
+            PointAtCluster = true;
+        }
+        else
+        {
+            PointAtCluster = false;
         }
 
         if (Input.GetKey("z") && !_songMenuOpened && !_mapOpened)
@@ -157,9 +165,11 @@ public class PlayerController : MonoBehaviour
             _animator.SetFloat("fly", _inputVertical);
 
             // Rotation controller, designed to avoid z-axis rotation that can occur from summing x and y rotations
-            TotalXRotation += Input.GetAxis("Mouse X") * ROTATE_SPEED_X;
-            TotalYRotation -= Input.GetAxis("Mouse Y") * ROTATE_SPEED_Y;
-            TotalYRotation = Mathf.Clamp(TotalYRotation, -50f, 50f);  // Clamp Y rotation
+            if (!PointAtCluster) {
+                TotalXRotation += Input.GetAxis("Mouse X") * ROTATE_SPEED_X;
+                TotalYRotation -= Input.GetAxis("Mouse Y") * ROTATE_SPEED_Y;
+                TotalYRotation = Mathf.Clamp(TotalYRotation, -50f, 50f);  // Clamp Y rotation
+            }
 
             transform.forward = camera.transform.forward;
 
