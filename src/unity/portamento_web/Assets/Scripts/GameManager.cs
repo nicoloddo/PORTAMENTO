@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using BackendSettingsSpace;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -35,6 +36,7 @@ public class GameManager : MonoBehaviour
     private string _apiKey;
     private string _modelId; // Put the default model ID in the secrets.txt file
     private const int MAX_RETRIES = 3;
+    private const int TOTAL_RADAR_SLOTS = 12;
     public bool FetchedNodeData = false;
 
     private void Awake()
@@ -93,6 +95,11 @@ public class GameManager : MonoBehaviour
             List<Dictionary<string, float>> radarTrack = new List<Dictionary<string, float>>();
             List<Dictionary<string, string>> radarMeta = new List<Dictionary<string, string>>();
 
+            // Calculate songs per cluster if we have fewer than TOTAL_RADAR_SLOTS clusters
+            int songsPerCluster = children.Count < TOTAL_RADAR_SLOTS 
+                ? (int)Math.Ceiling((double)TOTAL_RADAR_SLOTS / children.Count)
+                : 1;
+                
             // Process and Instantiate the clusters
             int clusterIndex = 0;
             foreach (JObject child in children)
@@ -103,6 +110,15 @@ public class GameManager : MonoBehaviour
                 // Retrieve the data for this cluster
                 List<Dictionary<string, float>> track = child["track"].ToObject<List<Dictionary<string, float>>>();
                 List<Dictionary<string, string>> meta = child["meta"].ToObject<List<Dictionary<string, string>>>();
+
+                // Create a list of tuples to maintain the relationship while sorting
+                var combined = track.Select((t, index) => new { Track = t, Meta = meta[index] })
+                    .OrderByDescending(x => x.Track["distance"])
+                    .ToList();
+
+                // Split back into separate lists
+                track = combined.Select(x => x.Track).ToList();
+                meta = combined.Select(x => x.Meta).ToList();
 
                 // Verify track and meta lists have matching lengths
                 if (track.Count != meta.Count)
@@ -118,10 +134,23 @@ public class GameManager : MonoBehaviour
                 Dictionary<string, float> mostRepresentativeTrack = track[representativeIndex];
                 Dictionary<string, string> mostRepresentativeMeta = meta[representativeIndex];
 
-                // Add the most popular song in the cluster to the radar data
-                mostRepresentativeTrack["label"] = clusterIndex;
-                radarTrack.Add(mostRepresentativeTrack);
-                radarMeta.Add(mostRepresentativeMeta);
+                // Add up to songsPerCluster songs from this cluster to the radar data
+                for (int i = 0; i < songsPerCluster && i < track.Count; i++)
+                {
+                    Dictionary<string, float> trackToAdd = i == 0 
+                        ? mostRepresentativeTrack // First song is always the most representative
+                        : track[i];
+                    Dictionary<string, string> metaToAdd = i == 0
+                        ? mostRepresentativeMeta
+                        : meta[i];
+
+                    trackToAdd["label"] = clusterIndex;
+                    radarTrack.Add(trackToAdd);
+                    radarMeta.Add(metaToAdd);
+
+                    // Break if we've reached total radar slots
+                    if (radarTrack.Count >= TOTAL_RADAR_SLOTS) break;
+                }
 
                 // Instantiate cluster and populate with data
                 GameObject cluster = Instantiate(ClusterPrefab);
