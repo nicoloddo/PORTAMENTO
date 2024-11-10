@@ -30,7 +30,7 @@ public class Cluster : MonoBehaviour
         );
 
         // Find all other clusters
-        Cluster[] otherClusters = FindObjectsOfType<Cluster>();
+        Cluster[] otherClusters = FindObjectsByType<Cluster>(FindObjectsSortMode.None);
         
         // Check for overlaps and adjust position
         foreach (Cluster other in otherClusters)
