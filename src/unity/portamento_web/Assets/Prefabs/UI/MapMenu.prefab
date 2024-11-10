@@ -356,8 +356,11 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: Here are the most relevant songs per mini-universe
+    m_LineSpacing: 0.7
+  m_Text: 'Here are each mini-universe''s most relevant songs.
+
+    Click on a song
+    to select its universe on the map, or play it!'
 --- !u!1 &3497490175779176221
 GameObject:
   m_ObjectHideFlags: 0
@@ -2729,7 +2732,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 05a81c3d5091440058129444d28322f3, type: 3}
       propertyPath: m_Text
-      value: "Enter Cluster \n[]"
+      value: "Back to Universe \n[]"
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 05a81c3d5091440058129444d28322f3, type: 3}
       propertyPath: m_FontData.m_MinSize
