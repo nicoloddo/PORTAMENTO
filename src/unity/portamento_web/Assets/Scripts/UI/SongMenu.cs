@@ -42,7 +42,7 @@ public class SongMenu : MonoBehaviour
             {
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
-                background.GetComponentInChildren<Text>().text = "Enter Cluster\n" + "[" + 
+                background.GetComponentInChildren<Text>().text = "Enter Universe\n" + "[" + 
                     _player.GetComponent<PlayerController>().CurrentClusterId + '.' + clusterId + "]";
                 button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() => LaunchButtonEnter(clusterId, isLeaf));
@@ -50,9 +50,9 @@ public class SongMenu : MonoBehaviour
 
             if(clustButton.CompareTag("SongButton"))
             {
-                var button = clustButton.GetComponent<Button>();
-                var background = button.gameObject.transform.GetChild(0).gameObject;
-                var playButton = button.gameObject.transform.GetChild(1).gameObject;
+                var button = clustButton.transform.GetChild(0).GetComponent<Button>();
+                var background = clustButton.transform.GetChild(0).GetChild(0).gameObject;
+                var playButton = clustButton.transform.GetChild(1).gameObject;
                 button.onClick.RemoveAllListeners();
 
                 if (j < songsMeta.Count)
@@ -99,7 +99,7 @@ public class SongMenu : MonoBehaviour
             {
                 var button = clustButton.GetComponent<Button>();
                 var background = button.gameObject.transform.GetChild(0).gameObject;
-                background.GetComponentInChildren<Text>().text = "Enter Cluster\n" + "[]";
+                background.GetComponentInChildren<Text>().text = "Enter Universe\n" + "[]";
                 button.onClick.RemoveAllListeners();
             }
 
@@ -234,7 +234,7 @@ public class SongMenu : MonoBehaviour
             }
         }
         string currentClust = _featuresLabel.text;
-        _featuresLabel.text += "\n***********  LAST OPENED CLUSTER:  ***********\n";
+        _featuresLabel.text += "\n***********  LAST OPENED UNIVERSE:  ***********\n";
         _featuresLabel.text += _prevClust;
         _prevClust = currentClust;
     }

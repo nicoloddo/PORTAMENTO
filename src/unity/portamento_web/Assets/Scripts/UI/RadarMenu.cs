@@ -27,7 +27,7 @@ public class RadarMenu : MonoBehaviour
             string[] clusterIds = currentClusterId.Split('.');
             _previousClusterId = string.Join(".", clusterIds.Take(clusterIds.Length - 1));
 
-            background.GetComponentInChildren<Text>().text = "Back to Cluster\n" + "[" + 
+            background.GetComponentInChildren<Text>().text = "Back to Universe\n" + "[" + 
                 _previousClusterId + "]";
 
             button.onClick.RemoveAllListeners();
@@ -35,7 +35,7 @@ public class RadarMenu : MonoBehaviour
         }
         else
         {
-            background.GetComponentInChildren<Text>().text = "No Cluster to\n go back to yet";
+            background.GetComponentInChildren<Text>().text = "No Universe to\n go back to yet";
         }
     }
 
@@ -62,9 +62,9 @@ public class RadarMenu : MonoBehaviour
 
             if (clustButton.CompareTag("SongButton"))
             {
-                var button = clustButton.GetComponent<Button>();
-                var background = button.gameObject.transform.GetChild(0).gameObject;
-                var playButton = button.gameObject.transform.GetChild(1).gameObject;
+                var button = clustButton.transform.GetChild(0).GetComponent<Button>();
+                var background = clustButton.transform.GetChild(0).GetChild(0).gameObject;
+                var playButton = clustButton.transform.GetChild(1).gameObject;
                 button.onClick.RemoveAllListeners();
 
                 if(j < radarMeta.Count)
