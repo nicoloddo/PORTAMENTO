@@ -8,7 +8,7 @@ public class ChangePage : MonoBehaviour
 
     void Start()
     {
-        _gameManager = FindObjectOfType<GameManager>();
+        _gameManager = FindAnyObjectByType<GameManager>();
     }
 
     public void NextPage()
