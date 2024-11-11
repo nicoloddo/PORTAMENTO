@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fcd53ebb884759345a0c54552ecd0653
+guid: d01cbd6aa8aa1d547ae04efe1f023ce6
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Arial
+  - Garet
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
