@@ -10,7 +10,6 @@ TrueTypeFontImporter:
   includeFontData: 1
   fontNames:
   - ISL_Jupiter
-  - ARIAL
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
