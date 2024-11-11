@@ -24,9 +24,12 @@ public class PlayerController : MonoBehaviour
     // STATE FLAGS
     private bool _firstRun = true;
     private bool _isNear = false;
-    private bool _canMove = true;
+    private MenuHider _clusterMenuHider;
     private bool _songMenuOpened = false;
+    private MenuHider _mapMenuHider;
     private bool _mapOpened = false;
+    private MenuHider _settingsMenuHider;
+    private bool _settingsOpened = false;
 
     // INPUT VARIABLES
     private float _inputUpward; // For upward movement
@@ -53,12 +56,32 @@ public class PlayerController : MonoBehaviour
         _gameManager = FindAnyObjectByType<GameManager>();
         _animator = GetComponent<Animator>();
         _characterController = GetComponent<CharacterController>();
+
+        _clusterMenuHider = _gameManager.ClusterMenu.GetComponent<MenuHider>();
+        _mapMenuHider = _gameManager.MapMenu.GetComponent<MenuHider>();
+        _settingsMenuHider = _gameManager.SettingsMenu.GetComponent<MenuHider>();
     }
 
     private void Update()
     {
-        if (!_gameManager.FetchedNodeData)
+        if (!_gameManager.FinishedLoading)
             return;
+        
+        if (_settingsMenuHider.IsActive)
+            _settingsOpened = true;
+        else
+            _settingsOpened = false;
+
+        if (_clusterMenuHider.IsActive)
+            _songMenuOpened = true;
+        else
+            _songMenuOpened = false;
+
+        if (_mapMenuHider.IsActive)
+            _mapOpened = true;
+        else
+            _mapOpened = false;
+
 
         if(_justPressed < JUST_PRESSED_MAX + 5)
             _justPressed += Time.deltaTime;
@@ -152,11 +175,11 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!_gameManager.FetchedNodeData)
+        if (!_gameManager.FinishedLoading)
             return;
 
         // Movement management
-        if (_canMove)
+        if (CanMove())
         {
             _inputVertical = Input.GetAxis("Vertical");
             _inputHorizontal = Input.GetAxis("Horizontal");
@@ -191,31 +214,31 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private bool CanMove()
+    {
+        if (!_settingsOpened && !_songMenuOpened && !_mapOpened)
+            return true;
+        else
+            return false;
+    }
+
     private void MapShow()
     {
-        _mapOpened = true;
-        _canMove = false;
         _gameManager.ViewMap();
     }
 
     private void MapEsc()
     {
-        _mapOpened = false;
-        _canMove = true;
         _gameManager.CloseMap();
     }
 
     private string SongMenuRun()
     {
-        _songMenuOpened = true;
-        _canMove = false;
         return _gameManager.StartSongMenu(_nearCluster);
     }
 
     private void SongMenuEsc()
     {
-        _songMenuOpened = false;
-        _canMove = true;
         _gameManager.StopSongMenu();
     }
 

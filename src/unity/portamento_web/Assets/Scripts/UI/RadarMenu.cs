@@ -20,7 +20,7 @@ public class RadarMenu : MonoBehaviour
         string currentClusterId = _player.GetComponent<PlayerController>().CurrentClusterId;
 
         var button = EnterPreviousClusterButton.GetComponent<Button>();
-        var background = button.gameObject.transform.GetChild(0).gameObject;
+        var background = button.gameObject.transform.GetChild(button.gameObject.transform.childCount - 1).gameObject;
 
         if (currentClusterId.Length > 1)
         {
@@ -63,7 +63,7 @@ public class RadarMenu : MonoBehaviour
             if (clustButton.CompareTag("SongButton"))
             {
                 var button = clustButton.transform.GetChild(0).GetComponent<Button>();
-                var background = clustButton.transform.GetChild(0).GetChild(0).gameObject;
+                var background = clustButton.transform.GetChild(0).GetChild(button.gameObject.transform.childCount - 1).gameObject;
                 var playButton = clustButton.transform.GetChild(1).gameObject;
                 button.onClick.RemoveAllListeners();
 
@@ -101,7 +101,7 @@ public class RadarMenu : MonoBehaviour
             if (clustButton.CompareTag("SongButton"))
             {
                 var button = clustButton.GetComponent<Button>();
-                var background = button.gameObject.transform.GetChild(0).gameObject;
+                var background = button.gameObject.transform.GetChild(button.gameObject.transform.childCount - 1).gameObject;
                 background.GetComponentInChildren<Text>().text = "";
                 button.onClick.RemoveAllListeners();
             }
@@ -119,6 +119,13 @@ public class RadarMenu : MonoBehaviour
     }
     public void PlayClick(Dictionary<string, string> meta)
     {
-        Application.OpenURL("spotify:track:" + meta["id"]);
+        if (PlayerPrefs.GetInt("spotifyInstalled", 0) == 1)
+        {
+            Application.OpenURL("spotify:track:" + meta["id"]);
+        }
+        else
+        {
+            Application.OpenURL("https://song.link/s/" + meta["id"]);
+        }
     }
 }

@@ -19,17 +19,18 @@ public class GameManager : MonoBehaviour
     public Dictionary<string, string> Axis;
     public Dictionary<string, float> FirstCentroid = new Dictionary<string, float>();
 
-    // Clusters
+    // Clusters Controller
     public GameObject ClusterMenu;
     private GameObject _clusterShown;
     public int ClusterMenuPage;
     public GameObject DisplayMenu;
 
-    // UI
+    // Other UI
     public StatusController StatusLabel;
     public GameObject MapMenu;
     public GameObject Map;
-    private GameObject _songMenu;
+    public GameObject SettingsMenu;
+    public GameObject ClusterSongsMenu;
 
     /* API FETCHING */
     private string _apiBaseUrl;
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
     private const int MAX_RETRIES = 3;
     private const int TOTAL_RADAR_SLOTS = 12;
     public bool FetchedNodeData = false;
+    public bool FinishedLoading = false;
 
     private void Awake()
     {
@@ -50,12 +52,12 @@ public class GameManager : MonoBehaviour
         Axis["z"] = "danceability";
 
         // Initialize UI
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        SettingsMenu.GetComponent<MenuHider>().SetActive(false);
         ClusterMenu.GetComponent<MenuHider>().SetActive(false);
         MapMenu.GetComponent<MenuHider>().SetActive(false);
         DisplayMenu.GetComponent<MenuHider>().SetActive(false);
-        _songMenu = ClusterMenu.transform.GetChild(0).gameObject;
     }
 
     async void Start()
@@ -189,13 +191,24 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // The clusters are fetched. Enable the DisplayMenu
+        // The clusters are fetched. Enable the relevant menus
         if (FetchedNodeData || DebuggingMode)
         {
-            MapMenu.GetComponent<MenuHider>().SetActive(false);
             ClusterMenu.GetComponent<MenuHider>().SetActive(false);
-            DisplayMenu.GetComponent<MenuHider>().SetActive(true);
+            if (PlayerPrefs.HasKey("spotifyInstalled"))
+            {
+                SettingsMenu.GetComponent<MenuHider>().SetActive(true);
+                MapMenu.GetComponent<MenuHider>().SetActive(false);
+                DisplayMenu.GetComponent<MenuHider>().SetActive(true);
+            }
+            else
+            {
+                SettingsMenu.GetComponent<MenuHider>().SetActive(false);
+                MapMenu.GetComponent<MenuHider>().SetActive(true);
+                DisplayMenu.GetComponent<MenuHider>().SetActive(false);
+            }
         }
+        FinishedLoading = true;
     }
 
     private async Task<JObject> FetchNodeData(string nodeId, int retryCount = 0)
@@ -287,7 +300,7 @@ public class GameManager : MonoBehaviour
         bool isLeaf = cluster.GetComponent<Cluster>().IsLeaf;
         ClusterMenu.GetComponent<MenuHider>().SetActive(true);
         DisplayMenu.GetComponent<MenuHider>().SetActive(false);
-        _songMenu.GetComponent<SongMenu>().CreateMenu(isLeaf, clusterId, clusterMeta, clusterTrack, centroid);
+        ClusterSongsMenu.GetComponent<SongMenu>().CreateMenu(isLeaf, clusterId, clusterMeta, clusterTrack, centroid);
         return clusterId;
     }
 
@@ -302,7 +315,7 @@ public class GameManager : MonoBehaviour
         bool isLeaf = cluster.GetComponent<Cluster>().IsLeaf;
         ClusterMenu.GetComponent<MenuHider>().SetActive(true);
         DisplayMenu.GetComponent<MenuHider>().SetActive(false);
-        _songMenu.GetComponent<SongMenu>().CreateMenu(isLeaf, clusterId, clusterMeta, clusterTrack, centroid, page);
+        ClusterSongsMenu.GetComponent<SongMenu>().CreateMenu(isLeaf, clusterId, clusterMeta, clusterTrack, centroid, page);
     }
 
     public void StopSongMenu()
@@ -311,7 +324,7 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         ClusterMenu.GetComponent<MenuHider>().SetActive(false);
         DisplayMenu.GetComponent<MenuHider>().SetActive(true);
-        _songMenu.GetComponent<SongMenu>().CancelMenu();
+        ClusterSongsMenu.GetComponent<SongMenu>().CancelMenu();
     }
 
     private Dictionary<string, string> SelectAxis(List<Dictionary<string, string>> dicts, string id)

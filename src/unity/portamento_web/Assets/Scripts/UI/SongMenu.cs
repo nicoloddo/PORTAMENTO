@@ -41,7 +41,7 @@ public class SongMenu : MonoBehaviour
             if (clustButton.CompareTag("EnterButton"))
             {
                 var button = clustButton.GetComponent<Button>();
-                var background = button.gameObject.transform.GetChild(0).gameObject;
+                var background = button.gameObject.transform.GetChild(button.gameObject.transform.childCount - 1).gameObject;
                 background.GetComponentInChildren<Text>().text = "Enter Universe\n" + "[" + 
                     _player.GetComponent<PlayerController>().CurrentClusterId + '.' + clusterId + "]";
                 button.onClick.RemoveAllListeners();
@@ -51,7 +51,7 @@ public class SongMenu : MonoBehaviour
             if(clustButton.CompareTag("SongButton"))
             {
                 var button = clustButton.transform.GetChild(0).GetComponent<Button>();
-                var background = clustButton.transform.GetChild(0).GetChild(0).gameObject;
+                var background = clustButton.transform.GetChild(0).GetChild(button.gameObject.transform.childCount - 1).gameObject;
                 var playButton = clustButton.transform.GetChild(1).gameObject;
                 button.onClick.RemoveAllListeners();
 
@@ -98,7 +98,7 @@ public class SongMenu : MonoBehaviour
             if (clustButton.CompareTag("EnterButton"))
             {
                 var button = clustButton.GetComponent<Button>();
-                var background = button.gameObject.transform.GetChild(0).gameObject;
+                var background = button.gameObject.transform.GetChild(button.gameObject.transform.childCount - 1).gameObject;
                 background.GetComponentInChildren<Text>().text = "Enter Universe\n" + "[]";
                 button.onClick.RemoveAllListeners();
             }
@@ -106,7 +106,7 @@ public class SongMenu : MonoBehaviour
             if (clustButton.CompareTag("SongButton"))
             {
                 var button = clustButton.GetComponent<Button>();
-                var background = button.gameObject.transform.GetChild(0).gameObject;
+                var background = button.gameObject.transform.GetChild(button.gameObject.transform.childCount - 1).gameObject;
                 background.GetComponentInChildren<Text>().text = "";
                 button.onClick.RemoveAllListeners();
             }
@@ -177,8 +177,14 @@ public class SongMenu : MonoBehaviour
 
     private void PlayClick(Dictionary<string, string> meta)
     {
-        string uri = "spotify:track:" + meta["id"];
-        Application.OpenURL(uri);
+        if (PlayerPrefs.GetInt("spotifyInstalled", 0) == 1)
+        {
+            Application.OpenURL("spotify:track:" + meta["id"]);
+        }
+        else
+        {
+            Application.OpenURL("https://song.link/s/" + meta["id"]);
+        }
     }
 
     private void LaunchButtonEnter(string clusterId, bool isLeaf)
