@@ -1,10 +1,7 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SettingsController : MonoBehaviour
 {
-    public GameObject OppositeButton;
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,20 +19,23 @@ public class SettingsController : MonoBehaviour
         GetComponentInParent<MenuHider>().SetActive(false);
     }
 
+    public void ResetSettings()
+    {
+        PlayerPrefs.DeleteAll();
+        Animator animator = GetComponent<Animator>();
+        //animator.SetBool("Pressed", false);
+        //animator.Play("Normal");
+        GameManager gameManager = FindAnyObjectByType<GameManager>();
+        gameManager.StatusLabel.SetStatus("The settings have been reset");
+    }
+
     public void SetSpotifyInstalledYes()
     {
         PlayerPrefs.SetInt("spotifyInstalled", 1);
-        GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
-        GameObject oppositeBackground = OppositeButton.transform.GetChild(0).gameObject;
-        oppositeBackground.GetComponent<Image>().color = new Color(0, 140f/255f, 1, 1);
-
     }
 
     public void SetSpotifyInstalledNo()
     {
         PlayerPrefs.SetInt("spotifyInstalled", 0);
-        GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
-        GameObject oppositeBackground = OppositeButton.transform.GetChild(0).gameObject;
-        oppositeBackground.GetComponent<Image>().color = new Color(0, 140f/255f, 1, 1);
     }
 }

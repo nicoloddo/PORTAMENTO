@@ -1040,6 +1040,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0.00012207031
       objectReference: {fileID: 0}
+    - target: {fileID: 2827097465635926119, guid: 806d4839a37e6a5459b9e03cc256cc07, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2827097465647976229, guid: 806d4839a37e6a5459b9e03cc256cc07, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5312218900116444247, guid: 806d4839a37e6a5459b9e03cc256cc07, type: 3}
       propertyPath: m_Name
       value: SettingsMenu

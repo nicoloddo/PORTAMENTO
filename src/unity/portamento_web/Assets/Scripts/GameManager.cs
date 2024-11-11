@@ -83,7 +83,8 @@ public class GameManager : MonoBehaviour
                 return;
             }
             FetchedNodeData = true;
-            UnityEngine.Debug.Log("Fetched node data.");
+            if (DebuggingMode)
+                UnityEngine.Debug.Log("Fetched node data.");
             StatusLabel.SetStatus("");
             StatusLabel.manualMode = false;
 
@@ -195,11 +196,11 @@ public class GameManager : MonoBehaviour
         if (FetchedNodeData || DebuggingMode)
         {
             ClusterMenu.GetComponent<MenuHider>().SetActive(false);
-            if (PlayerPrefs.HasKey("spotifyInstalled"))
+            if (!PlayerPrefs.HasKey("spotifyInstalled"))
             {
                 SettingsMenu.GetComponent<MenuHider>().SetActive(true);
                 MapMenu.GetComponent<MenuHider>().SetActive(false);
-                DisplayMenu.GetComponent<MenuHider>().SetActive(true);
+                DisplayMenu.GetComponent<MenuHider>().SetActive(false);
             }
             else
             {
