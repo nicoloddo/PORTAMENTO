@@ -478,6 +478,7 @@ RectTransform:
   - {fileID: 3497490176133147879}
   - {fileID: 3497490174703153297}
   - {fileID: 3497490175251684662}
+  - {fileID: 1483318291176709351}
   m_Father: {fileID: 3497490174980476600}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
@@ -549,6 +550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ClusterButtonPrefab: {fileID: 5494235699581578237, guid: 20f648065d856094db814976d6619539, type: 3}
+  MapBounds: {fileID: 9212494011016169011}
   RadarMenu: {fileID: 3497490176527806994}
   HorizontalLabel: {fileID: 3497490175019896504}
   VerticalLabel: {fileID: 3497490175779176223}
@@ -670,6 +672,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Map: {fileID: 3497490175879435724}
   EnterPreviousClusterButton: {fileID: 0}
+--- !u!1 &9212494011016169011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1483318291176709351}
+  m_Layer: 5
+  m_Name: MapBounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1483318291176709351
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212494011016169011}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3497490175879435725}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -20, y: 15}
+  m_SizeDelta: {x: -150, y: -140}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &12614714804106177
 PrefabInstance:
   m_ObjectHideFlags: 0

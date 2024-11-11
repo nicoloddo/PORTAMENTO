@@ -12,6 +12,7 @@ public class MapController : MonoBehaviour
     private List<GameObject> _clusterList = new List<GameObject>();
     private List<GameObject> _clusterButtonList = new List<GameObject>();
     public GameObject ClusterButtonPrefab;
+    public GameObject MapBounds;
     public GameObject RadarMenu;
     public Text HorizontalLabel;
     public Text VerticalLabel;
@@ -97,7 +98,7 @@ public class MapController : MonoBehaviour
         {
             GameObject clusterButton = Instantiate(ClusterButtonPrefab);
             _clusterButtonList.Add(clusterButton);
-            clusterButton.transform.SetParent(transform);   // Set the cluster button as a child of the map to easily control its transform
+            clusterButton.transform.SetParent(MapBounds.transform);   // Set the cluster button as a child of the map to easily control its transform
             cluster.GetComponent<Cluster>().CreateClusterButton(clusterButton.GetComponent<ClusterButton>());
             clusterButton.GetComponent<ClusterButton>().SetAxis(_axis[_x], _axis[_y]);
             clusterButton.GetComponent<ClusterButton>().SetNumber(cluster.GetComponent<Cluster>().GetId());
